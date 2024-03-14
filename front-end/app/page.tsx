@@ -2,6 +2,7 @@
 import Navbar from "@/components/NavBar";
 import HomePage from "./HomePage";
 import UserProfile from "./UserProfile";
+import PostDetail from "./PostDetail";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <Navbar />
         {/* Scrollable Main Content */}
         {/* <HomePage/> */}
-        <UserProfile/>
+        {/* <UserProfile/> */}
+        <PostDetail/>
         </div>
   )};
