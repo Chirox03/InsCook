@@ -7,10 +7,10 @@ import PostDetail from "./PostDetail";
 export default function Home() {
   return (
     <div className="relative overflow-hidden h-screen">
-      <Navbar />
         {/* Scrollable Main Content */}
         {/* <HomePage/> */}
         {/* <UserProfile/> */}
+        {/* <Navbar /> */}
         <PostDetail/>
         </div>
   )};

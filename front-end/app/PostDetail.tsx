@@ -22,11 +22,14 @@ function PostDetail() {
             <span className="text-xs">10</span>
         </div>
         <div>
-        <i className="fi fi-rr-bookmark"></i>
+        <i className="fi fi-rr-bookmark mr-3"></i>
+        </div>
+        <div>
+        <i className="fi fi-rr-menu-dots mr-2 "></i>
         </div>
         </div>
         </div>
-        <div className="h-full mt-16 overflow-y-scroll">
+        <div className="h-full mt-16 overflow-y-auto">
         <div className="flex flex-row m-2 ml-1">
             <div className="rounded-full overflow-hidden align-left ">
               <Image src="/image.png" width={50} height={50} alt="avatar" />
