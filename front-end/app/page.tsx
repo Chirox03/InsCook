@@ -1,8 +1,9 @@
 
 import Navbar from "@/components/NavBar";
 import HomePage from "./HomePage";
-import UserProfile from "./UserProfile";
-import PostDetail from "./PostDetail";
+import UserProfile from "./UserProfile/UserProfile";
+import PostDetail from "./Post/PostDetail";
+import Search from "@/app/Search/page";
 
 export default function Home() {
   return (
@@ -10,7 +11,8 @@ export default function Home() {
         {/* Scrollable Main Content */}
         {/* <HomePage/> */}
         {/* <UserProfile/> */}
-        {/* <Navbar /> */}
-        <PostDetail/>
+        <Search/>
+        <Navbar />
+        {/* <PostDetail/> */}
         </div>
   )};
