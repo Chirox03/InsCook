@@ -7,14 +7,16 @@ return (
         <Link href="/">
         <i className="fi fi-rr-home text-2xl"></i>
         </Link>
-        <Link href="/">
+        <Link href="/NewPost">
         <i className="fi fi-br-plus text-2xl"></i>
         </Link>
-        <Link href="/">
+        <Link href="/NewPost">
         <i className="fi fi-rr-heart text-2xl"></i>
         </Link>
-        
-        <Link href="/">
+        <Link href="/Search">
+        <i className="fi fi-bs-search text-2xl"></i>
+        </Link>
+        <Link href="/UserProfile">
         <i className="fi fi-rr-user text-2xl"></i>
         </Link>
     </div>
