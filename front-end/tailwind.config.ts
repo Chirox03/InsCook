@@ -7,6 +7,7 @@ const config: Config = withMT({
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    'node_modules/flowbite-react/lib/esm/**/*.js',
   ],
   theme: {
     extend: {
@@ -19,6 +20,7 @@ const config: Config = withMT({
   },
   plugins: [
     require('@tailwindcss/line-clamp'),
+    require('flowbite/plugin'),
   ],
 });
 export default config;

@@ -14,7 +14,7 @@ return (
         <i className="fi fi-rr-heart text-2xl"></i>
         </Link>
         <Link href="/Search">
-        <i className="fi fi-rr-search mt-1 "></i>
+        <i className="fi fi-bs-search text-2xl"></i>
         </Link>
         <Link href="/UserProfile">
         <i className="fi fi-rr-user text-2xl"></i>

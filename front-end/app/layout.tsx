@@ -16,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`relative overflow-hidden h-screen grid grid-cols-1 md:grid-cols-3 overflow-y-auto auto-cols-max ${inter.className}`}>
+        <div className="col-start-2 h-full">
+          {children}
+          </div>
+        </body>
     </html>
   );
 }

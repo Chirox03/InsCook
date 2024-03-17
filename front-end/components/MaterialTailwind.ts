@@ -1,5 +1,5 @@
 "use client";
  
-import { ThemeProvider, Button,Carousel  } from "@material-tailwind/react";
+import {MenuHandler, MenuList, MenuItem,Input, Menu,ThemeProvider, Select, Option, Button,Carousel  } from "@material-tailwind/react";
  
-export { ThemeProvider, Button ,Carousel };
+export {MenuHandler, MenuList, MenuItem,Input,Menu, ThemeProvider,Select,Option, Button ,Carousel };
