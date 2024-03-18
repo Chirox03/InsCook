@@ -2,8 +2,7 @@ import Image from "next/image"
 
 function SignUp () {
     return (
-        
-        <div className="h-full bg-gradient-to-b from-red-200 to-red-700 font-sans">
+        <div className="h-full bg-gradient-to-b font-sans">
         <script src="https://cdn.tailwindcss.com"></script>
         <div className="flex flex-col items-center justify-cente">
             <div className="mt-20">
@@ -26,7 +25,7 @@ function SignUp () {
             <form>
                 <input type="text" placeholder="Tên người dùng, email/số di động" className="w-full ml-2.5 mr-2.5 w-full py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"/>
                 <input type="password" placeholder="Mật khẩu" className="w-full ml-2.5 mr-2.5 py-2.5 px-5 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"/>
-                <button type="submit" className="w-full ml-2.5 mr-2.5 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                <button type="submit" className="w-full ml-2.5 mr-2.5 border text-gray border-gray focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     Tạo tài khoản
                 </button>
             </form>

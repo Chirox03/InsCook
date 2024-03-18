@@ -4,6 +4,7 @@ import HomePage from "./HomePage";
 import UserProfile from "./UserProfile";
 import Login from "./Login";
 import SignUp from "./SignUp";
+import TopUser from "./TopUser";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         {/* <HomePage/> */}
         {/* <UserProfile/> */}
         {/* <Login/> */}
-        <SignUp/>
+        {/* <SignUp/> */}
+        <TopUser/>
         </div>
   )};
