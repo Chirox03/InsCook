@@ -9,7 +9,7 @@ export default function Home() {
         {/* Scrollable Main Content */}
         <HomePage/>
         {/* <UserProfile/> */}
-        <Navbar />
+        {/* <Navbar /> */}
         {/* <PostDetail/> */}
     </main>
   )};

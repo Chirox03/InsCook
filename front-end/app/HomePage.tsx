@@ -5,7 +5,6 @@ function HomePage() {
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max mx-auto h-full">
           <h1 className="text-lg mb-4 font-sans">InsCook</h1>
-        
         {/*search components*/ }
         {/* <Search/> */}
         {/* Trending InsCooks */}
@@ -30,7 +29,7 @@ function HomePage() {
         {/* Individual Recipe Section */}
         <Post/>
 
-      </main>
+    </main>
   )
 }
 
