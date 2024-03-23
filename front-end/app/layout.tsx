@@ -17,9 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`relative overflow-hidden h-screen grid grid-cols-1 sm:grid-cols-3 overflow-y-auto auto-cols-max w-screen overflow-x-scroll ${inter.className}`}>
+      <body className={`relative overflow-hidden h-screen grid grid-cols-1 sm:grid-cols-7 overflow-y-auto auto-cols-max w-screen overflow-x-scroll ${inter.className}`}>
         <Navbar/>
-        <div className="md:col-start-2 h-full">
+        <div className="sm:col-start-3 sm:col-end-6 h-full">
           {children}
           </div>
         </body>
