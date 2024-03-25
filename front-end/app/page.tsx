@@ -1,15 +1,22 @@
 
 import Navbar from "@/components/NavBar";
 import HomePage from "./HomePage";
-import Search from "@/app/Search/page";
+import UserProfile from "./UserProfile";
+import Login from "./Login";
+import SignUp from "./SignUp";
+import TopUser from "./TopUser";
+import Notifications from "./Notifications";
 
 export default function Home() {
   return (
-    <main className="">
+    <div className="relative overflow-hidden h-screen">
+      {/* <Navbar /> */}
         {/* Scrollable Main Content */}
-        <HomePage/>
+        {/* <HomePage/> */}
         {/* <UserProfile/> */}
-        {/* <Navbar /> */}
-        {/* <PostDetail/> */}
-    </main>
+        {/* <Login/> */}
+        {/* <SignUp/> */}
+        {/* <TopUser/> */}
+        <Notifications/>
+        </div>
   )};

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/NavBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`relative overflow-hidden h-screen grid grid-cols-1 sm:grid-cols-3 overflow-y-auto auto-cols-max w-screen overflow-x-scroll ${inter.className}`}>
-        <Navbar/>
-        <div className="md:col-start-2 h-full">
-          {children}
-          </div>
-        </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
