@@ -1,6 +1,7 @@
 import Post from "@/components/Post";
 import Search from "@/app/Search/page";
 import Image from "next/image";
+
 function HomePage() {
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
