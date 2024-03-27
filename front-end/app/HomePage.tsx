@@ -1,7 +1,7 @@
 import Post from "@/components/Post";
 import Search from "@/app/Search/page";
 import Image from "next/image";
-
+import Navbar from "@/components/NavBar";
 function HomePage() {
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
@@ -32,6 +32,7 @@ function HomePage() {
 
         {/* Individual Recipe Section */}
         <Post/>
+        <Navbar/>
 
     </main>
   )
