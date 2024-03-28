@@ -35,9 +35,9 @@ function UserProfile() {
             <span className="text-sm ">Following</span>
         </button>
         </div>
+     {/* <Post />
      <Post/>
-     <Post/>
-     <Post/>
+     <Post/> */}
     </div>
   )
 }
