@@ -2,8 +2,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Comment from '@/components/Comment'
-import CommentType from '@/types/types'
-import { comment } from 'postcss'
+import CommentType from '@/types/CommentType'
 
 export default function page() {
   const handleCommentSubmit = (commentContent:string)=>{
