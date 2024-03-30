@@ -11,8 +11,8 @@ export default function Home() {
   return (
     <main className="">
         {/* Scrollable Main Content */}
-        {/* <HomePage/> */}
-        <UserProfile/>
+        <HomePage/>
+        {/* <UserProfile/> */}
         {/* <Navbar /> */}
         {/* <PostDetail/> */}
         {/* <FollowersPage/> */}
