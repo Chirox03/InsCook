@@ -1,5 +1,3 @@
-// types.ts
-
 export default interface CommentType{
     id: string;
     user:{
@@ -10,4 +8,3 @@ export default interface CommentType{
     content: string;
     reply: Array<CommentType>
 }
-  
