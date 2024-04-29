@@ -6,8 +6,8 @@ export default interface PostType{
         username: string;
     }
     timestamp: Date;
-    tittle: string;
-    summary:string;
+    title: string;
+    caption:string;
     likes: number;
     isSaved: boolean;
     isLiked:boolean

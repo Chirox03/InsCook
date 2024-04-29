@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from 'next/link'
 import PostType from '@/types/PostType'
 import getRelativeTime from "./DateCalculate"
+import { useEffect,useState } from "react"
 interface PostProps {
   post: PostType; // Assuming CommentType is the type of your comment object
 }
@@ -34,9 +35,9 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
             </div>
             {post.isSaved===true ? <i className="fi fi-sr-bookmark mr-2"></i> : <i className="fi mr-2fi-rr-bookmark"></i>}
           </div>
-          <p className="text-left font-bold text-lg text-slate-600">{post.tittle}</p>
+          <p className="text-left font-bold text-lg text-slate-600">{post.title}</p>
           <p className="text-left md-2 font-sans">
-           {post.summary}
+           {post.caption}
           
           <button type="button" className="ml-2 text-xs underline hover:underline-offset-0"  >
             <Link href="/Post"> - See post... -</Link>
