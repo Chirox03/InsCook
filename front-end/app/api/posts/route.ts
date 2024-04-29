@@ -8,11 +8,16 @@ type ResponseData = {
 }
 export async function GET(req: NextRequest) {
   const collectionRef = collection(db, 'Post');
-  const { method } = req;
+  const { method, body } = req;
 
   if (method === 'GET') {
     try {
+      const { userID } = body.userID?.toString()
 
+      // Check if userID is provided
+      if (!userID) {
+        return NextResponse.json({ message: 'User ID is missing', data: null }, { status: 400 });
+      }
       const querySnapshot = await getDocs(collectionRef)
 
       if (querySnapshot.empty) {
