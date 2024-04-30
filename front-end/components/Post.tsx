@@ -27,11 +27,11 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
           <div className="mt-2 flex flex-row justify-start">
             <div className="flex flex-col mr-2">
               { (post.isLiked===true) ? (<i className="fi fi-sr-heart "></i>) : <i className="fi fi-rr-heart"></i>}
-            <span className="text-xs not-italic -mt-2">12</span>
+            <span className="text-xs not-italic -mt-2">{post.likes}</span>
             </div>
             <div className="flex flex-col mr-2">
             <i className="fi fi-rr-comment"></i>
-            <span className="text-xs not-italic -mt-2">12</span>
+            <span className="text-xs not-italic -mt-2">{post.comments}</span>
             </div>
             {post.isSaved===true ? <i className="fi fi-sr-bookmark mr-2"></i> : <i className="fi mr-2fi-rr-bookmark"></i>}
           </div>

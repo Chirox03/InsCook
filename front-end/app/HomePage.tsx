@@ -1,35 +1,59 @@
+'use client'
 import Post from "@/components/Post";
 import Search from "@/app/Search/page";
 import Image from "next/image";
 import PostType from "@/types/PostType";
 import Navbar from "@/components/NavBar";
+import { useEffect ,useState} from "react";
+
 function HomePage() {
-  const PostList: Array<PostType> = [{
-    id: "123",
-    user:{
-        userID: "123",
-        username: "hello",
-    },
-    timestamp: new Date(),
-    tittle: "Cook a butter cake",
-    summary: "Today i will show you how to cook a butter cake",
-    likes: 12,
-    isSaved: true,
-    isLiked: false
-  },
-  {
-    id: "123",
-    user:{
-        userID: "123",
-        username: "hello",
-    },
-    timestamp: new Date(),
-    tittle: "Cook a butter cake",
-    summary: "Today i will show you how to cook a butter cake",
-    likes: 12,
-    isSaved: true,
-    isLiked: false
-  }]
+  const  [PostList,setPostList] = useState<PostType[]>([]);
+ useEffect( ()=>{
+  const fetchPosts = async () =>{
+    try{
+      const response = await fetch('api/home?userID=123',{method: 'GET', // or 'POST', 'PUT', etc.
+      headers: {
+        'Content-Type': 'application/json', // Example header
+        // Add other headers as needed
+      }});
+      if(response.ok){
+        const data = await response.json();
+        setPostList(data.data as PostType[])
+      }
+    }catch(error)
+    {
+      console.error('Error fetching posts:', error);
+
+    }
+  };
+  fetchPosts()
+ },[])
+  // const PostList: Array<PostType> = [{
+  //   id: "123",
+  //   user:{
+  //       userID: "123",
+  //       username: "hello",
+  //   },
+  //   timestamp: new Date(),
+  //   tittle: "Cook a butter cake",
+  //   summary: "Today i will show you how to cook a butter cake",
+  //   likes: 12,
+  //   isSaved: true,
+  //   isLiked: false
+  // },
+  // {
+  //   id: "123",
+  //   user:{
+  //       userID: "123",
+  //       username: "hello",
+  //   },
+  //   timestamp: new Date(),
+  //   tittle: "Cook a butter cake",
+  //   summary: "Today i will show you how to cook a butter cake",
+  //   likes: 12,
+  //   isSaved: true,
+  //   isLiked: false
+  // }]
 
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
@@ -60,7 +84,7 @@ function HomePage() {
 
         {/* Individual Recipe Section */}
         <div className='mt-14 divide-y divide-double'>
-            {PostList.map((post) => (
+            {Array.isArray(PostList) && PostList.map((post) => (
               <Post key={post.id} post={post} />
               ))}
        </div>

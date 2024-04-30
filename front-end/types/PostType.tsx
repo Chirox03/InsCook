@@ -9,6 +9,7 @@ export default interface PostType{
     title: string;
     caption:string;
     likes: number;
+    comments: number;
     isSaved: boolean;
     isLiked:boolean
 }

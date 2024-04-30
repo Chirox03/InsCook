@@ -14,8 +14,7 @@ type ResponseData = {
       const userID = searchParams.get('userID')
       console.log(userID)
       if (method === 'GET') {
-          try {
-              
+      try {
               // Check if userID is provided
               if (!userID) {
                   return NextResponse.json({ message: 'User ID is missing', data: null }, { status: 400 });
@@ -38,7 +37,8 @@ type ResponseData = {
                 timestamp: postData.timestamp,
                 title: postData.title,
                 caption: postData.caption,
-                likes: postData.likes,
+                likes: postData.like_number,
+                comments: postData.comment_number,
                 isSaved: false, // Default value
                 isLiked: false, // Default value
               };
