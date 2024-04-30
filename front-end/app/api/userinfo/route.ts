@@ -14,7 +14,7 @@ export async function PUT(req: NextRequest){
   
   if (method === 'PUT') {
     try {
-      const { userid, newimage, newbio, newbirth } = await req.json();
+      const { userid, newimage, newbio, newbirth, newname } = await req.json();
 
       // Create a reference to the document with the specified ID in the specified collection
       const documentRef = doc(db, "User", userid);
@@ -27,6 +27,7 @@ export async function PUT(req: NextRequest){
       userdata.avatar = newimage;
       userdata.biography = newbio;
       userdata.birth = newbirth;
+      userdata.name = newname;
       updateDoc(documentRef, userdata);
       
 
