@@ -1,6 +1,9 @@
-
+'use client'
 import Image from 'next/image'
-
+import { ChangeEvent, useEffect, useState } from 'react'
+import { getStorage, ref ,uploadBytes} from "firebase/storage";
+import firebase from 'firebase/app';
+import 'firebase/storage';
 const imageStyle = {
     borderRadius: '50%',
     mt: -50,
@@ -8,6 +11,45 @@ const imageStyle = {
   }
 
 export default function EditProfile() {
+  useEffect( ()=>{
+    const fetchPosts = async () =>{
+      try{
+        const response = await fetch('api/user?id=',{method: 'GET', // or 'POST', 'PUT', etc.
+        headers: {
+          'Content-Type': 'application/json', // Example header
+          // Add other headers as needed
+        }});
+        if(response.ok){
+          const data = await response.json();
+        }
+      }catch(error)
+      {
+        console.error('Error fetching posts:', error);
+  
+      }
+    };
+    fetchPosts()
+   },[])
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if(file)
+    setSelectedImage(file);
+  };
+  const handleSubmit = () =>{
+    if(selectedImage){
+
+      const storage = getStorage();
+      const avatarRef = ref(storage, 'avatar/'+ selectedImage?.name)
+      try {
+        const res = uploadBytes(avatarRef, selectedImage)
+        console.log('Image uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  }
+  }
   return (
     <form>
       <div className="space-y-12">
@@ -52,10 +94,14 @@ export default function EditProfile() {
                 Photo
               </label>
               <div className="mt-2 flex items-center gap-x-3">
-                <Image src="/image.png" style={imageStyle} width={100} height={100} alt="icon"/>
+              {selectedImage ? (
+                <img src={URL.createObjectURL(selectedImage)} style={imageStyle} width={100} height={100} alt="Selected Image" />
+                 ) : (
+                <img src="/image.png" style={imageStyle} width={100} height={100} alt="Icon" />
+                  )}
                 <label className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                     <p>Change</p>
-                    <input type="file" className='hidden'/>
+                    <input type="file" className='hidden' onChange={handleImageChange}/>
                 </label>
               </div>
             </div>

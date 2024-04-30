@@ -39,7 +39,7 @@ function mapPost(apiPost: APiPost): Post{
   }
   return post;
 }
-function PostDetail() {
+function PostDetail({params: {pid}}) {
   const apiPost: APiPost = {
     id: 1,
     tittle: "Shrimp Coconut Linguine",
@@ -88,7 +88,7 @@ function PostDetail() {
         <div>
             <i className="fi fi-rr-heart mr-3"> </i>
             <br/>
-            <span className="text-xs">10</span>
+            <span className="text-xs">{pid}</span>
         </div>
         <div>
             <i className="fi fi-rr-comment mr-3"></i>
