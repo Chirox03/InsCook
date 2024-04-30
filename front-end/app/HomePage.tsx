@@ -1,3 +1,4 @@
+'use client'
 import Post from "@/components/Post";
 import Search from "@/app/Search/page";
 import Image from "next/image";
@@ -10,11 +11,14 @@ function HomePage() {
  useEffect( ()=>{
   const fetchPosts = async () =>{
     try{
-      const response = await fetch('api/posts');
-      if(response.status === 200){
+      const response = await fetch('api/home?userID=123',{method: 'GET', // or 'POST', 'PUT', etc.
+      headers: {
+        'Content-Type': 'application/json', // Example header
+        // Add other headers as needed
+      }});
+      if(response.ok){
         const data = await response.json();
-        console.log(data)
-        setPostList(data)
+        setPostList(data.data as PostType[])
       }
     }catch(error)
     {
@@ -80,7 +84,7 @@ function HomePage() {
 
         {/* Individual Recipe Section */}
         <div className='mt-14 divide-y divide-double'>
-            {PostList.map((post) => (
+            {Array.isArray(PostList) && PostList.map((post) => (
               <Post key={post.id} post={post} />
               ))}
        </div>
