@@ -1,4 +1,3 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/firebase';
 import {  doc , getDoc, updateDoc } from "firebase/firestore";
@@ -52,7 +51,7 @@ export async function GET(req: NextRequest){
       console.log(userid);
 
     if (!userid) {
-      return NextResponse.json({ message: 'User ID not provided', data: null }, { status: 400 });
+      return NextResponse.json({ message: 'User ID not provided', data: null }, { status:400 });
     }
 
       // Create a reference to the document with the specified ID in the specified collection
@@ -60,6 +59,9 @@ export async function GET(req: NextRequest){
 
       // Get the document data
       const documentSnapshot = await getDoc(documentRef);
+      if (!documentSnapshot.data()) {
+        return NextResponse.json( { message: 'User is unifined', data: null },{ status:400 });
+      }
       
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Get user information successfully', data: documentSnapshot.data() },{ status:200 });

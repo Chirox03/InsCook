@@ -1,7 +1,8 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, db } from '@/firebase';
-import { collection ,doc , getDoc } from "firebase/firestore";
+import { doc , getDoc } from "firebase/firestore";
+import UserType from '@/types/UserType';
 
 type ResponseData = {
   message: string,
@@ -14,6 +15,12 @@ export async function POST(req: NextRequest){
   if (method === 'POST') {
     try {
       // Firebase authentication
+      //check if user signed in
+      /*
+      if (auth.currentUser) {
+        return NextResponse.json( { message: 'User logged in' },{ status:200 });
+      }
+      */
       const { email, password } = await req.json();
       console.log(email, password)
       const user = await signInWithEmailAndPassword(auth, email, password);
@@ -25,19 +32,21 @@ export async function POST(req: NextRequest){
       // Get the document data
       const documentSnapshot = await getDoc(documentRef);
 
-      let userdata = {"id": documentId, "user": documentSnapshot.data()};
+      let userdata = {"id": documentId, "data": documentSnapshot.data()};
       if (!documentSnapshot.exists()) {
-        userdata.user = null;
+        userdata.data = null;
       }
       console.log(userdata);
 
       // Respond with the fetched data 
-      return NextResponse.json( { message: 'Đăng nhập thành công!', data: userdata },{ status:200 });
+      return NextResponse.json( { message: 'Login successfully', data: userdata },{ status:200 });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Sai tài khoản hoặc mật khẩu',data: null },{status:505});
+      return NextResponse.json({ message: 'Wrong email or password', data: null },{status:505});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};
+    return NextResponse.json({ message: 'Method not allowed', data: null}),{status:405};
   }
 }
+
+
