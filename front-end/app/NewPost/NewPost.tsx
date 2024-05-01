@@ -18,6 +18,21 @@ export default function NewPost() {
   }, [recipe]); // Log the recipe state whenever it changes
 
   // Example of using the state and dispatching actions
+  const handleSave = () => {
+    fetch('api/posts',{method: 'POST',
+      headers: {
+        'Content-type' : 'application/json'
+      },
+      body: JSON.stringify(recipe)
+    })
+    .then(data => {
+      console.log('Post saved successfully:', data);
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+      // Handle error
+    })
+  };
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     dispatch({ type: 'TITTLE', payload: e.target.value });
@@ -81,7 +96,7 @@ export default function NewPost() {
         </svg>
        </button>
        <span className='p-1 text-gray'>UserName</span>
-       <button type="button" className="flex items-center justify-stretch px-2 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
+       <button type="button" className="flex items-center justify-stretch px-2 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700" onClick={handleSave}>
         Save
        </button>
         </div>
