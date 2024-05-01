@@ -1,7 +1,7 @@
 import PostType from '@/types/PostType';
 import { NextRequest, NextResponse } from 'next/server'
-import {db} from '@/firebase'
-import { collection, getDocs,doc ,addDoc,updateDoc} from "firebase/firestore";
+import { collection, getDocs,doc ,addDoc,updateDoc, getFirestore} from "firebase/firestore";
+import {db} from "@/firebase"
 type ResponseData = {
   message: string,
   data: PostType|null
@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
   if (method === 'GET') {
     try {
-      const { userID } = body.userID?.toString()
+      const { userID } = body?.userID?.toString()
 
       // Check if userID is provided
       if (!userID) {
@@ -36,8 +36,9 @@ export async function GET(req: NextRequest) {
   }
 }
 export async function POST(req: NextRequest){
+  console.log(req.body)
+
   const { method } = req;
-  
   if (method === 'POST') {
     try {
       const collectionRef = collection(db, 'Post');
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest){
       return NextResponse.json( { message: 'Posts created successfully', data: newPostData },{status:200});
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Internal server error',data: null },{status:505});
+      return NextResponse.json({ message: error ,data: null },{status:505});
     }
   } else {
     return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};

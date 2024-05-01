@@ -1,13 +1,12 @@
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { NextRequest, NextResponse } from 'next/server'
-import { auth, db } from '@/firebase';
 import { collection ,doc , getDoc } from "firebase/firestore";
-
+import UserType from '@/types/UserType';
 type ResponseData = {
   message: string,
   data: UserType|null
 }
-
+const auth = getAuth()
 export async function POST(req: NextRequest){
   const { method } = req;
   
