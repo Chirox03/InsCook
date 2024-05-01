@@ -1,8 +1,8 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { NextRequest, NextResponse } from 'next/server'
 import { collection , doc, setDoc } from "firebase/firestore";
-import { auth, db } from '@/firebase';
-
+import auth from '@/firebase'
+import db from '@/firebase'
 type ResponseData = {
   message: string
 }
