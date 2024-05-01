@@ -1,6 +1,80 @@
 import ImageCarousel from "@/components/ImageCarousel"
 import Image from "next/image"
+interface APiPost{
+  id: number;
+  tittle: string;
+  description:string;
+  duration: number;
+  pax: number;
+  ingredient: Array<string>
+  instructions: Array<{
+    step: number;
+    content: string;
+    isDeleted: boolean;
+  }>
+}
+interface Post{
+  id: number;
+  tittle: string;
+  description: string;
+  duration: number;
+  pax: number;
+  ingredient: Array<string>;
+  instructions: Array<{
+    step: number;
+    content: string;
+    isDeleted: boolean;
+  }>;
+}
+function mapPost(apiPost: APiPost): Post{
+  const {id,tittle,description,duration,pax,ingredient,instructions} = apiPost;
+  const post: Post = {
+    id: id,
+    tittle: tittle,
+    description: description,
+    duration: duration,
+    pax: pax,
+    ingredient: ingredient,
+    instructions: instructions
+  }
+  return post;
+}
 function PostDetail() {
+  const apiPost: APiPost = {
+    id: 1,
+    tittle: "Shrimp Coconut Linguine",
+    description: "Every now and then, I find myself stirring coconut cream into my favorite dishes. Partly out of curiosity for its intriguing flavor profile, but also because I appreciate its quality as a thickener.",
+    duration: 30,
+    pax: 2,
+    ingredient: ["1/2 cup coconut cream", "225 g spaghetti", "1/4 cup chopped parsley", "1/2 cup shredded cheddar cheese", "1 Tbsp olive oil"],
+    instructions: [{
+        step: 1,
+        content: "Boil water in a large pot and cook spaghetti according to package instructions until al dente.",
+        isDeleted: false // Make sure isDeleted is assigned a boolean value
+    },
+    {
+        step: 2,
+        content: "In a separate pan, heat olive oil over medium heat. Add shrimp and cook until pink and opaque, about 3-4 minutes per side.",
+        isDeleted: true
+    },
+    {
+        step: 3,
+        content: "Add coconut cream to the pan with shrimp and simmer for 2-3 minutes until heated through.",
+        isDeleted: false
+    },
+    {
+        step: 4,
+        content: "Drain cooked spaghetti and add it to the pan with the shrimp and coconut cream. Toss until well coated.",
+        isDeleted: false
+    },
+    {
+        step: 5,
+        content: "Remove from heat and sprinkle with chopped parsley and shredded cheddar cheese. Serve hot.",
+        isDeleted: false
+    }]
+};
+
+  const post: Post = mapPost(apiPost)
   return (
     <div className="h-full">
         {/* Back button */}
@@ -42,38 +116,31 @@ function PostDetail() {
               <div className="text-left">Cooking blogger</div>
             </div>
           </div>
-        <h1 className='text-center font-extrabold text-3xl line-clamp-3'>How to cook Chicken Fried</h1>
+        <h1 className='text-center font-extrabold text-3xl line-clamp-3'>{post.tittle}</h1>
         <div className="my-2">
           <ImageCarousel/>
         </div>
         <div>
-        <h2 ><span className="text-lg font-semibold">Duration:</span> 20 minutes</h2> 
+        <h2 ><span className="text-lg font-semibold">Duration:</span> {post.duration} minutes</h2> 
         </div>
         <div>
         <h2 className="text-lg font-semibold">Ingredients:</h2>
         <ul className='list-disc list-inside'>
-          <li>Pepper</li>
-          <li>Chicken</li>
-          <li>Gralic</li>
-          <li>Salt</li>
-        </ul>
+        {post.ingredient.map((ingredient) => (
+           <li>{ingredient}</li>
+          ))}
+
+          </ul>
         </div>
         <div>
         <h2 className="text-lg font-semibold">Instruction:</h2>
         <ul className='list-disc list-inside'>
-          <li>Thinly slice the potatoes</li>
-          <li>In a medim sized</li>
-          <li>Meanwhile, in a large bowl whisk together the flour, banking power and all of the 'batter' seasoning and spices. Scoop out 3 tbsp of the marinade and stir into the flour until lots of little lumps form. This will give you those flaky/crunchy parts</li>
-          <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!
-          </li>
-          <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!</li>
+        {post.instructions.map((instruction) => (
+           <li><span className="font-semibold">Step {instruction.step}:</span> {instruction.content}</li>
+          ))}
+
         </ul>
-        <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!</li>
-        <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!</li>
-        <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!</li>
-        <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!</li>
-        <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!</li>
-        <li>Now this is a certified hood classic,” the rapper wrote in his cookbook. “A favorite munchie was discovered when I had the bright idea of throwing that bologna in a frying pan. Fry that Oscar Meyer up with some cheese and you’re on your way to a bomb meal, Jack!</li>
+       
 
         </div>
         </div>
