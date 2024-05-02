@@ -19,10 +19,10 @@ export async function POST(req: NextRequest){
       const changepassword = await updatePassword(user.user, newPassword);
 
       // Respond with the fetched data 
-      return NextResponse.json( { message: 'Đổi mật khẩu thành thành công!' },{ status:200 });
+      return NextResponse.json( { message: 'Change password successfully' },{ status:200 });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Sai tài khoản hoặc mật khẩu' },{status:505});
+      return NextResponse.json({ message: 'Wrong email or password' },{status:401});
     }
   } else {
     return NextResponse.json({ message: 'Method not allowed' }),{status:405};

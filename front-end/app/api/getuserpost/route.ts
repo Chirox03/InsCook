@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/firebase';
-import {  query, collection, doc , getDocs, where } from "firebase/firestore";
+import { auth, db } from '@/firebase';
+import {  query, collection , getDocs, where } from "firebase/firestore";
 import PostType from '@/types/PostType';
 
 type ResponseData = {
@@ -14,24 +14,37 @@ export async function GET(req: NextRequest){
   
   if (method === 'GET') {
     try {
+
+      //check if user does not log in
+      /*
+      if (!auth.currentUser) {
+        return NextResponse.json( { message: 'User does not log in' },{ status:200 });
+      }
+      */
       const url = new URL(req.url);
       const userid = url.searchParams.get('userid');
       console.log(userid);
 
       if (!userid) {
-        return NextResponse.json({ message: 'User ID not provided', data: null }, { status: 400 });
+        return NextResponse.json({ message: 'User ID is not provided', data: null }, { status: 400 });
       }
-      // Query documents where the 'age' field is equal to 30
+      // Query documents where user_id == userid 
       const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid)));
 
+      //check if querySnapshot is empty
       if (querySnapshot.empty) {
         return NextResponse.json({ message: 'Post not found', data: null },{ status:404 });
-      } else{
-
-        const posts: PostType[] = querySnapshot.docs.map((doc) => doc.data() as PostType); // Convert documents to PostType objectsr type
-        return NextResponse.json( { message: 'Posts retrieved successfully', data: posts },{status:200});
       }
-      
+
+      //check if current user is userid
+      /* 
+      if (currentuser != userid && currentuser not follow userid) {
+        querySnapshot = await getDocs(query(querySnapshot, where('is_private', '==', True)));
+      }
+      */
+
+      const posts: PostType[] = querySnapshot.docs.map((doc) => doc.data() as PostType); // Convert documents to PostType objectsr type
+      return NextResponse.json( { message: 'Posts retrieved successfully', data: posts },{status:200});      
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
