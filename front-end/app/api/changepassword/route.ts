@@ -22,7 +22,7 @@ export async function POST(req: NextRequest){
       return NextResponse.json( { message: 'Change password successfully' },{ status:200 });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Wrong email or password' },{status:505});
+      return NextResponse.json({ message: 'Wrong email or password' },{status:401});
     }
   } else {
     return NextResponse.json({ message: 'Method not allowed' }),{status:405};

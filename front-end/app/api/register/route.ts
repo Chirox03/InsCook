@@ -16,7 +16,7 @@ export async function POST(req: NextRequest){
       const { email, password } = await req.json();
       console.log(email, password)
       if(password.length<6) {
-        return NextResponse.json({ message: 'Password must be at least 6 characters',data: null },{status:505});
+        return NextResponse.json({ message: 'Password must be at least 6 characters',data: null },{status:400});
       }
       
       // Create account
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest){
       return NextResponse.json( { message: 'Register successfully' },{ status:200 });
     } catch (error) {
       console.error(error);      
-      return NextResponse.json({ message: 'Email is used by another account' },{status:505});
+      return NextResponse.json({ message: 'Email is used by another account' },{status:409});
     }
   } else {
     return NextResponse.json({ message: 'Method not allowed' }),{status:405};

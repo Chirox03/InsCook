@@ -60,7 +60,7 @@ export async function GET(req: NextRequest){
       // Get the document data
       const documentSnapshot = await getDoc(documentRef);
       if (!documentSnapshot.data()) {
-        return NextResponse.json( { message: 'User is unifined', data: null },{ status:400 });
+        return NextResponse.json( { message: 'User not found', data: null },{ status:404 });
       }
       
       // Respond with the fetched data 

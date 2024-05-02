@@ -42,7 +42,7 @@ export async function POST(req: NextRequest){
       return NextResponse.json( { message: 'Login successfully', data: userdata },{ status:200 });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Wrong email or password', data: null },{status:505});
+      return NextResponse.json({ message: 'Wrong email or password', data: null },{status:401});
     }
   } else {
     return NextResponse.json({ message: 'Method not allowed', data: null}),{status:405};

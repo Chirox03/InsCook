@@ -17,12 +17,9 @@ export async function POST(req: NextRequest){
       if (auth.currentUser) {
         auth.signOut();
       }
-      else {
-        return NextResponse.json( { message: 'User signed out', data: null },{ status:400 });
-      }
 
       // Respond with the fetched data 
-      return NextResponse.json( { message: 'User logged out successfully', data: null },{ status:200 });
+      return NextResponse.json( { message: 'User signed out', data: null },{ status:400 });
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
