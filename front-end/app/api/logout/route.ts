@@ -19,7 +19,7 @@ export async function POST(req: NextRequest){
       }
 
       // Respond with the fetched data 
-      return NextResponse.json( { message: 'User signed out', data: null },{ status:400 });
+      return NextResponse.json( { message: 'User signed out', data: null },{ status:200 });
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
