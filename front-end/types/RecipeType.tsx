@@ -3,7 +3,7 @@ import StepType from "./StepType";
 export default interface RecipeType{
     id: number;
     title: string;
-    image: string|ArrayBuffer| null;
+    image: Blob|null|string;
     description: string;
     duration: number;
     pax: number;

@@ -12,7 +12,9 @@ type Action =
   | { type: 'ADD_STEP'; payload: StepType }
   | { type: 'DEL_STEP'; payload: number }
   | { type: 'CHANGE_INGRE'; payload:string[]}
-  | { type: 'CHANGE_COVER'; payload: string|ArrayBuffer|null};
+  | { type: 'CHANGE_INSTRUCTION'; payload:StepType[]}
+  | {type: 'CHANGE_STEP'; payload: {id: number; content: StepType}}
+  | { type: 'CHANGE_COVER'; payload: string|Blob|null};
 
 const initialState: RecipeType = {
   id: 1,
@@ -48,6 +50,18 @@ const reducer = (state: RecipeType, action: Action): RecipeType => {
       return { ...state, instructions: state.instructions.filter((_, index) => index !== action.payload) };
     case 'CHANGE_COVER':
       return { ...state, image:action.payload };
+    case 'CHANGE_STEP':
+    const {id, content } = action.payload;
+
+    // Check if the index is within the range of the instructions array
+    if (id >= 0 && id < state.instructions.length) {
+      // Create a copy of the instructions array
+      const updatedInstructions = [...state.instructions];
+      // Update the content of the instruction at the specified index
+      updatedInstructions[id] = content;
+      // Return the updated state with the new instructions array
+      return { ...state, instructions: updatedInstructions };
+    } 
     default:
       return state;
   }
