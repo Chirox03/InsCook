@@ -1,5 +1,7 @@
 import ImageCarousel from "@/components/ImageCarousel"
 import Image from "next/image"
+import { useEffect, useState } from "react";
+import RecipeType from "@/types/RecipeType";
 interface APiPost{
   id: number;
   tittle: string;
@@ -39,42 +41,62 @@ function mapPost(apiPost: APiPost): Post{
   }
   return post;
 }
-function PostDetail({params: {pid}}) {
-  const apiPost: APiPost = {
-    id: 1,
-    tittle: "Shrimp Coconut Linguine",
-    description: "Every now and then, I find myself stirring coconut cream into my favorite dishes. Partly out of curiosity for its intriguing flavor profile, but also because I appreciate its quality as a thickener.",
-    duration: 30,
-    pax: 2,
-    ingredient: ["1/2 cup coconut cream", "225 g spaghetti", "1/4 cup chopped parsley", "1/2 cup shredded cheddar cheese", "1 Tbsp olive oil"],
-    instructions: [{
-        step: 1,
-        content: "Boil water in a large pot and cook spaghetti according to package instructions until al dente.",
-        isDeleted: false // Make sure isDeleted is assigned a boolean value
-    },
-    {
-        step: 2,
-        content: "In a separate pan, heat olive oil over medium heat. Add shrimp and cook until pink and opaque, about 3-4 minutes per side.",
-        isDeleted: true
-    },
-    {
-        step: 3,
-        content: "Add coconut cream to the pan with shrimp and simmer for 2-3 minutes until heated through.",
-        isDeleted: false
-    },
-    {
-        step: 4,
-        content: "Drain cooked spaghetti and add it to the pan with the shrimp and coconut cream. Toss until well coated.",
-        isDeleted: false
-    },
-    {
-        step: 5,
-        content: "Remove from heat and sprinkle with chopped parsley and shredded cheddar cheese. Serve hot.",
-        isDeleted: false
-    }]
-};
+function PostDetail({ params }: { params: { pid: string }}) {
+//   const apiPost: APiPost = {
+//     id: 1,
+//     tittle: "Shrimp Coconut Linguine",
+//     description: "Every now and then, I find myself stirring coconut cream into my favorite dishes. Partly out of curiosity for its intriguing flavor profile, but also because I appreciate its quality as a thickener.",
+//     duration: 30,
+//     pax: 2,
+//     ingredient: ["1/2 cup coconut cream", "225 g spaghetti", "1/4 cup chopped parsley", "1/2 cup shredded cheddar cheese", "1 Tbsp olive oil"],
+//     instructions: [{
+//         step: 1,
+//         content: "Boil water in a large pot and cook spaghetti according to package instructions until al dente.",
+//         isDeleted: false // Make sure isDeleted is assigned a boolean value
+//     },
+//     {
+//         step: 2,
+//         content: "In a separate pan, heat olive oil over medium heat. Add shrimp and cook until pink and opaque, about 3-4 minutes per side.",
+//         isDeleted: true
+//     },
+//     {
+//         step: 3,
+//         content: "Add coconut cream to the pan with shrimp and simmer for 2-3 minutes until heated through.",
+//         isDeleted: false
+//     },
+//     {
+//         step: 4,
+//         content: "Drain cooked spaghetti and add it to the pan with the shrimp and coconut cream. Toss until well coated.",
+//         isDeleted: false
+//     },
+//     {
+//         step: 5,
+//         content: "Remove from heat and sprinkle with chopped parsley and shredded cheddar cheese. Serve hot.",
+//         isDeleted: false
+//     }]
+// };
+  const [post,setPost] = useState<RecipeType|null>(null)
+  useEffect ( ( )=>{
+    const fetchPostbyId = async () =>{
+      try{
 
-  const post: Post = mapPost(apiPost)
+        const res = await fetch(`api/post?id=${params.pid}`,{
+          method: 'GET', 
+          headers: {
+            'Content-Type': 'application/json', 
+          }})
+        if(res.ok){
+          const data = await res.json();
+          setPost(data.data as RecipeType)
+        }
+        }catch(error){
+          console.error('Error fetching posts:', error);
+        }
+
+
+    }
+  })
+  // const post: Post = mapPost(apiPost)
   return (
     <div className="h-full">
         {/* Back button */}
@@ -116,17 +138,17 @@ function PostDetail({params: {pid}}) {
               <div className="text-left">Cooking blogger</div>
             </div>
           </div>
-        <h1 className='text-center font-extrabold text-3xl line-clamp-3'>{post.tittle}</h1>
+        <h1 className='text-center font-extrabold text-3xl line-clamp-3'>{post?.title}</h1>
         <div className="my-2">
           <ImageCarousel/>
         </div>
         <div>
-        <h2 ><span className="text-lg font-semibold">Duration:</span> {post.duration} minutes</h2> 
+        <h2 ><span className="text-lg font-semibold">Duration:</span> {post?.duration} minutes</h2> 
         </div>
         <div>
         <h2 className="text-lg font-semibold">Ingredients:</h2>
         <ul className='list-disc list-inside'>
-        {post.ingredient.map((ingredient) => (
+        {post?.ingredients.map((ingredient) => (
            <li>{ingredient}</li>
           ))}
 
@@ -135,8 +157,8 @@ function PostDetail({params: {pid}}) {
         <div>
         <h2 className="text-lg font-semibold">Instruction:</h2>
         <ul className='list-disc list-inside'>
-        {post.instructions.map((instruction) => (
-           <li><span className="font-semibold">Step {instruction.step}:</span> {instruction.content}</li>
+        {post?.instructions.map((instruction,index) => (
+           <li><span className="font-semibold">Step {index}:</span> {instruction.content}</li>
           ))}
 
         </ul>
