@@ -6,6 +6,8 @@ import firebase from 'firebase/app';
 import 'firebase/storage';
 import BASE_URL from '@/config';
 import { notFound } from 'next/navigation';
+import {toast } from 'react-toastify';
+import { useRouter } from 'next/navigation'
 const imageStyle = {
     borderRadius: '50%',
     mt: -50,
@@ -75,6 +77,7 @@ type Action = {type:"CHANGE_USERNAME";payload:string}
   
 export default function EditProfile({ params }: { params: { uid: string }}) {
   const [userProfile,setUserProfile] = useState<null|AppUserProfile>(null)
+  const router = useRouter()
   useEffect( ()=>{
     const fetchProfile = async () =>{
       try{
@@ -85,17 +88,20 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
         }})
         const data = await res.json();
        if(res.ok){
-          setUserProfile(await mapUser(data.data) )}
+          setUserProfile(await mapUser(data.data) )
+          toast("Change information succesfully")
+        }
         
       }
       catch(error){
-        console.log("Error fetching user information",error);
+        console.log("Error update user information",error);
+        toast("Error update user information")
       }
     };
     fetchProfile()
    },[])
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-
+ 
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if(file)
@@ -111,9 +117,9 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
         console.log('Image uploaded successfully');
         return res
         
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      toast.success("Error update user information")
     }
      }
   }
@@ -130,17 +136,20 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
           'Content-type' : 'application/json'
         },
         body: JSON.stringify(newInfo)
-
+        
       }) 
       if(res.ok){
         console.log("Update user information succesfully")
+        toast.success("Update user information succesfully")
+        router.push(`/UserProfile/${params.uid}`)
+
       }else console.log("Fail to save information",res.status,res.json().message)
     }catch(err){
-     console.log("Something went wrong",err)
+      console.log("Something went wrong",err)
+      toast.error("Error update user information")
     }
     };
-  
-  console.log(userProfile)
+
   
   return (
     <form>
