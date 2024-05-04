@@ -1,3 +1,4 @@
+'use client'
 import ImageCarousel from "@/components/ImageCarousel"
 import Image from "next/image"
 import { useEffect, useState } from "react";

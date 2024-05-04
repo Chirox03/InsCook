@@ -1,7 +1,7 @@
 import PostType from '@/types/PostType';
 import { NextRequest, NextResponse } from 'next/server'
 import { useRouter } from 'next/router'
-import db from '@/firebase'
+import {db} from '@/firebase'
 import { collection, getDocs,doc,getDoc ,addDoc,updateDoc,where,query} from "firebase/firestore";
 import { CollectionReference, QuerySnapshot, QueryDocumentSnapshot ,DocumentData} from "firebase/firestore"
 type ResponseData = {

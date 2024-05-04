@@ -4,31 +4,42 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { getStorage, ref ,uploadBytes} from "firebase/storage";
 import firebase from 'firebase/app';
 import 'firebase/storage';
+import BASE_URL from '@/config';
+import { notFound } from 'next/navigation';
 const imageStyle = {
     borderRadius: '50%',
     mt: -50,
     display: 'inline-block',
   }
+  interface AppUserProfile{
+    userID: number;
+    name: string;
+    description: string;
+    numpost: number;
+    numfollowers: number;
+    numfollowing: number;
+  }
 
-export default function EditProfile() {
+export default function EditProfile({ params }: { params: { uid: string }}) {
+  const [userProfile,setUserProfile] = useState<null|AppUserProfile>(null)
   useEffect( ()=>{
-    const fetchPosts = async () =>{
+    const fetchProfile = async () =>{
       try{
-        const response = await fetch('api/user?id=',{method: 'GET', // or 'POST', 'PUT', etc.
+        const res = await fetch(BASE_URL+`/api/userinfo?userid=${params.uid}`,
+        {method: 'GET',
         headers: {
-          'Content-Type': 'application/json', // Example header
-          // Add other headers as needed
-        }});
-        if(response.ok){
-          const data = await response.json();
-        }
-      }catch(error)
-      {
-        console.error('Error fetching posts:', error);
-  
+          'Content-Type': 'application/json', 
+        }})
+        const data = await res.json();
+       if(res.ok){
+          setUserProfile(data.data as AppUserProfile);}
+        
+      }
+      catch(error){
+        console.log("Error fetching user information",error);
       }
     };
-    fetchPosts()
+    fetchProfile()
    },[])
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
@@ -50,6 +61,8 @@ export default function EditProfile() {
     }
   }
   }
+  if(userProfile==null) return notFound();
+  
   return (
     <form>
       <div className="space-y-12">

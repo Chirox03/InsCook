@@ -1,8 +1,9 @@
+'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/firebase';
 import {  doc , getDoc, updateDoc } from "firebase/firestore";
 import UserType from '@/types/UserType';
-
+import {BASE_URL} from '@config'
 type ResponseData = {
   message: string,
   data: UserType|null
@@ -46,11 +47,11 @@ export async function GET(req: NextRequest){
 
   if (method === 'GET') {
     try {
-      const url = new URL(req.url);
-      const userid = url.searchParams.get('userid');
+      const searchParams = req.nextUrl.searchParams
+      const userid = searchParams.get('userid');
       console.log(userid);
 
-    if (!userid) {
+    if (userid==null) {
       return NextResponse.json({ message: 'User ID not provided', data: null }, { status:400 });
     }
 
