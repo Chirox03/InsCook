@@ -1,6 +1,6 @@
 "use client"
-import Post from "@/components/Post"
-
+import { ref, getDownloadURL } from "firebase/storage";
+import {storage} from "@/firebase"
 import FollowButton from "@/components/FollowButton";
 import React, {useState,useEffect} from 'react'
 import Link from 'next/link'
@@ -11,7 +11,8 @@ import BASE_URL from "@/config";
 interface APiUser{
   id:number;
   name: string;
-  description: string;
+  biography: string;
+  avatar:string;
   numpost: number;
   numfollowers: number;
   numfollowing: number;
@@ -20,36 +21,44 @@ interface APiUser{
 interface AppUserProfile{
   userID: number;
   name: string;
+  avatar:Blob|null;
   description: string;
   numpost: number;
   numfollowers: number;
   numfollowing: number;
 }
-function mapUser(apiUser: APiUser):AppUserProfile {
-  const {id, name, description, numpost,numfollowers, numfollowing} = apiUser;
+const mapUser = async (apiUser: APiUser): Promise<AppUserProfile> => {
+  const { id, name, biography, avatar, numpost, numfollowers, numfollowing } = apiUser;
+  // const avatarRef = ref(storage, avatar);
+  // const avatarURL = await getDownloadURL(avatarRef);
+  // const response = await fetch(avatarURL);
+  // const avatarBlob = await response.blob();
   const appUser: AppUserProfile = {
-    userID: id,
-    name: name,
-    description: description,
-    numpost: numpost,
-    numfollowers: numfollowers,
-    numfollowing: numfollowing,
+      userID: id,
+      name: name,
+      description: biography,
+      avatar: null, // Save avatar as Blob
+      numpost: numpost,
+      numfollowers: numfollowers,
+      numfollowing: numfollowing,
   };
+
   return appUser;
 }
 
 
 
+
 function UserProfile({ params }: { params: { uid: string }}) {
-  const apiUser: APiUser = {
-    id: 1,
-    name: "Loc Tran",
-    description: "do nothing all day",
-    numpost: 3,
-    numfollowers: 123,
-    numfollowing: 321,
+  // const apiUser: APiUser = {
+  //   id: 1,
+  //   name: "Loc Tran",
+  //   description: "do nothing all day",
+  //   numpost: 3,
+  //   numfollowers: 123,
+  //   numfollowing: 321,
   
-  }
+  // }
   const [userProfile,setUserProfile] = useState<AppUserProfile|null|undefined>(undefined);
   console.log(params.uid)
   useEffect (()=>{
@@ -62,10 +71,10 @@ function UserProfile({ params }: { params: { uid: string }}) {
         headers: {
           'Content-Type': 'application/json', 
         }})
-        const data = await res.json();
-        console.log(data)
+        let data = await res.json();
+        data.userID = params.uid;
        if(res.ok){
-          setUserProfile(data.data as AppUserProfile);}
+        setUserProfile(await mapUser(data.data));}
         else notFound();
       }
       catch(error){
@@ -78,18 +87,19 @@ function UserProfile({ params }: { params: { uid: string }}) {
   } ,[])
   
   // const user: AppUserPro = mapUser(apiUser)
+  console.log(userProfile)
   const [state, setState] = useState(0)
   // if(userProfile==null) return notFound();
   return (
     <div className="my-2 flex flex-col content-center h-full flex-grow overflow-y-auto">
      <div className="mx-5 mb-5">
         <div className="flex my-2">
-        <img className='max-h-28 rounded-full overflow-hidden align-left' src="/image.png" alt="avatar"/>
+        <img className='max-h-28 rounded-full overflow-hidden align-left' src={userProfile?.avatar instanceof Blob ? URL.createObjectURL(userProfile.avatar):"/image.png"} alt="avatar"/>
         <div className="mx-3">
         <h2 className="text-sm font-medium">{userProfile?.name}</h2>
         <div className="flex justify-between py-2">
         <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-            <Link href={`/Edit/${userProfile?.userID}`}>Edit</Link>
+            <Link href={`/Edit/${params.uid}`}>Edit</Link>
         </button>
         <FollowButton/>
         </div>

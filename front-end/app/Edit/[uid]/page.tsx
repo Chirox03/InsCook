@@ -11,15 +11,68 @@ const imageStyle = {
     mt: -50,
     display: 'inline-block',
   }
+  interface APiUser{
+    id:number;
+    name: string;
+    biography: string;
+    avatar:string;
+    numpost: number;
+    numfollowers: number;
+    numfollowing: number;
+  
+  }
   interface AppUserProfile{
     userID: number;
     name: string;
+    avatar:Blob|null;
     description: string;
     numpost: number;
     numfollowers: number;
     numfollowing: number;
   }
-
+  const mapUser = async (apiUser: APiUser): Promise<AppUserProfile> => {
+    const { id, name, biography, avatar, numpost, numfollowers, numfollowing } = apiUser;
+    // const avatarRef = ref(storage, avatar);
+    // const avatarURL = await getDownloadURL(avatarRef);
+    // const response = await fetch(avatarURL);
+    // const avatarBlob = await response.blob();
+    const appUser: AppUserProfile = {
+        userID: id,
+        name: name,
+        description: biography,
+        avatar: null, // Save avatar as Blob
+        numpost: numpost,
+        numfollowers: numfollowers,
+        numfollowing: numfollowing,
+    };
+  
+    return appUser;
+  }
+type Action = {type:"CHANGE_USERNAME";payload:string}
+| {type:"CHANGE_BIO";payload:string}
+| {type:"CHANGE_AVATAR";payload:Blob}
+  const userProfileReducer = (state:AppUserProfile, action:Action) => {
+    switch (action.type) {
+      case "CHANGE_USERNAME":
+        return {
+          ...state,
+          name :action.payload,
+        };
+      case "CHANGE_BIO":
+        return {
+          ...state,
+          description: action.payload,
+        };
+      case "CHANGE_AVATAR":
+        return{
+          ...state,
+          avatar: action.payload
+        };
+      default:
+        return state;
+    }
+  };
+  
 export default function EditProfile({ params }: { params: { uid: string }}) {
   const [userProfile,setUserProfile] = useState<null|AppUserProfile>(null)
   useEffect( ()=>{
@@ -32,7 +85,7 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
         }})
         const data = await res.json();
        if(res.ok){
-          setUserProfile(data.data as AppUserProfile);}
+          setUserProfile(await mapUser(data.data) )}
         
       }
       catch(error){
@@ -48,20 +101,46 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
     if(file)
     setSelectedImage(file);
   };
-  const handleSubmit = () =>{
+  const handleUploadImage = async() =>{
     if(selectedImage){
 
       const storage = getStorage();
       const avatarRef = ref(storage, 'avatar/'+ selectedImage?.name)
       try {
-        const res = uploadBytes(avatarRef, selectedImage)
+        const res = await uploadBytes(avatarRef, selectedImage)
         console.log('Image uploaded successfully');
+        return res
+        
     } catch (error) {
       console.error('Error uploading image:', error);
+      
     }
+     }
   }
-  }
-  if(userProfile==null) return notFound();
+  const handleSubmit = async() =>{
+    const newInfo = {
+      'userid':params.uid,
+      'name': userProfile?.name,
+      'biography': userProfile?.description,
+      'avatar': await handleUploadImage()||userProfile?.avatar
+    }
+      try{
+        const res =await fetch(BASE_URL+'/api/userinfo',{method: 'PUT',
+        headers: {
+          'Content-type' : 'application/json'
+        },
+        body: JSON.stringify(newInfo)
+
+      }) 
+      if(res.ok){
+        console.log("Update user information succesfully")
+      }else console.log("Fail to save information",res.status,res.json().message)
+    }catch(err){
+     console.log("Something went wrong",err)
+    }
+    };
+  
+  console.log(userProfile)
   
   return (
     <form>
@@ -79,7 +158,7 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
                     type="text"
                     name="username"
                     id="username"
-                    autoComplete="username"
+                    value={userProfile?.name}
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                   />
                 </div>
@@ -96,7 +175,7 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
                   name="about"
                   rows={3}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  defaultValue={''}
+                  value={userProfile?.description}
                 />
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about yourself.</p>
@@ -167,7 +246,9 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
           Cancel
         </button>
         <button
-          type="submit"
+        type='button'
+         onClick={handleSubmit}
+          // type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Save

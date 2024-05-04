@@ -11,10 +11,10 @@ type ResponseData = {
     
 export async function PUT(req: NextRequest){
   const { method } = req;
-  
   if (method === 'PUT') {
     try {
-      const { userid, newimage, newbio, newbirth, newname } = await req.json();
+      const { userid, avatar, biography, name } = await req.json();
+      console.log(userid)
 
       // Create a reference to the document with the specified ID in the specified collection
       const documentRef = doc(db, "User", userid);
@@ -24,12 +24,10 @@ export async function PUT(req: NextRequest){
 
       // Update
       let userdata = documentSnapshot.data();
-      userdata.avatar = newimage;
-      userdata.biography = newbio;
-      userdata.birth = newbirth;
-      userdata.name = newname;
+      userdata.avatar = avatar;
+      userdata.biography = biography;
+      userdata.name = name;
       updateDoc(documentRef, userdata);
-      
 
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Update successfully!', data: userdata },{ status:200 });
