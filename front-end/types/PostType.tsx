@@ -4,6 +4,7 @@ export default interface PostType{
     user:{
         userID: string;
         username: string;
+        avatar: string;
     }
     timestamp: Date;
     title: string;
