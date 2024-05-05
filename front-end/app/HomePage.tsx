@@ -5,10 +5,12 @@ import Image from "next/image";
 import PostType from "@/types/PostType";
 import Navbar from "@/components/NavBar";
 import { useEffect ,useState} from "react";
-
+import {auth} from "@/firebase"
 function HomePage() {
   const  [PostList,setPostList] = useState<PostType[]>([]);
  useEffect( ()=>{
+  const currentUser = auth.currentUser;
+  console.log(currentUser)
   const fetchPosts = async () =>{
     try{
       const response = await fetch('api/home?userID=123',{method: 'GET', // or 'POST', 'PUT', etc.
@@ -28,33 +30,7 @@ function HomePage() {
   };
   fetchPosts()
  },[])
-  // const PostList: Array<PostType> = [{
-  //   id: "123",
-  //   user:{
-  //       userID: "123",
-  //       username: "hello",
-  //   },
-  //   timestamp: new Date(),
-  //   tittle: "Cook a butter cake",
-  //   summary: "Today i will show you how to cook a butter cake",
-  //   likes: 12,
-  //   isSaved: true,
-  //   isLiked: false
-  // },
-  // {
-  //   id: "123",
-  //   user:{
-  //       userID: "123",
-  //       username: "hello",
-  //   },
-  //   timestamp: new Date(),
-  //   tittle: "Cook a butter cake",
-  //   summary: "Today i will show you how to cook a butter cake",
-  //   likes: 12,
-  //   isSaved: true,
-  //   isLiked: false
-  // }]
-
+ 
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
           <h1 className="text-lg mb-4 font-sans">InsCook</h1>
