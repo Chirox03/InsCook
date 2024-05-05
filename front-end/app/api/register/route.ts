@@ -15,6 +15,14 @@ export async function POST(req: NextRequest){
       // Firebase authentication
       const { email, password } = await req.json();
       console.log(email, password)
+      if(!email) {
+        return NextResponse.json({ message: 'Email is missing',data: null },{status:400});
+      }
+
+      if(!password) {
+        return NextResponse.json({ message: 'Password is missing',data: null },{status:400});
+      }
+
       if(password.length<6) {
         return NextResponse.json({ message: 'Password must be at least 6 characters',data: null },{status:400});
       }
