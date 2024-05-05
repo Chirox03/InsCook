@@ -1,3 +1,4 @@
+'use client'
 import ImageCarousel from "@/components/ImageCarousel"
 import Image from "next/image"
 import { useEffect, useState } from "react";
@@ -110,7 +111,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <div>
             <i className="fi fi-rr-heart mr-3"> </i>
             <br/>
-            <span className="text-xs">10</span>
+            <span className="text-xs">{pid}</span>
         </div>
         <div>
             <i className="fi fi-rr-comment mr-3"></i>

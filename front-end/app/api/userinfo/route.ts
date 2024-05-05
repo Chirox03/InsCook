@@ -1,8 +1,9 @@
+'use server'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/firebase';
 import {  doc , getDoc, updateDoc } from "firebase/firestore";
 import UserType from '@/types/UserType';
-
+import {BASE_URL} from '@config'
 type ResponseData = {
   message: string,
   data: UserType|null
@@ -10,10 +11,10 @@ type ResponseData = {
     
 export async function PUT(req: NextRequest){
   const { method } = req;
-  
   if (method === 'PUT') {
     try {
-      const { userid, newimage, newbio, newbirth, newname } = await req.json();
+      const { userid, avatar, biography, name } = await req.json();
+      console.log(userid)
 
       // Create a reference to the document with the specified ID in the specified collection
       const documentRef = doc(db, "User", userid);
@@ -23,12 +24,10 @@ export async function PUT(req: NextRequest){
 
       // Update
       let userdata = documentSnapshot.data();
-      userdata.avatar = newimage;
-      userdata.biography = newbio;
-      userdata.birth = newbirth;
-      userdata.name = newname;
+      userdata.avatar = avatar;
+      userdata.biography = biography;
+      userdata.name = name;
       updateDoc(documentRef, userdata);
-      
 
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Update successfully!', data: userdata },{ status:200 });
@@ -46,11 +45,11 @@ export async function GET(req: NextRequest){
 
   if (method === 'GET') {
     try {
-      const url = new URL(req.url);
-      const userid = url.searchParams.get('userid');
+      const searchParams = req.nextUrl.searchParams
+      const userid = searchParams.get('userid');
       console.log(userid);
 
-    if (!userid) {
+    if (userid==null) {
       return NextResponse.json({ message: 'User ID not provided', data: null }, { status:400 });
     }
 

@@ -1,8 +1,8 @@
 'use client'
 import Image from "next/image"
-import signIn from '@/lib/SignIn/SignIn'
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import { notFound } from "next/navigation"
 function Login(){
     const [email,setEmail] = React.useState('')
     const [password,setPassword] = React.useState('')
@@ -11,7 +11,14 @@ function Login(){
     const handleForm = async (event: React.FormEvent) =>{
         console.log("logining")
         event.preventDefault();
-        const { result, error } = await signIn(email, password);
+        const { result, error } = await fetch("api/login",
+        {method: 'GET', 
+        headers: {
+          'Content-Type': 'application/json', 
+        },
+        body: JSON.stringify({'email':email,'password':password})
+    })
+
         if (error) {
             return console.log(error)
         }

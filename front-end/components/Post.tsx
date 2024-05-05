@@ -4,7 +4,7 @@ import PostType from '@/types/PostType'
 import getRelativeTime from "./DateCalculate"
 import { useEffect,useState } from "react"
 interface PostProps {
-  post: PostType; // Assuming CommentType is the type of your comment object
+  post: PostType;
 }
 const  Post:  React.FC<PostProps> = ({post}) =>{
   const handlePostClick = () =>{
