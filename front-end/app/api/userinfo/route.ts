@@ -16,11 +16,19 @@ export async function PUT(req: NextRequest){
       const { userid, avatar, biography, name } = await req.json();
       console.log(userid)
 
+      if (!userid) {
+        return NextResponse.json({ message: 'User ID not provided', data: null }, { status:400 });
+      }
+
       // Create a reference to the document with the specified ID in the specified collection
       const documentRef = doc(db, "User", userid);
 
       // Get the document data
       const documentSnapshot = await getDoc(documentRef);
+
+      if (!documentSnapshot.data()) {
+        return NextResponse.json( { message: 'User not found', data: null },{ status:404 });
+      }
 
       // Update
       let userdata = documentSnapshot.data();

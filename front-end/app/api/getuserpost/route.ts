@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, db } from '@/firebase';
-import {  query, collection , getDocs, where } from "firebase/firestore";
+import {  query, collection , getDocs, where, getDoc, doc } from "firebase/firestore";
 import PostType from '@/types/PostType';
 
 type ResponseData = {
@@ -8,43 +8,64 @@ type ResponseData = {
   data: PostType|null
 }
 
+const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
+  const post: PostType = {
+      id: postid, 
+      user: {
+          userID: postinfo.user_id,
+          username: username, 
+          avatar: useravatar,
+      },
+      timestamp: new Date(postinfo.datetime), 
+      title: postinfo.title,
+      caption: postinfo.caption,
+      likes: postinfo.like_number,
+      comments: postinfo.comment_number,
+      isSaved: saved, 
+      isLiked: liked, 
+  };
+
+  return post;
+};
+
 export async function GET(req: NextRequest){
   const collectionRef = collection(db, 'Post');
+  const collectionLike = collection(db, 'Like');
+  const collectionStorage = collection(db, 'Storage');
+  const collectionUser = collection(db, 'User');
   const { method } = req;
   
   if (method === 'GET') {
     try {
-
-      //check if user does not log in
-      /*
-      if (!auth.currentUser) {
-        return NextResponse.json( { message: 'User does not log in' },{ status:200 });
-      }
-      */
       const url = new URL(req.url);
       const userid = url.searchParams.get('userid');
       console.log(userid);
 
       if (!userid) {
-        return NextResponse.json({ message: 'User ID is not provided', data: null }, { status: 400 });
+        return NextResponse.json({ message: 'User ID not provided', data: null }, { status: 400 });
       }
       // Query documents where user_id == userid 
       const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid)));
 
-      //check if querySnapshot is empty
+      // Check if querySnapshot is empty
       if (querySnapshot.empty) {
         return NextResponse.json({ message: 'Post not found', data: null },{ status:404 });
       }
 
-      //check if current user is userid
-      /* 
-      if (currentuser != userid && currentuser not follow userid) {
-        querySnapshot = await getDocs(query(querySnapshot, where('is_private', '==', True)));
+      const userinfo = (await getDoc(doc(db, "User", userid))).data();
+      let output: PostType[] = [];
+      const posts = querySnapshot.docs.map(doc => doc);
+      console.log(posts[0]);
+      for (let i = 0; i < posts.length; i++) {
+        const doc = posts[i];
+        const likeSnapshot = await getDocs(query(collectionLike, where('user_id', '==', userid), where('post_id', '==', doc.id)));
+        const like = likeSnapshot.empty;
+        const saveSnapshot = await getDocs(query(collectionStorage, where('user_id', '==', userid), where('post_id', '==', doc.id)));
+        const saved = saveSnapshot.empty;
+        output.push(mapToPostType(doc.data(), doc.id, userinfo.name, userinfo.avatar, !saved, !like));
       }
-      */
 
-      const posts: PostType[] = querySnapshot.docs.map((doc) => doc.data() as PostType); // Convert documents to PostType objectsr type
-      return NextResponse.json( { message: 'Posts retrieved successfully', data: posts },{status:200});      
+      return NextResponse.json( { message: 'Posts retrieved successfully', data: output },{status:200});      
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
