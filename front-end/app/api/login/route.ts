@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword ,setPersistence,browserLocalPersistence } from 'firebase/auth';
 import { NextRequest, NextResponse } from 'next/server'
 import { auth, db } from '@/firebase';
 import { doc , getDoc } from "firebase/firestore";
@@ -36,13 +36,13 @@ export async function POST(req: NextRequest){
       if (!documentSnapshot.exists()) {
         userdata.data = null;
       }
-      console.log(userdata);
+      console.log(auth.currentUser);
 
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Login successfully', data: userdata },{ status:200 });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Wrong email or password', data: null },{status:401});
+      return NextResponse.json({ message: 'Wrong email or password', data:null },{status:401});
     }
   } else {
     return NextResponse.json({ message: 'Method not allowed', data: null}),{status:405};

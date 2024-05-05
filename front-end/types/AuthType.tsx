@@ -1,7 +1,3 @@
 export default interface AuthType{
-        user:{
-                userID: string;
-                username: string;
-                avatar: string;
-        }|null
+        id:string|null;
 }

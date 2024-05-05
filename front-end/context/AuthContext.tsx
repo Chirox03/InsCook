@@ -4,22 +4,20 @@ import StepType from '@/types/StepType';
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 
-type Action = { type: 'SIGN_UP'; payload: AuthType }
+type Action = 
   | { type: 'LOG_OUT'; payload: null }
-  | { type: 'LOG_IN'; payload: AuthType }
+  | { type: 'LOG_IN'; payload: string}
 
 
-const initialState: AuthType = {user:null};
+const initialState: AuthType = {id:null};
 
 const reducer = (state: AuthType, action: Action): AuthType => {
   switch (action.type) {
     case 'LOG_IN':
       console.log("New log in")
-      return action.payload
+      return {id:action.payload}
     case 'LOG_OUT':
-      return {user:null};
-    case 'SIGN_UP':
-      return action.payload;
+      return {id:null};
     default:
       return state;
   }
