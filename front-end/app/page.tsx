@@ -12,7 +12,6 @@ export default function Home() {
   if (auth.id==null) router.push('/Login');
   return (
     <main className="">
-    
         <HomePage/>
         <ToastContainer/>
     </main>

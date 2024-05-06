@@ -1,31 +1,32 @@
 import PostType from '@/types/PostType';
 import { NextRequest, NextResponse } from 'next/server'
-import { collection, getDocs,doc ,addDoc,updateDoc, getFirestore} from "firebase/firestore";
+import { collection, getDocs,doc ,getDoc,addDoc,updateDoc, getFirestore} from "firebase/firestore";
 import {db} from "@/firebase"
 type ResponseData = {
   message: string,
   data: PostType|null
 }
 export async function GET(req: NextRequest) {
-  const collectionRef = collection(db, 'Post');
-  const { method, body } = req;
-
+  const { method} = req;
   if (method === 'GET') {
     try {
-      const { userID } = body?.userID?.toString()
-
+      
+      const searchParams = req.nextUrl.searchParams
+      const postId = searchParams.get('id')
+      console.log(postId)
       // Check if userID is provided
-      if (!userID) {
-        return NextResponse.json({ message: 'User ID is missing', data: null }, { status: 400 });
+      if (!postId) {
+        return NextResponse.json({ message: 'Post ID is missing', data: null }, { status: 400 });
       }
-      const querySnapshot = await getDocs(collectionRef)
+      const postRef = doc(db, 'Post',postId);
+      const postSnapshot = await getDoc(postRef);
 
-      if (querySnapshot.empty) {
-        return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
+      if (postSnapshot.exists()) {
+        const postData = postSnapshot.data();
+        return NextResponse.json( { message: 'Posts retrieved successfully', data: postData },{status:200});
       } else{
-
-        const posts: PostType[] = querySnapshot.docs.map((doc) => doc.data() as PostType); // Convert documents to PostType objectsr type
-        return NextResponse.json( { message: 'Posts retrieved successfully', data: posts },{status:200});
+        
+        return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
       }
     } catch (error) {
       console.error(error);
