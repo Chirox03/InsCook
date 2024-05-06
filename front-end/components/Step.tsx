@@ -45,7 +45,12 @@ interface StepProps {
           <i className="text-4xl text-slate-300 fi fi-brands-instagram"></i>
           {/* </button> */}
         </label>
-            <img className="rounded-xs max-w-48 max-h-48" src={step.image instanceof Blob ? URL.createObjectURL(step.image) : undefined} alt='step image'/>
+        {
+            step.image instanceof Blob ?(
+
+              <img className="rounded-xs max-w-48 max-h-48" src={URL.createObjectURL(step.image)} alt='step image'/>
+            ):(null)
+        }
     </div>
   )
 }

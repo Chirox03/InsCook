@@ -45,7 +45,7 @@ export async function POST(req: NextRequest){
       const collectionRef = collection(db, 'Post');
       const newPostData = await req.json();
       const newPostRef = await addDoc(collectionRef, newPostData);
-      return NextResponse.json( { message: 'Posts created successfully', data: newPostData },{status:200});
+      return NextResponse.json( { message: 'Posts created successfully', data: {newPostData,id:newPostRef.id} },{status:200});
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: error ,data: null },{status:505});
@@ -68,7 +68,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
       const postRef = doc(db, 'Post', id); // Create a document reference with the ID
       await updateDoc(postRef, postData); // Update the document with new data
 
-      return NextResponse.json({ message: 'Post updated successfully', data: postData }, { status: 200 });
+      return NextResponse.json({ message: 'Post updated successfully', data: {id:id } }, { status: 200 });
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null }, { status: 500 });

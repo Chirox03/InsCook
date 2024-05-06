@@ -5,6 +5,7 @@ export default interface RecipeType{
     title: string;
     image: Blob|null|string;
     likes:number;
+    comments:number;
     description: string;
     duration: number;
     category:string;

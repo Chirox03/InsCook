@@ -5,10 +5,44 @@ import StepType from '@/types/StepType';
 import { useEffect } from 'react';
 import { RecipesProvider, useRecipes } from '@/context/RecipesContext';
 import uploadFile from "@/lib/UploadFile"
+import RecipeType from '@/types/RecipeType';
+import { useRouter } from 'next/navigation';
+import {toast} from 'react-toastify'
 // Define the action types
+interface APiPost{
+  title: string;
+  comment_number:number;
+  like_number:number;
+  category:string;
+  datetime:Date;
+  is_private:boolean;
+  caption:string;
+  duration: number;
+  image:string;
+  pax: number;
+  ingredients: Array<string>
+  step: Array<StepType>;
+}
 
+function mapPost(recipe: RecipeType): APiPost{
+  const post: APiPost = {
+    title: recipe.title,
+    comment_number:0,
+    like_number:0,
+    category:recipe.category,
+    datetime: new Date(),
+    is_private:false,
+    caption:recipe.description,
+    duration: recipe.duration,
+    image:recipe.image as string,
+    pax: recipe.pax,
+    ingredients: recipe.ingredients,
+    step: recipe.instructions
+  }
+  return post;
+}
 export default function NewPost() {
-
+  const router = useRouter();
   const {state: recipe, dispatch } = useRecipes();
   useEffect(() => {
     console.log('Recipe state updated:', recipe);
@@ -24,6 +58,7 @@ export default function NewPost() {
           dispatch({ type: 'CHANGE_COVER', payload: coverURL });
         };
         reader.readAsDataURL(recipe.image);
+        console.log("upload cover image succesfully")
       }
       const newInstruction: StepType[] = []
       for (const step of recipe.instructions){
@@ -49,11 +84,16 @@ export default function NewPost() {
       headers: {
         'Content-type' : 'application/json'
       },
-      body: JSON.stringify(recipe)
+      body: JSON.stringify(mapPost(recipe))
     }) 
+    const responseData = await res.json();
     if(res.ok){
       console.log("Upload Post succesfully")
-    }else console.log("Fail to save post",res.status,res.message)
+      toast.success("pload Post succesfully")
+      // console.log(responseData)
+      router.push(`/Post/${responseData.data.id}`);
+
+    }else console.log("Fail to save post",responseData.message)
   }catch(err){
    console.log("Something went wrong",err)
   }

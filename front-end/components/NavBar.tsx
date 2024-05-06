@@ -21,11 +21,19 @@ return (
         <i className="fi fi-br-user text-2xl"></i>
         </Link>
     </div>
-    <div className="flex justify-between px-4 py-2">
-    <button className='md-10' onClick={()=>{dispatch({type:"LOG_OUT",payload:null})}}>
+    <div className="flex justify-between px-4 py-2 ">
+    <button className='md-10 sm:invisible' onClick={()=>{dispatch({type:"LOG_OUT",payload:null})}}>
     <i className="fi fi-br-enter text-2xl"></i>
     </button>
+    <style jsx>{`
+                @media (max-width: 767px) {
+                    .px-4 {
+                        display: none;
+                    }
+                }
+            `}</style>
     </div>
+   
     </nav>
         )};
 
