@@ -92,3 +92,64 @@ export async function PUT(req: NextRequest){
   }
 }
 
+const mapToUserType = (userinfo: any, userid: string): UserType => {
+  const user: UserType = {
+    id: userid,
+    data: {
+        avatar: userinfo.avatar,
+        biography: userinfo.biography,
+        birth: userinfo.birth,
+        name: userinfo.name
+    }
+  };
+
+  return user;
+};
+    
+export async function GET(req: NextRequest){
+  const collectionRef = collection(db, 'Like');
+  const collectionUser = collection(db, 'User');
+  const { method } = req;
+  
+  if (method === 'GET') {
+    try {
+      const searchParams = req.nextUrl.searchParams
+      const postid = searchParams.get('postid');
+      console.log(postid);
+
+      if (!postid) {
+        return NextResponse.json({ message: 'Post ID is missing', data: null }, { status: 400 });
+      }
+
+      // Create a reference to the document with the specified ID in the specified collection
+      const documentRef = doc(db, 'Post', postid);
+
+      // Get the post data
+      const PostSnapshot = await getDoc(documentRef);
+
+      // Check if PostSnapshot is empty
+      if (!PostSnapshot.data()) {
+        return NextResponse.json({ message: 'Post not found', data: null }, { status: 404 });
+      }
+
+      // Query document where user_id == userid and post_id == postid
+      const querySnapshot = await getDocs(query(collectionRef, where('post_id', '==', postid)));
+
+      // Respond with the fetched data 
+      let listuserid =  querySnapshot.docs.map(doc => doc.data().user_id);
+      let out = [];
+      for(let i=0; i < listuserid.length; i++) {
+        const userinfo = (await getDoc(doc(db, "User", listuserid[i]))).data();
+        out.push(mapToUserType(userinfo, listuserid[i]));
+      }
+
+      return NextResponse.json( { message: 'Get liked user successfully!', data: out },{ status:200 });
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
+    }
+  }
+  else {
+    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+  }
+}
