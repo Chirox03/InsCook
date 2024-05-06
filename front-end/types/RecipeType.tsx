@@ -1,7 +1,7 @@
 import StepType from "./StepType";
 
 export default interface RecipeType{
-    id: string;
+    id: string|null;
     title: string;
     image: Blob|null|string;
     likes:number;
@@ -11,5 +11,6 @@ export default interface RecipeType{
     category:string;
     pax: number;
     ingredients: Array<string>;
-    instructions: Array<StepType>
+    instructions: Array<StepType>;
+    user_id:string;
 }

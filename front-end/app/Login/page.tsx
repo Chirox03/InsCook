@@ -36,6 +36,7 @@ function Login(){
             // console.log(responseData.data,auth)
             router.push('/');
         }else{
+            console.log(responseData)
             toast.error(responseData.message);
         }
     } catch(error){

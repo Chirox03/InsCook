@@ -138,12 +138,13 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
         body: JSON.stringify(newInfo)
         
       }) 
+      const responeData = await res.json();
       if(res.ok){
         console.log("Update user information succesfully")
         toast.success("Update user information succesfully")
         router.push(`/UserProfile/${params.uid}`)
 
-      }else console.log("Fail to save information",res.status,res.json().data.message)
+      }else console.log("Fail to save information",responeData.message)
     }catch(err){
       console.log("Something went wrong",err)
       toast.error("Error update user information")

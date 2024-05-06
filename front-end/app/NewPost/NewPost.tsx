@@ -6,10 +6,12 @@ import { useEffect } from 'react';
 import { RecipesProvider, useRecipes } from '@/context/RecipesContext';
 import uploadFile from "@/lib/UploadFile"
 import RecipeType from '@/types/RecipeType';
-import { useRouter } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import {toast} from 'react-toastify'
+import { useAuth } from '@/context/AuthContext';
 // Define the action types
 interface APiPost{
+  user_id:string;
   title: string;
   comment_number:number;
   like_number:number;
@@ -24,8 +26,9 @@ interface APiPost{
   step: Array<StepType>;
 }
 
-function mapPost(recipe: RecipeType): APiPost{
+function mapPost(recipe: RecipeType,id:string): APiPost{
   const post: APiPost = {
+    user_id :id,
     title: recipe.title,
     comment_number:0,
     like_number:0,
@@ -33,9 +36,9 @@ function mapPost(recipe: RecipeType): APiPost{
     datetime: new Date(),
     is_private:false,
     caption:recipe.description,
-    duration: recipe.duration,
+    duration: recipe.duration as number,
     image:recipe.image as string,
-    pax: recipe.pax,
+    pax: recipe.pax as number,
     ingredients: recipe.ingredients,
     step: recipe.instructions
   }
@@ -43,11 +46,12 @@ function mapPost(recipe: RecipeType): APiPost{
 }
 export default function NewPost() {
   const router = useRouter();
+  const {state: auth} = useAuth();
   const {state: recipe, dispatch } = useRecipes();
   useEffect(() => {
     console.log('Recipe state updated:', recipe);
   }, [recipe]); // Log the recipe state whenever it changes
-
+  // if(auth.id==null) notFound();
   // Example of using the state and dispatching actions
   const saveImage = async() =>{
     try{
@@ -84,7 +88,7 @@ export default function NewPost() {
       headers: {
         'Content-type' : 'application/json'
       },
-      body: JSON.stringify(mapPost(recipe))
+      body: JSON.stringify(mapPost(recipe,auth.id))
     }) 
     const responseData = await res.json();
     if(res.ok){

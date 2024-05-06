@@ -59,12 +59,12 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
   if (method === 'PUT') {
     try {
-      const { id ,postData} = await req.json(); 
+      const { id ,postData,user_id} = await req.json(); 
 
       if (!id || !postData) {
         return NextResponse.json({ message: 'Missing post ID or data', data: null }, { status: 400 }); // Bad request
       }
-
+      postData.user_id = user_id;
       const postRef = doc(db, 'Post', id); // Create a document reference with the ID
       await updateDoc(postRef, postData); // Update the document with new data
 

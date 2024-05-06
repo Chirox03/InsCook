@@ -6,7 +6,9 @@ import RecipeType from "@/types/RecipeType";
 import { toast } from "react-toastify";
 import BASE_URL from "@/config";
 import StepType from "@/types/StepType";
+import { useAuth } from "@/context/AuthContext";
 interface APiPost{
+  user_id:string;
   title: string;
   comment_number:number;
   like_number:number;
@@ -33,14 +35,35 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
     category:apiPost.category,
     pax: apiPost.pax,
     ingredients: apiPost.ingredients as Array<string>,
-    instructions: apiPost.step
+    instructions: apiPost.step,
+    user_id :apiPost.user_id
   }
   return post;
 }
 function PostDetail({ params }: { params: { pid: string }}) {
-
+  const {state: auth, dispatch } = useAuth();
   const [post,setPost] = useState<RecipeType|null>(null)
   const handleLike = async () =>{
+    // try{
+    //   const res = await fetch(BASE_URL+`/api/like`,{
+    //     method: 'GET', 
+    //     headers: {
+    //       'Content-Type': 'application/json', 
+    //     },
+    //     body:JSON.stringify({
+    //       'userid': auth.id,
+    //       'postid':params.pid
+    //     })})
+    //   const responseData = await res.json();
+    //   if(res.ok){
+    //     setPost(mapPost(responseData.data as APiPost,params.pid))
+    //   }else {
+    //     toast.error(responseData.message)
+    //   }
+    //   }catch(error){
+    //     console.error('Error fetching posts:', error);
+    //   }
+
   }
   const handleSave = async () =>{
 

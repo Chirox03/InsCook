@@ -3,10 +3,6 @@ import { db } from '@/firebase';
 import {  collection, doc , getDocs, updateDoc, where, getDoc, query, addDoc, deleteDoc } from "firebase/firestore";
 import PostType from '@/types/PostType';
 
-type ResponseData = {
-  message: string,
-  data: PostType|null
-}
 
 const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
   const post: PostType = {

@@ -17,12 +17,12 @@ type Action =
   | { type: 'CHANGE_COVER'; payload: string|Blob|null};
 
 const initialState: RecipeType = {
-  id: 1,
+  id: null,
   image: null,
   title: '',
   description: '',
-  pax: 0,
-  duration: 0,
+  pax: 1,
+  duration: 5,
   ingredients: [],
   instructions: [],
 };
