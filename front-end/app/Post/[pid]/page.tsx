@@ -26,6 +26,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
     id: id,
     image: apiPost.image,
     likes: apiPost.like_number,
+    comments: apiPost.comment_number,
     title: apiPost.title,
     description: apiPost.caption,
     duration: apiPost.duration,
@@ -39,6 +40,11 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
 function PostDetail({ params }: { params: { pid: string }}) {
 
   const [post,setPost] = useState<RecipeType|null>(null)
+  const handleLike = async () =>{
+  }
+  const handleSave = async () =>{
+
+  }
   useEffect ( ( )=>{
     const fetchPostbyId = async () =>{
       try{
@@ -50,7 +56,6 @@ function PostDetail({ params }: { params: { pid: string }}) {
           }})
         const responseData = await res.json();
         if(res.ok){
-          console.log("e",mapPost(responseData.data as APiPost,params.pid))
           setPost(mapPost(responseData.data as APiPost,params.pid))
         }else {
           toast.error(responseData.message)
@@ -75,14 +80,14 @@ function PostDetail({ params }: { params: { pid: string }}) {
        </button>
        <div className="mx-2 mt-2 flex flex-row justify-start">
         <div>
-            <i className="fi fi-rr-heart mr-3"> </i>
+            <i className="fi fi-rr-heart mr-3" onClick={handleLike}> </i>
             <br/>
             <span className="text-xs">{post?.likes}</span>
         </div>
         <div>
-            <i className="fi fi-rr-comment mr-3"></i>
+            <i className="fi fi-rr-comment mr-3" ></i>
             <br/>
-            <span className="text-xs">10</span>
+            <span className="text-xs">{post?.comments}</span>
         </div>
         <div>
         <i className="fi fi-rr-bookmark mr-3"></i>
@@ -133,8 +138,6 @@ function PostDetail({ params }: { params: { pid: string }}) {
           ))}
 
         </ul>
-       
-
         </div>
         </div>
     </div>

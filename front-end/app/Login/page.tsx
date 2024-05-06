@@ -45,7 +45,7 @@ function Login(){
 
     }
     return ( 
-        <div className="h-full flex flex-col items-center gap-3 justify-center font-sans overflow-y-hidden">
+        <div className="h-full flex flex-col items-center gap-3 justify-center font-sans overflow-y-hidden w-full">
             <div className="">
             <Image src="/icon.png" width={100} height={100} alt="app-icon"/>
             </div>
