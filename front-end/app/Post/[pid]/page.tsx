@@ -3,92 +3,57 @@ import ImageCarousel from "@/components/ImageCarousel"
 import Image from "next/image"
 import { useEffect, useState } from "react";
 import RecipeType from "@/types/RecipeType";
+import { toast } from "react-toastify";
+import BASE_URL from "@/config";
+import StepType from "@/types/StepType";
 interface APiPost{
-  id: number;
-  tittle: string;
-  description:string;
+  title: string;
+  comment_number:number;
+  like_number:number;
+  category:string;
+  datetime:Date;
+  is_private:boolean;
+  caption:string;
   duration: number;
+  image:string;
   pax: number;
-  ingredient: Array<string>
-  instructions: Array<{
-    step: number;
-    content: string;
-    isDeleted: boolean;
-  }>
+  ingredients: Array<string>
+  step: Array<StepType>;
 }
-interface Post{
-  id: number;
-  tittle: string;
-  description: string;
-  duration: number;
-  pax: number;
-  ingredient: Array<string>;
-  instructions: Array<{
-    step: number;
-    content: string;
-    isDeleted: boolean;
-  }>;
-}
-function mapPost(apiPost: APiPost): Post{
-  const {id,tittle,description,duration,pax,ingredient,instructions} = apiPost;
-  const post: Post = {
+
+function mapPost(apiPost: APiPost,id:string): RecipeType{
+  const post: RecipeType = {
     id: id,
-    tittle: tittle,
-    description: description,
-    duration: duration,
-    pax: pax,
-    ingredient: ingredient,
-    instructions: instructions
+    image: apiPost.image,
+    likes: apiPost.like_number,
+    title: apiPost.title,
+    description: apiPost.caption,
+    duration: apiPost.duration,
+    category:apiPost.category,
+    pax: apiPost.pax,
+    ingredients: apiPost.ingredients as Array<string>,
+    instructions: apiPost.step
   }
   return post;
 }
 function PostDetail({ params }: { params: { pid: string }}) {
-//   const apiPost: APiPost = {
-//     id: 1,
-//     tittle: "Shrimp Coconut Linguine",
-//     description: "Every now and then, I find myself stirring coconut cream into my favorite dishes. Partly out of curiosity for its intriguing flavor profile, but also because I appreciate its quality as a thickener.",
-//     duration: 30,
-//     pax: 2,
-//     ingredient: ["1/2 cup coconut cream", "225 g spaghetti", "1/4 cup chopped parsley", "1/2 cup shredded cheddar cheese", "1 Tbsp olive oil"],
-//     instructions: [{
-//         step: 1,
-//         content: "Boil water in a large pot and cook spaghetti according to package instructions until al dente.",
-//         isDeleted: false // Make sure isDeleted is assigned a boolean value
-//     },
-//     {
-//         step: 2,
-//         content: "In a separate pan, heat olive oil over medium heat. Add shrimp and cook until pink and opaque, about 3-4 minutes per side.",
-//         isDeleted: true
-//     },
-//     {
-//         step: 3,
-//         content: "Add coconut cream to the pan with shrimp and simmer for 2-3 minutes until heated through.",
-//         isDeleted: false
-//     },
-//     {
-//         step: 4,
-//         content: "Drain cooked spaghetti and add it to the pan with the shrimp and coconut cream. Toss until well coated.",
-//         isDeleted: false
-//     },
-//     {
-//         step: 5,
-//         content: "Remove from heat and sprinkle with chopped parsley and shredded cheddar cheese. Serve hot.",
-//         isDeleted: false
-//     }]
-// };
+
   const [post,setPost] = useState<RecipeType|null>(null)
   useEffect ( ( )=>{
     const fetchPostbyId = async () =>{
       try{
-
-        const res = await fetch(`api/post?id=${params.pid}`,{
+       
+        const res = await fetch(BASE_URL+`/api/posts?id=${params.pid}`,{
           method: 'GET', 
           headers: {
             'Content-Type': 'application/json', 
           }})
+        const responseData = await res.json();
         if(res.ok){
-          const data = await res.json();
-          setPost(data.data as RecipeType)
+          console.log("e",mapPost(responseData.data as APiPost,params.pid))
+          setPost(mapPost(responseData.data as APiPost,params.pid))
+        }else {
+          toast.error(responseData.message)
         }
         }catch(error){
           console.error('Error fetching posts:', error);
@@ -96,7 +61,8 @@ function PostDetail({ params }: { params: { pid: string }}) {
 
 
     }
-  })
+    fetchPostbyId();
+  },[])
   // const post: Post = mapPost(apiPost)
   return (
     <div className="h-full">
@@ -111,7 +77,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <div>
             <i className="fi fi-rr-heart mr-3"> </i>
             <br/>
-            <span className="text-xs">{pid}</span>
+            <span className="text-xs">{post?.likes}</span>
         </div>
         <div>
             <i className="fi fi-rr-comment mr-3"></i>
@@ -141,10 +107,12 @@ function PostDetail({ params }: { params: { pid: string }}) {
           </div>
         <h1 className='text-center font-extrabold text-3xl line-clamp-3'>{post?.title}</h1>
         <div className="my-2">
-          <ImageCarousel/>
+          <img src={post?.image|| undefined} alt="cover image"></img>
         </div>
         <div>
         <h2 ><span className="text-lg font-semibold">Duration:</span> {post?.duration} minutes</h2> 
+        <h2 ><span className="text-lg font-semibold">Method:</span> {post?.category}</h2> 
+        <h2 ><span className="text-lg font-semibold">Serve for:</span> {post?.pax} people</h2> 
         </div>
         <div>
         <h2 className="text-lg font-semibold">Ingredients:</h2>
@@ -159,7 +127,9 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <h2 className="text-lg font-semibold">Instruction:</h2>
         <ul className='list-disc list-inside'>
         {post?.instructions.map((instruction,index) => (
-           <li><span className="font-semibold">Step {index}:</span> {instruction.content}</li>
+           <li><span className="font-semibold">Step {index+1}:</span> {instruction.content}
+           <img src={instruction.image} alt="step image"></img>
+           </li>
           ))}
 
         </ul>

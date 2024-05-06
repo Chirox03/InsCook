@@ -5,15 +5,16 @@ import Image from "next/image";
 import PostType from "@/types/PostType";
 import Navbar from "@/components/NavBar";
 import { useEffect ,useState} from "react";
-import {auth} from "@/firebase"
+import { useAuth } from "@/context/AuthContext";
 function HomePage() {
   const  [PostList,setPostList] = useState<PostType[]>([]);
+  const {state: auth, dispatch } = useAuth();
  useEffect( ()=>{
-  const currentUser = auth.currentUser;
-  console.log(currentUser)
+  
   const fetchPosts = async () =>{
     try{
-      const response = await fetch('api/home?userID=123',{method: 'GET', // or 'POST', 'PUT', etc.
+      const response = await fetch(`api/home?userID=${auth.id}`,{
+      method: 'GET', // or 'POST', 'PUT', etc.
       headers: {
         'Content-Type': 'application/json', // Example header
         // Add other headers as needed

@@ -6,6 +6,7 @@ export default interface PostType{
         username: string;
         avatar: string;
     }
+    image:string|null;
     timestamp: Date;
     title: string;
     caption:string;

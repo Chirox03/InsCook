@@ -39,6 +39,7 @@ type ResponseData = {
                 timestamp: postData.timestamp,
                 title: postData.title,
                 caption: postData.caption,
+                image:postData.image,
                 likes: postData.like_number,
                 comments: postData.comment_number,
                 isSaved: false, // Default value

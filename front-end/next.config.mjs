@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images : { 
-        domains : ['.\public'] 
-      } ,
+  images: {
+    domains: ['*'], // Allow loading images from all domains
+  },
       async headers() {
         return [
           {
