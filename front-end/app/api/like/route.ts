@@ -16,6 +16,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
           username: username, 
           avatar: useravatar,
       },
+      image: postinfo.image,
       timestamp: new Date(postinfo.datetime), 
       title: postinfo.title,
       caption: postinfo.caption,
@@ -59,23 +60,23 @@ export async function PUT(req: NextRequest){
 
       // Query document where user_id == userid and post_id == postid
       const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid), where('post_id', '==', postid)));
-      const userinfo = (await getDoc(doc(db, "User", userid))).data();
       const saveSnapshot = await getDocs(query(collectionStorage, where('user_id', '==', userid), where('post_id', '==', postid)));
       const saved = saveSnapshot.empty;
 
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();
+      const userinfo = (await getDoc(doc(db, "User", postdata.user_id))).data();
       const isLiked = querySnapshot.docs.map(doc => doc.ref);
-      console.log(isLiked);
-      console.log(postdata);
       if (querySnapshot.empty) {
         postdata.like_number += 1;
+        postdata.isLiked = true;
         addDoc(collectionRef, {'post_id': postid, 'user_id': userid});
         updateDoc(documentRef, postdata);
         const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, !saved, true);
         return NextResponse.json( { message: 'Like successfully!', data: output },{ status:200 });
       } else {
         postdata.like_number -= 1;
+        postdata.isLiked = false;
         deleteDoc(isLiked[0]);
         updateDoc(documentRef, postdata);
         const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, !saved, false);
