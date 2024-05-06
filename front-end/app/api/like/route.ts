@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/firebase';
 import {  collection, doc , getDocs, updateDoc, where, getDoc, query, addDoc, deleteDoc } from "firebase/firestore";
 import PostType from '@/types/PostType';
+import UserType from '@/types/UserType';
 
 type ResponseData = {
   message: string,
-  data: PostType|null
+  data: PostType|UserType|null
 }
 
 const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
