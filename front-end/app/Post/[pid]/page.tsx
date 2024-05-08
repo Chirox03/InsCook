@@ -145,7 +145,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <div>
         <h2 className="text-lg font-semibold">Ingredients:</h2>
         <ul className='list-disc list-inside'>
-        {post?.ingredients.map((ingredient) => (
+        {post?.ingredients?.map((ingredient) => (
            <li>{ingredient}</li>
           ))}
 
@@ -154,7 +154,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <div>
         <h2 className="text-lg font-semibold">Instruction:</h2>
         <ul className='list-disc list-inside'>
-        {post?.instructions.map((instruction,index) => (
+        {post?.instructions?.map((instruction,index) => (
            <li><span className="font-semibold">Step {index+1}:</span> {instruction.content}
            <img src={instruction.image} alt="step image"></img>
            </li>

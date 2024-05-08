@@ -8,7 +8,7 @@ async function getDownloadUrlForFile(filePath: string) {
         return downloadUrl;
     } catch (error) {
         console.error('Error getting download URL:', error);
-        return null;
+        throw (error)
     }
 }
 

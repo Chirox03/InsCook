@@ -3,7 +3,7 @@ import StepType from "./StepType";
 export default interface RecipeType{
     id: string|null;
     title: string;
-    image: Blob|null|string;
+    image: Blob|null;
     likes:number;
     comments:number;
     description: string;
