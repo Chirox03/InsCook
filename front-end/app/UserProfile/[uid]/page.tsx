@@ -86,6 +86,8 @@ function UserProfile({ params }: { params: { uid: string }}) {
     }
     fetchProfile();
   } ,[])
+
+
   
   // const user: AppUserPro = mapUser(apiUser)
   console.log(userProfile)
@@ -128,8 +130,8 @@ function UserProfile({ params }: { params: { uid: string }}) {
         </button>
         </div>
       {state == 0 && <PostDetail params={{ pid:params.uid}}/>}
-      {/* {state == 1 && <FollowersPage/>}
-      {state == 2 && <FollowingPage/>} */}
+      {state == 1 && <FollowersPage params={{ pid:params.uid}}/>}
+      {/* {state == 2 && <FollowingPage/>} */}
       
      
     </div>
