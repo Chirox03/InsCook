@@ -1,6 +1,6 @@
 function getRelativeTime(timestamp:Date) {
     const now = new Date();
-    const diff = now.getTime() - timestamp.getTime();
+    const diff = now.getTime() - timestamp?.getTime();
     const seconds = Math.floor(diff / 1000);
   
     if (seconds < 60) {

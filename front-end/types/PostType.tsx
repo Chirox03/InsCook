@@ -4,11 +4,14 @@ export default interface PostType{
     user:{
         userID: string;
         username: string;
+        avatar: string;
     }
+    image:string|null;
     timestamp: Date;
-    tittle: string;
-    summary:string;
+    title: string;
+    caption:string;
     likes: number;
+    comments: number;
     isSaved: boolean;
     isLiked:boolean
 }

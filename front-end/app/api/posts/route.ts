@@ -1,0 +1,112 @@
+import PostType from '@/types/PostType';
+import { NextRequest, NextResponse } from 'next/server'
+import { collection, getDocs,doc ,getDoc,addDoc,updateDoc, getFirestore} from "firebase/firestore";
+import {db} from "@/firebase"
+import getDownloadUrlForFile from '@/lib/GetFile';
+import uploadFile from '@/lib/UploadFile';
+import FormData from 'form-data';
+// import formidable from 'formidable'; 
+type ResponseData = {
+  message: string,
+  data: PostType|null
+}
+export async function GET(req: NextRequest) {
+  const { method} = req;
+  if (method === 'GET') {
+    try {
+      
+      const searchParams = req.nextUrl.searchParams
+      const postId = searchParams.get('id')
+      console.log(postId)
+      // Check if userID is provided
+      if (!postId) {
+        return NextResponse.json({ message: 'Post ID is missing', data: null }, { status: 400 });
+      }
+      const postRef = doc(db, 'Post',postId);
+      const postSnapshot = await getDoc(postRef);
+
+      if (postSnapshot.exists()) {
+        const postData = postSnapshot.data();
+        return NextResponse.json( { message: 'Posts retrieved successfully', data: postData },{status:200});
+      } else{
+        
+        return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
+      }
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ message: 'Internal server error',data: null },{status:505});
+    }
+  } else {
+    return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};
+  }
+}
+export async function POST(req: NextRequest){
+
+  const { method } = req;
+  console.log(req.headers)
+  if (method === 'POST') {
+    try {
+      const data = await req.formData();
+      const ingredients = data.get('ingredients');
+      const instructions = data.get('instructions');
+      const file = data.get('image') as File;
+      if (file instanceof File) {
+        // Image is a File object, proceed with upload
+        const path_in_storage = await uploadFile({ file: file,folderPath:'images/'});
+        // ...
+      } else {
+        // Image is not a file, handle non-file data or error
+        console.error('Image is not a file object');
+      }
+      const path_in_storage = await uploadFile({file:file,folderPath:'images'})
+      const newPostData = {
+        'user_id':data.get('user_id'),
+        'title': data.get('title'),
+        'comment_number':0,
+        'like_number':0,
+        'category':data.get('category'),
+        'datetime': new Date(),
+        'caption':data.get('caption'),
+        'is_private':false,
+        'duration':data.get('duration') as number,
+        'pax':data.get('pax') as number,
+        'ingredients':  await JSON.parse(ingredients),
+        'step': await JSON.parse(instructions),
+        'image':await getDownloadUrlForFile(path_in_storage)
+      }
+
+      console.log(newPostData)
+      const collectionRef = collection(db, 'Post');
+      const newPostRef = await addDoc(collectionRef, newPostData);
+      return NextResponse.json( { message: 'Posts created successfully', data: {newPostData,id:newPostRef.id} },{status:200});
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ message: error ,data: null },{status:505});
+    }
+  } else {
+    return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};
+  }
+}
+export async function PUT(req: NextRequest): Promise<NextResponse> {
+  const { method } = req;
+
+  if (method === 'PUT') {
+    try {
+      const { id ,postData,user_id} = await req.json(); 
+
+      if (!id || !postData) {
+        return NextResponse.json({ message: 'Missing post ID or data', data: null }, { status: 400 }); // Bad request
+      }
+      postData.user_id = user_id;
+      const postRef = doc(db, 'Post', id); // Create a document reference with the ID
+      await updateDoc(postRef, postData); // Update the document with new data
+
+      return NextResponse.json({ message: 'Post updated successfully', data: {id:id } }, { status: 200 });
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ message: 'Internal server error', data: null }, { status: 500 });
+    }
+  } else {
+    return NextResponse.json({ message: 'Method not allowed', data: null }, { status: 405 });
+  }
+}
