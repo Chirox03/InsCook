@@ -38,7 +38,9 @@ const uploadFile = async (props: FileUploadProps) => {
     const newfile = new Uint8Array(await blob.arrayBuffer());
     const storageRef = ref(storage, `${folderPath}/${Date.now()}.${fileExtension}`); 
     try {
-    const snapshot = await uploadBytes(storageRef, newfile);
+    const snapshot = await uploadBytes(storageRef, newfile, {
+        contentType: fileType
+    });
     const downloadURL = snapshot.metadata.fullPath;
     console.log('File uploaded successfully!', downloadURL);
     return downloadURL; // Return the download URL
