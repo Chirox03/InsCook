@@ -1,10 +1,13 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Comment from '@/components/Comment'
 import CommentType from '@/types/CommentType'
+import BASE_URL from "@/config";
 
-export default function page() {
+export default function CommentPage({ params }: { params: { cid: string }}) {
+
+
   const handleCommentSubmit = (commentContent:string)=>{
     const newComment: CommentType = {
       id : '123',
@@ -27,47 +30,81 @@ export default function page() {
       }
     }
   }
-  const [comments, setComments] = useState<Array<CommentType>>([
-    { id:"123",
-      content:"give me your price,give me your price,give me your price,give me your price,",
-      user:{
-        userID: "123",
-        username: "Thuong Le"
-      },
-      timestamp: new Date(2024, 2, 25),
-      reply:[
-        {
-        id:"123",
-        user:{
-            userID: "123",
-            username: "Thuong Le"
-        },
+  // const [comments, setComments] = useState<Array<CommentType>>([
+  //   { id:"123",
+  //     content:"give me your price,give me your price,give me your price,give me your price,",
+  //     user:{
+  //       userID: "123",
+  //       username: "Thuong Le"
+  //     },
+  //     timestamp: new Date(2024, 2, 25),
+  //     reply:[
+  //       {
+  //       id:"123",
+  //       user:{
+  //           userID: "123",
+  //           username: "Thuong Le"
+  //       },
         
-      timestamp: new Date(2024, 2, 25),
-      content:"Hello",
-      reply:[]
-      }]
-     },
-     {
-      id:"123",
-      content:"Hello",
-      timestamp: new Date(2024, 2, 25),
-      user:{
-        userID: "123",
-        username: "Thuong Le"
-     },
-      reply:[{
-        id:"123",
-        user:{
-            userID: "123",
-            username: "Thuong Le"
+  //     timestamp: new Date(2024, 2, 25),
+  //     content:"Hello",
+  //     reply:[]
+  //     }]
+  //    },
+  //    {
+  //     id:"123",
+  //     content:"Hello",
+  //     timestamp: new Date(2024, 2, 25),
+  //     user:{
+  //       userID: "123",
+  //       username: "Thuong Le"
+  //    },
+  //     reply:[{
+  //       id:"123",
+  //       user:{
+  //           userID: "123",
+  //           username: "Thuong Le"
+  //       },
+  //       content:"Hi how are yout?",
+  //     timestamp: new Date(2024, 2, 25),
+  //     reply:[]
+  //     }]
+  //    }
+  // ])
+
+  const [comments,setComments] = useState<Array<CommentType>>([])
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try{
+        const res = await fetch(BASE_URL+`/api/comment?postid=${params.cid}`,
+        {method: 'GET',
+        headers: {
+          'Content-Type': 'application/json', 
         },
-        content:"Hi how are yout?",
-      timestamp: new Date(2024, 2, 25),
-      reply:[]
-      }]
-     }
-  ])
+      });
+
+      if(!res.ok) {
+        const responseData = await res.json();
+        console.error(responseData.message);
+        return null;
+      }
+
+      const responseData = await res.json();
+      setComments(responseData.data);
+      } catch (error) {
+      console.error('Error fetching following users:', error);
+      return null;
+      }
+    }
+    fetchComments()
+      .catch((error) => {
+        console.error('Error:', error);
+        });
+  },[])
+
+  console.log(comments)
+
   return (
     <div className='relative'>
         {/* Back bar */}

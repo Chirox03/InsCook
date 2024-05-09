@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import BASE_URL from "@/config";
 import StepType from "@/types/StepType";
 import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 interface APiPost{
   user_id:string;
   title: string;
@@ -65,6 +66,11 @@ function PostDetail({ params }: { params: { pid: string }}) {
     //   }
 
   }
+
+  const handleComment = (link: string) => {
+    // Navigate to the specified link
+    window.location.href = link;
+  };
   const handleSave = async () =>{
 
   }
@@ -108,7 +114,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
             <span className="text-xs">{post?.likes}</span>
         </div>
         <div>
-            <i className="fi fi-rr-comment mr-3" ></i>
+            <i className="fi fi-rr-comment mr-3" onClick={() => handleComment(`/Comment/${params.pid}`)}></i>
             <br/>
             <span className="text-xs">{post?.comments}</span>
         </div>

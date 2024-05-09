@@ -65,7 +65,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
     const fetchProfile = async() =>{
       console.log("meomoe")
       try{
-        console.log(BASE_URL+`/api/userinfo?userid=${params.uid}`);
+        // console.log(BASE_URL+`/api/userinfo?userid=${params.uid}`);
         const res = await fetch(BASE_URL+`/api/userinfo?userid=${params.uid}`,
         {method: 'GET',
         headers: {
