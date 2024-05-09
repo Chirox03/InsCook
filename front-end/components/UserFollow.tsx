@@ -29,6 +29,7 @@ const imageStyle = {
   }
 
 function UserFollow({ params }: { params: { pid: string }}) {
+    // console.log(params.pid)
     const [user, setuser] = useState<AppUser>();
 
     useEffect(() => {
@@ -70,7 +71,7 @@ function UserFollow({ params }: { params: { pid: string }}) {
             <div className="flex">
             <Image src="/image.png" style={imageStyle} width={50} height={50} alt="icon"/>
             <div className="ml-[10px] flex justify-between flex-col">
-                <p>{user.name}</p>
+                <p>{user?.name}</p>
                 {/* <p>{user.realname}</p> */}
             </div>
             </div>

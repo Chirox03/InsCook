@@ -8,7 +8,7 @@ function FollowersPage({ params }: { params: { pid: string }}) {
 
     useEffect(() => {
         // console.log("djaskl")
-        const fetchFollowingUsers = async () => {
+        const fetchFollowersUsers = async () => {
             try {
             const response = await fetch(`/api/follow?userid=${params.pid}`, {
                 method: 'GET',
@@ -32,17 +32,17 @@ function FollowersPage({ params }: { params: { pid: string }}) {
             }
         };
         
-        fetchFollowingUsers()
+        fetchFollowersUsers()
             .catch((error) => {
             console.error('Error:', error);
             });
     },[])
-    console.log(followersUsers)
+    console.log('Followers',followersUsers)
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {followersUsers.map((id: number) => (
-                        <UserFollow params={{ pid:params.pid}} />
+                    {followersUsers.map((id: string) => (
+                        <UserFollow params={{ pid:id.id}} />
                     ))}
                 </div>
                 

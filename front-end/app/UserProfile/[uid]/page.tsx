@@ -131,7 +131,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
         </div>
       {state == 0 && <PostDetail params={{ pid:params.uid}}/>}
       {state == 1 && <FollowersPage params={{ pid:params.uid}}/>}
-      {/* {state == 2 && <FollowingPage/>} */}
+      {state == 2 && <FollowingPage params={{ pid:params.uid}}/>}
       
      
     </div>
