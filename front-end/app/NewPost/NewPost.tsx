@@ -8,7 +8,11 @@ import uploadFile from "@/lib/UploadFile"
 import RecipeType from '@/types/RecipeType';
 import { notFound, useRouter } from 'next/navigation';
 import {toast} from 'react-toastify'
+import fetch from 'node-fetch';
 import { useAuth } from '@/context/AuthContext';
+import { title } from 'process';
+import BASE_URL from '@/config';
+import axios from 'axios';
 // Define the action types
 interface APiPost{
   user_id:string;
@@ -50,58 +54,49 @@ export default function NewPost() {
   const {state: recipe, dispatch } = useRecipes();
   useEffect(() => {
     console.log('Recipe state updated:', recipe);
-  }, [recipe]); // Log the recipe state whenever it changes
-  // if(auth.id==null) notFound();
-  // Example of using the state and dispatching actions
-  const saveImage = async() =>{
-    try{
-      if (recipe.image instanceof Blob) {
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-          const coverURL = await uploadFile({ file: event.target?.result ,folderPath:'images/'});
-          dispatch({ type: 'CHANGE_COVER', payload: coverURL });
-        };
-        reader.readAsDataURL(recipe.image);
-        console.log("upload cover image succesfully")
-      }
-      const newInstruction: StepType[] = []
-      for (const step of recipe.instructions){
-        if(step.image){
-          const stepURL = await uploadFile({file: step.image,folderPath:'images/'});
-          newInstruction.push({...step,image:stepURL})
-        }else{
-          newInstruction.push(step)
-        }
-      }
-      dispatch({type:"CHANGE_INSTRUCTION",payload:newInstruction})
-      console.log("Upload image to storage succesfully")
-    }
-    catch(error){
-      console.log("Error when uploading images to storage",error)
-    }
+  }, [recipe]); 
+  const prepareFormData = async() =>{
+    const data = new FormData();
+    data.append('user_id',auth.id as string) ;
+    data.append('title', recipe.title);
+    data.append('comment_number','0');
+    data.append('like_number','0');
+    data.append('category',recipe.category);
+    data.append('datetime', new Date().toISOString );
+    data.append('is_private','false');
+    data.append('caption',recipe.description);
+    data.append('duration', recipe.duration as string);
+    if(recipe.image !== null)
+    data.append('image',recipe.image);
+    data.append('pax',recipe.pax as string),
+    data.append('ingredients', JSON.stringify(recipe.ingredients)),
+    data.append('instructions', JSON.stringify(recipe.instructions.map((step) => ({
+      content: step.content,
+      image: step.image ? step.image : null, 
+    }))));
+    console.log(data)
+   return data;
+  }
      
-  }
   const handleSave = async() => {
-    try{
-      await saveImage()
-      const res =await fetch('api/posts',{method: 'POST',
-      headers: {
-        'Content-type' : 'application/json'
-      },
-      body: JSON.stringify(mapPost(recipe,auth.id))
-    }) 
-    const responseData = await res.json();
-    if(res.ok){
-      console.log("Upload Post succesfully")
-      toast.success("pload Post succesfully")
-      // console.log(responseData)
-      router.push(`/Post/${responseData.data.id}`);
-
-    }else console.log("Fail to save post",responseData.message)
-  }catch(err){
-   console.log("Something went wrong",err)
+    try {
+      const preparedData = await prepareFormData();
+   
+      const response = await axios.post('/api/posts', preparedData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      const responseData = response.data;
+        console.log('Upload Post successfully:', responseData);
+        toast.success('Upload Post successfully');
+        router.push(`/Post/${responseData.data.id}`);
+      }catch(error){
+        console.log("Error upload new post",error)
+        toast.error("Error when save this post");
+        throw(error);
+      }
   }
-  };
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     dispatch({ type: 'TITTLE', payload: e.target.value });
@@ -171,10 +166,10 @@ export default function NewPost() {
        </button>
         </div>
 
-      <div className='mt-14'>
+      <form className='mt-14'>
        <div className="flex items-center justify-center">
         <label>
-          <input onChange={(e)=>handleUploadCoverImage(e)} id="dropzone-file" type="file" className="visible" />
+          <input name="cover" onChange={(e)=>handleUploadCoverImage(e)} id="dropzone-file" type="file" className="visible" />
         { !recipe.image?
           (
             null
@@ -187,8 +182,8 @@ export default function NewPost() {
    </div>   
     <div className="my-5 px-1">
     <label className='font-semibold'>Name of recipe</label>
-        <textarea className="my-5  border rounded-md block p-2.5 w-full focus:ring-coral text-lg" placeholder="Your tittle" value={recipe.title} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleTitleChange(e)}></textarea>
-        <textarea className="my-5 border rounded-md block p-2.5  w-full focus:ring-coral text-sm" placeholder="Introduction" value={recipe.description} onChange={(e) => handleDescriptionChange(e)}></textarea>
+        <textarea name="title" className="my-5  border rounded-md block p-2.5 w-full focus:ring-coral text-lg" placeholder="Your tittle" value={recipe.title} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleTitleChange(e)}></textarea>
+        <textarea name="intro"className="my-5 border rounded-md block p-2.5  w-full focus:ring-coral text-sm" placeholder="Introduction" value={recipe.description} onChange={(e) => handleDescriptionChange(e)}></textarea>
         <div className="mr-24 flex flex-row justify-between gap-3 py-2">
         <label className='font-semibold'>Portion</label>
         <div className="mr-2">
@@ -255,7 +250,7 @@ export default function NewPost() {
             </div>
             
         </div>
-        </div>
+        </form>
     </div>
   )
 }
