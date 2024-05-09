@@ -3,6 +3,7 @@ export default interface CommentType{
     user:{
         userID: string;
         username: string;
+        avatar: string;
     }
     timestamp: Date;
     content: string;
