@@ -41,6 +41,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
   return post;
 }
 function PostDetail({ params }: { params: { pid: string }}) {
+  // console.log(params.pid)
   const {state: auth, dispatch } = useAuth();
   const [post,setPost] = useState<RecipeType|null>(null)
   const handleLike = async () =>{
@@ -78,6 +79,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
             'Content-Type': 'application/json', 
           }})
         const responseData = await res.json();
+        console.log(responseData)
         if(res.ok){
           setPost(mapPost(responseData.data as APiPost,params.pid))
         }else {
@@ -91,6 +93,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
     }
     fetchPostbyId();
   },[])
+  // console.log(post)
   // const post: Post = mapPost(apiPost)
   return (
     <div className="h-full">

@@ -8,7 +8,8 @@ import FollowersPage from "../../../components/FollowersPage";
 import FollowingPage from "../../../components/FollowingPage";
 import { notFound } from "next/navigation";
 import BASE_URL from "@/config";
-import PostDetail from "@/app/Post/[pid]/page";
+import UserPosts from "@/components/UserPosts";
+
 interface APiUser{
   id:number;
   name: string;
@@ -129,7 +130,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <span className="text-sm ">Following</span>
         </button>
         </div>
-      {state == 0 && <PostDetail params={{ pid:params.uid}}/>}
+      {state == 0 && <UserPosts params={{ pid:params.uid}}/>}
       {state == 1 && <FollowersPage params={{ pid:params.uid}}/>}
       {state == 2 && <FollowingPage params={{ pid:params.uid}}/>}
       
