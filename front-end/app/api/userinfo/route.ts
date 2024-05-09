@@ -16,11 +16,12 @@ export async function PUT(req: NextRequest){
   const { method } = req;
   if (method === 'PUT') {
     try {
-      const data = await req.formData();
-      const userid = data.get('userid');
-      const name = data.get('name');
-      const biography = data.get('biography');
-      const file = data.get('avatar') as File;
+      const formdata = await req.formData();
+      const userid = formdata.get('userid');
+      const name = formdata.get('name');
+      const biography = formdata.get('biography');
+      const file = formdata.get('avatar') as File;
+      console.log(file);
       if (file instanceof File) {
         // Image is a File object, proceed with upload
         const path_in_storage = await uploadFile({ file: file,folderPath:'images/'});
@@ -47,14 +48,14 @@ export async function PUT(req: NextRequest){
 
       // Update
       const path_in_storage = await uploadFile({file:file,folderPath:'images'});
-      let userdata = documentSnapshot.data();
-      userdata.avatar = await getDownloadUrlForFile(path_in_storage);
-      userdata.biography = biography;
-      userdata.name = name;
-      updateDoc(documentRef, userdata);
+      let data = documentSnapshot.data();
+      data.avatar = await getDownloadUrlForFile(path_in_storage);
+      data.biography = biography;
+      data.name = name;
+      updateDoc(documentRef, data);
 
       // Respond with the fetched data 
-      return NextResponse.json( { message: 'Update successfully!', data: {"id": userid, userdata} },{ status:200 });
+      return NextResponse.json( { message: 'Update successfully!', data: {"id": userid, data} },{ status:200 });
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
@@ -86,8 +87,10 @@ export async function GET(req: NextRequest){
         return NextResponse.json( { message: 'User not found', data: null },{ status:404 });
       }
       
+      const data = documentSnapshot.data();
+
       // Respond with the fetched data 
-      return NextResponse.json( { message: 'Get user information successfully', data: documentSnapshot.data() },{ status:200 });
+      return NextResponse.json( { message: 'Get user information successfully', data: {"id": userid, data} },{ status:200 });
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
