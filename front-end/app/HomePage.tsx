@@ -5,13 +5,16 @@ import Image from "next/image";
 import PostType from "@/types/PostType";
 import Navbar from "@/components/NavBar";
 import { useEffect ,useState} from "react";
-
+import { useAuth } from "@/context/AuthContext";
 function HomePage() {
   const  [PostList,setPostList] = useState<PostType[]>([]);
+  const {state: auth, dispatch } = useAuth();
  useEffect( ()=>{
+  
   const fetchPosts = async () =>{
     try{
-      const response = await fetch('api/home?userID=123',{method: 'GET', // or 'POST', 'PUT', etc.
+      const response = await fetch(`api/home?userID=${auth.id}`,{
+      method: 'GET', // or 'POST', 'PUT', etc.
       headers: {
         'Content-Type': 'application/json', // Example header
         // Add other headers as needed
@@ -28,33 +31,7 @@ function HomePage() {
   };
   fetchPosts()
  },[])
-  // const PostList: Array<PostType> = [{
-  //   id: "123",
-  //   user:{
-  //       userID: "123",
-  //       username: "hello",
-  //   },
-  //   timestamp: new Date(),
-  //   tittle: "Cook a butter cake",
-  //   summary: "Today i will show you how to cook a butter cake",
-  //   likes: 12,
-  //   isSaved: true,
-  //   isLiked: false
-  // },
-  // {
-  //   id: "123",
-  //   user:{
-  //       userID: "123",
-  //       username: "hello",
-  //   },
-  //   timestamp: new Date(),
-  //   tittle: "Cook a butter cake",
-  //   summary: "Today i will show you how to cook a butter cake",
-  //   likes: 12,
-  //   isSaved: true,
-  //   isLiked: false
-  // }]
-
+ 
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
           <h1 className="text-lg mb-4 font-sans">InsCook</h1>

@@ -1,7 +1,7 @@
 import PostType from '@/types/PostType';
 import { NextRequest, NextResponse } from 'next/server'
 import { useRouter } from 'next/router'
-import db from '@/firebase'
+import { db } from '@/firebase'
 import { collection, getDocs,doc,getDoc ,addDoc,updateDoc,where,query} from "firebase/firestore";
 import { CollectionReference, QuerySnapshot, QueryDocumentSnapshot ,DocumentData} from "firebase/firestore"
 type ResponseData = {
@@ -12,22 +12,24 @@ type ResponseData = {
       const { method} = req;
       const searchParams = req.nextUrl.searchParams
       const userID = searchParams.get('userID')
-      console.log(userID)
       if (method === 'GET') {
-      try {
-              // Check if userID is provided
-              if (!userID) {
-                  return NextResponse.json({ message: 'User ID is missing', data: null }, { status: 400 });
-                }
-        const collectionRef = collection(db, 'Post');
-        const postSnapshot = await getDocs(collectionRef)
-  
-        if (postSnapshot.empty) {
-          return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
-        } else{
+        try {
+          // Check if userID is provided
+          if (!userID) {
+            return NextResponse.json({ message: 'User ID is missing', data: null }, { status: 400 });
+          }
+
+          const collectionRef = collection(db, 'Post');
+          const postSnapshot = await getDocs(collectionRef)
+          
+          if (postSnapshot.empty) {
+            return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
+          } else{
             const postsData: PostType[] = [];
+            // console.log()
             for (const postdoc of postSnapshot.docs) {
               const postData = postdoc.data() 
+              console.log(postData)
               const docRef = doc(db, 'User', postData.user_id);
               const userDoc = await getDoc(docRef)
               const userData = userDoc.data();
@@ -37,6 +39,7 @@ type ResponseData = {
                 timestamp: postData.timestamp,
                 title: postData.title,
                 caption: postData.caption,
+                image:postData.image,
                 likes: postData.like_number,
                 comments: postData.comment_number,
                 isSaved: false, // Default value
@@ -46,10 +49,11 @@ type ResponseData = {
                 collection(db, 'Like'),where('user_id', '==', userID),where('post_id', '==', post.id)
               ));
               post.isLiked = likeQuerySnapshot.docs.length > 0
-            // Query the Save table to check if the user has saved the post
-            const saveQuerySnapshot = await getDocs(query(collection(db, 'Storage'),where('user_id', '==', userID),where('post_id', '==', post.id)));
-            post.isSaved = !saveQuerySnapshot.empty;
-            postsData.push(post)
+              // Query the Save table to check if the user has saved the post
+              const saveQuerySnapshot = await getDocs(query(collection(db, 'Storage'),where('user_id', '==', userID),where('post_id', '==', post.id)));
+              post.isSaved = !saveQuerySnapshot.empty;
+              postsData.push(post)
+              console.log(post)
             }
 
           return NextResponse.json( { message: 'Posts retrieved successfully', data: postsData },{status:200});

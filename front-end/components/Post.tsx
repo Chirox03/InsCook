@@ -4,7 +4,7 @@ import PostType from '@/types/PostType'
 import getRelativeTime from "./DateCalculate"
 import { useEffect,useState } from "react"
 interface PostProps {
-  post: PostType; // Assuming CommentType is the type of your comment object
+  post: PostType;
 }
 const  Post:  React.FC<PostProps> = ({post}) =>{
   const handlePostClick = () =>{
@@ -22,7 +22,7 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
             </div>
           </div>
           <div className="h-400 rounded-s">
-            <img src="/food.png" alt="food image" />
+            <img src={post.image||undefined} alt="food image" />
           </div>
           <div className="mt-2 flex flex-row justify-start">
             <div className="flex flex-col mr-2">

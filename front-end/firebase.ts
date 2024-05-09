@@ -1,8 +1,8 @@
 // firebase.js
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import {  collection } from 'firebase/firestore';
+import { browserLocalPersistence, getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
     apiKey: "AIzaSyA94a6xXldSjJ45b5VDVo09kNmA1pLieAM",
@@ -19,9 +19,10 @@ const app = initializeApp(firebaseConfig);
 
 // Get the authentication instance
 const auth = getAuth(app);
+auth.setPersistence(browserLocalPersistence);
 
 // Get the database
 const db = getFirestore(app);
-
-export { app, auth, db };
+const storage = getStorage(app)
+export { app, auth, db ,storage};
     

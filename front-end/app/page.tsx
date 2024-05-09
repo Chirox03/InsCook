@@ -1,16 +1,19 @@
 "use client"
 import Navbar from "@/components/NavBar";
 import HomePage from "./HomePage";
-
-import Search from "@/app/Search/page";
-import UserProfile from "./UserProfile/page";
-import TopUser from "./TopUser";
-import EditProfile from "../components/EditProfile";
-import { RecipesProvider } from "@/context/RecipesContext";
+import { useAuth } from "@/context/AuthContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const {state: auth, dispatch } = useAuth();
+  const router = useRouter()
+  if (auth.id==null) router.push('/Login');
   return (
     <main className="">
         <HomePage/>
+        <ToastContainer/>
     </main>
+
   )};

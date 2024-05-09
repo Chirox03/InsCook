@@ -4,7 +4,9 @@ export default interface PostType{
     user:{
         userID: string;
         username: string;
+        avatar: string;
     }
+    image:string|null;
     timestamp: Date;
     title: string;
     caption:string;
