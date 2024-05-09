@@ -3,7 +3,7 @@ import StepType from "./StepType";
 export default interface RecipeType{
     id: string|null;
     title: string;
-    image: Blob|null;
+    image: Blob|null|string;
     likes:number;
     comments:number;
     description: string;
@@ -13,4 +13,6 @@ export default interface RecipeType{
     ingredients: Array<string>;
     instructions: Array<StepType>;
     user_id:string;
+    timestamp:Date|null;
+
 }

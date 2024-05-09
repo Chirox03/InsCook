@@ -3,14 +3,18 @@ import Link from 'next/link'
 import PostType from '@/types/PostType'
 import getRelativeTime from "./DateCalculate"
 import { useEffect,useState } from "react"
+import { useRouter } from "next/navigation"
 interface PostProps {
   post: PostType;
 }
 const  Post:  React.FC<PostProps> = ({post}) =>{
-  const handlePostClick = () =>{
-    
+  const router = useRouter();
+  // console.log(post)
+  const handlePostClick = (e: React.MouseEvent<HTMLButtonElement>) =>
+  {
+    e.preventDefault();
+    router.push(`/post/${post.id}`)
   }
-  console.log(post)
   return (
     <div className="w-full my-2">
         <div className="mt-6">
@@ -39,8 +43,8 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
           <p className="text-left md-2 font-sans">
            {post.caption}
           
-          <button type="button" className="ml-2 text-xs underline hover:underline-offset-0"  >
-            <Link href="/Post"> - See post... -</Link>
+          <button onClick={(e)=>handlePostClick(e)} type="button" className="ml-2 text-xs underline hover:underline-offset-0"  >
+             - See post... -
           </button>
           </p>
         </div>

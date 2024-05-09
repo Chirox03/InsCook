@@ -34,7 +34,6 @@ interface StepProps {
            <div className='flex'>
             <textarea className="my-2 border rounded-md block p-2.5 w-full focus:ring-coral text-sm"  value={step.content} onChange={(e)=>handelStepChange(e)}></textarea>
             <button onClick={()=> deleteStep(id)}>
-              
               <i className="ml-2 fi py-5 fi-rr-trash text-xl "></i>
             </button>
           </div>
@@ -46,8 +45,7 @@ interface StepProps {
           {/* </button> */}
         </label>
         {
-            step.image instanceof Blob ?(
-
+            step.image ?(
               <img className="rounded-xs max-w-48 max-h-48" src={URL.createObjectURL(step.image)} alt='step image'/>
             ):(null)
         }

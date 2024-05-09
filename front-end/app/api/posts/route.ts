@@ -29,7 +29,6 @@ export async function GET(req: NextRequest) {
         const postData = postSnapshot.data();
         return NextResponse.json( { message: 'Posts retrieved successfully', data: postData },{status:200});
       } else{
-        
         return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
       }
     } catch (error) {
@@ -43,35 +42,57 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest){
 
   const { method } = req;
-  console.log(req.headers)
   if (method === 'POST') {
     try {
       const data = await req.formData();
       const ingredients = data.get('ingredients');
       const instructions = data.get('instructions');
-      const file = data.get('image') as File;
-      if (file instanceof File) {
-        // Image is a File object, proceed with upload
-        const path_in_storage = await uploadFile({ file: file,folderPath:'images/'});
-        // ...
+      const cover_image = data.get('image') as File;
+      if (cover_image instanceof File) {
+        const path_in_storage = await uploadFile({ file: cover_image,folderPath:'images/'});
       } else {
-        // Image is not a file, handle non-file data or error
         console.error('Image is not a file object');
       }
-      const path_in_storage = await uploadFile({file:file,folderPath:'images'})
+      const path_in_storage = await uploadFile({file:cover_image,folderPath:'images'})
+      const stepsData = [];
+      
+      for (const [key, value] of data.entries()) {
+        if (key.startsWith('steps[')) { // Identify step fields
+          const stepId = key.match(/steps\[(\d+)]/)[1]; 
+          console.log(stepId)
+          const stepProperty = key.split(/[\[\]]/)[3]; // Extract property name (content/image)
+          console.log(stepProperty)
+          if (!stepsData[stepId]) {
+            stepsData[stepId] = {}; // Initialize step object
+          }
+          stepsData[stepId][stepProperty] = value; // Add content or image data
+        }
+      }
+      let steps = [];
+      steps = await Promise.all(stepsData.map(async (step) => {
+        if (step.image && step.image instanceof File) {
+          const path_in_storage = await uploadFile({ file: step.image ,folderPath: "images/"});
+          if (!path_in_storage) {
+            throw new Error('Error uploading step image');
+          }
+          step.image = await getDownloadUrlForFile(path_in_storage);
+        }
+        return step;
+      }));
+      // console.log(steps)
       const newPostData = {
         'user_id':data.get('user_id'),
         'title': data.get('title'),
         'comment_number':0,
         'like_number':0,
         'category':data.get('category'),
-        'datetime': new Date(),
         'caption':data.get('caption'),
         'is_private':false,
         'duration':data.get('duration') as number,
         'pax':data.get('pax') as number,
+        'timestamp':new Date(),
         'ingredients':  await JSON.parse(ingredients),
-        'step': await JSON.parse(instructions),
+        'step': steps,
         'image':await getDownloadUrlForFile(path_in_storage)
       }
 

@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import BASE_URL from "@/config";
 import StepType from "@/types/StepType";
 import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
+import UserType from "@/types/UserType";
 interface APiPost{
   user_id:string;
   title: string;
@@ -34,6 +36,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
     duration: apiPost.duration,
     category:apiPost.category,
     pax: apiPost.pax,
+    timestamp:null,
     ingredients: apiPost.ingredients as Array<string>,
     instructions: apiPost.step,
     user_id :apiPost.user_id
@@ -43,6 +46,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
 function PostDetail({ params }: { params: { pid: string }}) {
   const {state: auth, dispatch } = useAuth();
   const [post,setPost] = useState<RecipeType|null>(null)
+  const  [user,setUser] = useState<UserType|null>(null)
   const handleLike = async () =>{
     // try{
     //   const res = await fetch(BASE_URL+`/api/like`,{
@@ -65,32 +69,47 @@ function PostDetail({ params }: { params: { pid: string }}) {
     //   }
 
   }
-  const handleSave = async () =>{
 
-  }
   useEffect ( ( )=>{
     const fetchPostbyId = async () =>{
       try{
-       
-        const res = await fetch(BASE_URL+`/api/posts?id=${params.pid}`,{
-          method: 'GET', 
-          headers: {
-            'Content-Type': 'application/json', 
-          }})
-        const responseData = await res.json();
-        if(res.ok){
-          setPost(mapPost(responseData.data as APiPost,params.pid))
-        }else {
-          toast.error(responseData.message)
+          const response = await axios.get(`${BASE_URL}/api/posts?id=${params.pid}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          await fetchUserbyId(response.data.data.user_id);
+          setPost(mapPost(response.data.data as APiPost,params.pid))
+          console.log(post)
         }
-        }catch(error){
+        catch(error){
           console.error('Error fetching posts:', error);
+          toast.error('Error fetching posts:')
+          return null;
         }
 
 
     }
+    const fetchUserbyId = async (id:String) =>{
+      try{
+        console.log("id:",id)
+        const response = await axios.get(`${BASE_URL}/api/userinfo?userid=${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log("User",response.data.data);
+        setUser(response.data.data);
+        return;
+      }
+      catch(error){
+        console.error('Error fetching posts:', error);
+        toast.error('Error fetching posts:')
+      }
+    }
     fetchPostbyId();
   },[])
+  // console.log(post?.image)
   // const post: Post = mapPost(apiPost)
   return (
     <div className="h-full">
@@ -123,19 +142,20 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <div className="h-full mt-16 overflow-y-auto">
         <div className="flex flex-row m-2 ml-1">
             <div className="rounded-full overflow-hidden align-left ">
-              <Image src="/image.png" width={50} height={50} alt="avatar" />
+              <Image src={user?.avatar} width={70} height={70} alt="avatar" />
             </div>
             <div className="ml-2 flex font-sans flex-col">
-              <div className="flex flex-row flex-auto">
-                <div>Thuong Le</div>
-                <div className="ml-4">5 minutes</div>
+              <div className="flex flex-row flex-auto py-4 px-2">
+                <div className="text-md">{user?.name}</div>
+                <div className="ml-4">{post?.timestamp?.toISOString()}</div>
               </div>
-              <div className="text-left">Cooking blogger</div>
+              <div className="text-left"></div>
             </div>
           </div>
         <h1 className='text-center font-extrabold text-3xl line-clamp-3'>{post?.title}</h1>
         <div className="my-2">
-          <img src={post?.image|| undefined} alt="cover image"></img>
+          <Image src={post?.image}  width={200} height={200} alt="cover image"priority={true}></Image> 
+          {/* <span>{post.image}</span> */}
         </div>
         <div>
         <h2 ><span className="text-lg font-semibold">Duration:</span> {post?.duration} minutes</h2> 
