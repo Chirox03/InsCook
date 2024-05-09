@@ -8,6 +8,7 @@ import FollowersPage from "../../../components/FollowersPage";
 import FollowingPage from "../../../components/FollowingPage";
 import { notFound } from "next/navigation";
 import BASE_URL from "@/config";
+import PostDetail from "@/app/Post/[pid]/page";
 interface APiUser{
   id:number;
   name: string;
@@ -46,9 +47,6 @@ const mapUser = async (apiUser: APiUser): Promise<AppUserProfile> => {
   return appUser;
 }
 
-
-
-
 function UserProfile({ params }: { params: { uid: string }}) {
   // const apiUser: APiUser = {
   //   id: 1,
@@ -60,12 +58,13 @@ function UserProfile({ params }: { params: { uid: string }}) {
   
   // }
   const [userProfile,setUserProfile] = useState<AppUserProfile|null|undefined>(undefined);
-  console.log(params.uid)
+  // console.log(params.uid)
   useEffect (()=>{
     const fetchProfile = async() =>{
       console.log("meomoe")
+      console.log("bruh")
       try{
-        console.log(BASE_URL+`/api/userinfo?userid=${params.uid}`);
+        // console.log(BASE_URL+`/api/userinfo?userid=${params.uid}`);
         const res = await fetch(BASE_URL+`/api/userinfo?userid=${params.uid}`,
         {method: 'GET',
         headers: {
@@ -73,6 +72,8 @@ function UserProfile({ params }: { params: { uid: string }}) {
         }})
         let data = await res.json();
         data.userID = params.uid;
+        // console.log(data)
+
        if(res.ok){
         setUserProfile(await mapUser(data.data));}
         else notFound();
@@ -126,9 +127,9 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <span className="text-sm ">Following</span>
         </button>
         </div>
-      {/* {state == 0 && <Post/>} */}
-      {state == 1 && <FollowersPage/>}
-      {state == 2 && <FollowingPage/>}
+      {state == 0 && <PostDetail params={{ pid:params.uid}}/>}
+      {/* {state == 1 && <FollowersPage/>}
+      {state == 2 && <FollowingPage/>} */}
       
      
     </div>
