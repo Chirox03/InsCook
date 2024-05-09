@@ -7,9 +7,36 @@ interface FileUploadProps {
 
 const uploadFile = async (props: FileUploadProps) => {
     const { file, folderPath  } = props;
-    const blob = new Blob([file], {type: 'image/png'})
+    const allowedExtensions = ['jpg', 'jpeg', 'png'];
+    // Extract the file extension from the file name
+    const fileNameParts = file.name.split('.');
+    const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
+
+    // Check if the file extension is allowed
+    if (!allowedExtensions.includes(fileExtension)) {
+        throw new Error('Only JPG, JPEG, and PNG files are allowed.');
+    }
+
+    // Determine the MIME type based on the file extension
+    let fileType = '';
+    switch (fileExtension) {
+        case 'jpg':
+            fileType = 'image/jpg';
+            break;
+        case 'jpeg':
+            fileType = 'image/jpeg';
+            break;
+        case 'png':
+            fileType = 'image/png';
+            break;
+        default:
+            throw new Error('Unsupported file extension.');
+    }
+
+    console.log(fileType);
+    const blob = new Blob([file], {type: fileType});
     const newfile = new Uint8Array(await blob.arrayBuffer());
-    const storageRef = ref(storage, `${folderPath}/${Date.now()}.jpg`);
+    const storageRef = ref(storage, `${folderPath}/${Date.now()}.${fileExtension}`); 
     try {
     const snapshot = await uploadBytes(storageRef, newfile);
     const downloadURL = snapshot.metadata.fullPath;

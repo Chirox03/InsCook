@@ -4,7 +4,6 @@ export default interface UserType{
     data: {
         avatar: string;
         biography: string;
-        birth: Date;
         name: string
     }
 }
