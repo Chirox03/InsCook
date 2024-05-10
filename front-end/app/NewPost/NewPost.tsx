@@ -20,7 +20,7 @@ interface APiPost{
   comment_number:number;
   like_number:number;
   category:string;
-  datetime:Date;
+  timestamp:Date;
   is_private:boolean;
   caption:string;
   duration: number;
@@ -37,7 +37,7 @@ function mapPost(recipe: RecipeType,id:string): APiPost{
     comment_number:0,
     like_number:0,
     category:recipe.category,
-    datetime: new Date(),
+    timestamp: new Date(),
     is_private:false,
     caption:recipe.description,
     duration: recipe.duration as number,
@@ -62,7 +62,7 @@ export default function NewPost() {
     data.append('comment_number','0');
     data.append('like_number','0');
     data.append('category',recipe.category);
-    data.append('datetime', new Date().toISOString );
+    data.append('timestamp', new Date().toISOString() );
     data.append('is_private','false');
     data.append('caption',recipe.description);
     data.append('duration', recipe.duration as string);
@@ -70,11 +70,14 @@ export default function NewPost() {
     data.append('image',recipe.image);
     data.append('pax',recipe.pax as string),
     data.append('ingredients', JSON.stringify(recipe.ingredients)),
-    data.append('instructions', JSON.stringify(recipe.instructions.map((step) => ({
-      content: step.content,
-      image: step.image ? step.image : null, 
-    }))));
-    console.log(data)
+    recipe.instructions.forEach((step, index) => {
+      // Append content
+      console.log(index)
+      data.append(`steps[${index}][content]`, step.content);
+
+      // Append image file
+      data.append(`steps[${index}][image]`, step.image as File);
+    });
    return data;
   }
      
