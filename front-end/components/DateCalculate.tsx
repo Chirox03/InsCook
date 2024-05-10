@@ -1,5 +1,5 @@
 function getRelativeTime(timestamp:Date) {
-  console.log(timestamp)
+  // console.log(timestamp)
   var date = new Date(timestamp)
     const diff = Date.now() - date.getTime()
     const seconds = Math.floor(diff / 1000);

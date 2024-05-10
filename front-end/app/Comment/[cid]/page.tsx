@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Comment from '@/components/Comment'
 import CommentType from '@/types/CommentType'
 import BASE_URL from "@/config";
-
+import { useAuth } from '@/context/AuthContext'
 export default function CommentPage({ params }: { params: { cid: string }}) {
 
 
@@ -27,9 +27,37 @@ export default function CommentPage({ params }: { params: { cid: string }}) {
       if(newComment !== ""){
         handleCommentSubmit(newComment);
         (e.target as HTMLInputElement).value = '';
+        console.log('Haha',newComment)
+        const createNewComment = async() => {
+          const commentData = {
+            content: newComment,
+            userid: useAuth.id,
+            postid: params.cid,
+          };
+          try {
+            const response = await fetch(BASE_URL+`/api/comment`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(commentData),
+            });
+        
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+        
+            const responseData = await response.json();
+            console.log(responseData.data);
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        }
+        createNewComment()
       }
     }
   }
+  // console.log(useAuth.id)
   // const [comments, setComments] = useState<Array<CommentType>>([
   //   { id:"123",
   //     content:"give me your price,give me your price,give me your price,give me your price,",
@@ -103,7 +131,7 @@ export default function CommentPage({ params }: { params: { cid: string }}) {
         });
   },[])
 
-  console.log(comments)
+  // console.log(comments)
 
   return (
     <div className='relative'>
