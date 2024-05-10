@@ -1,15 +1,16 @@
-import UserFollowing from "@/components/UserFollowing"
+import PostDetail from "@/app/Post/[pid]/page";
 import BASE_URL from "@/config";
 import { useEffect, useState } from "react";
 
-function FollowingPage({ params }: { params: { pid: string }}) {
-    const [followingUsers, setFollowingUsers] = useState<any[]>([]);
+
+function UserPosts({ params }: { params: { pid: string }}) {
+    const [posts, setposts] = useState<any[]>([]);
 
     useEffect(() => {
         // console.log("djaskl")
-        const fetchFollowingUsers = async () => {
+        const fetchUserPosts = async () => {
             try {
-            const response = await fetch(`/api/whofollow?userid=${params.pid}`, {
+            const response = await fetch(BASE_URL+`/api/getuserpost?userid=${params.pid}`, {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json',
@@ -24,29 +25,29 @@ function FollowingPage({ params }: { params: { pid: string }}) {
             }
         
             const responseData = await response.json();
-            setFollowingUsers(responseData.data);
+            setposts(responseData.data);
             } catch (error) {
             console.error('Error fetching following users:', error);
             return null;
             }
         };
         
-        fetchFollowingUsers()
+        fetchUserPosts()
             .catch((error) => {
             console.error('Error:', error);
             });
     },[])
-
-    console.log('Following',followingUsers)
+    // console.log('Posts',posts)
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {followingUsers.map((id: number) => (
-                        <UserFollowing params={{pid:id.id}} />
+                    {posts.map((id: string) => (
+                        <PostDetail params={{ pid:id.id}} />
                     ))}
                 </div>
+                
         </div>
     )
-}
+  }
 
-export default FollowingPage
+  export default UserPosts

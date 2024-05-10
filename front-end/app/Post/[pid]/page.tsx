@@ -9,6 +9,7 @@ import StepType from "@/types/StepType";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import UserType from "@/types/UserType";
+
 interface APiPost{
   user_id:string;
   title: string;
@@ -44,6 +45,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
   return post;
 }
 function PostDetail({ params }: { params: { pid: string }}) {
+  // console.log(params.pid)
   const {state: auth, dispatch } = useAuth();
   const [post,setPost] = useState<RecipeType|null>(null)
   const  [user,setUser] = useState<UserType|null>(null)
@@ -69,6 +71,14 @@ function PostDetail({ params }: { params: { pid: string }}) {
     //   }
 
   }
+
+
+  const handleComment = (link: string) => {
+    // Navigate to the specified link
+    window.location.href = link;
+  };
+  const handleSave = async () =>{
+
 
   useEffect ( ( )=>{
     const fetchPostbyId = async () =>{
@@ -109,7 +119,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
     }
     fetchPostbyId();
   },[])
-  // console.log(post?.image)
+
   // const post: Post = mapPost(apiPost)
   return (
     <div className="h-full">
@@ -127,7 +137,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
             <span className="text-xs">{post?.likes}</span>
         </div>
         <div>
-            <i className="fi fi-rr-comment mr-3" ></i>
+            <i className="fi fi-rr-comment mr-3" onClick={() => handleComment(`/Comment/${params.pid}`)}></i>
             <br/>
             <span className="text-xs">{post?.comments}</span>
         </div>

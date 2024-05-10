@@ -24,6 +24,10 @@ export async function GET(req: NextRequest) {
       }
       const postRef = doc(db, 'Post',postId);
       const postSnapshot = await getDoc(postRef);
+      const postinfo = postSnapshot.data();
+      if (postinfo.is_deleted) {
+        return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
+      }
 
       if (postSnapshot.exists()) {
         const postData = postSnapshot.data();
@@ -88,6 +92,7 @@ export async function POST(req: NextRequest){
         'category':data.get('category'),
         'caption':data.get('caption'),
         'is_private':false,
+        'is_deleted':false,
         'duration':data.get('duration') as number,
         'pax':data.get('pax') as number,
         'timestamp':new Date(),
@@ -108,21 +113,23 @@ export async function POST(req: NextRequest){
     return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};
   }
 }
-export async function PUT(req: NextRequest): Promise<NextResponse> {
+export async function DELETE(req: NextRequest): Promise<NextResponse> {
   const { method } = req;
 
-  if (method === 'PUT') {
+  if (method === 'DELETE') {
     try {
-      const { id ,postData,user_id} = await req.json(); 
+      const { postid } = await req.json(); 
 
-      if (!id || !postData) {
-        return NextResponse.json({ message: 'Missing post ID or data', data: null }, { status: 400 }); // Bad request
+      if (!postid) {
+        return NextResponse.json({ message: 'Missing post ID', data: null }, { status: 400 }); // Bad request
       }
-      postData.user_id = user_id;
-      const postRef = doc(db, 'Post', id); // Create a document reference with the ID
+      const postRef = doc(db, "Post", postid);
+      const postSnapshot = await getDoc(postRef);
+      let postData = postSnapshot.data();
+      postData.is_deleted = true;
       await updateDoc(postRef, postData); // Update the document with new data
 
-      return NextResponse.json({ message: 'Post updated successfully', data: {id:id } }, { status: 200 });
+      return NextResponse.json({ message: 'Post deleted successfully', data: null }, { status: 200 });
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null }, { status: 500 });

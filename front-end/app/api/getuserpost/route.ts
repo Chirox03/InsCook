@@ -39,10 +39,10 @@ export async function GET(req: NextRequest){
     try {
       const url = new URL(req.url);
       const userid = url.searchParams.get('userid');
-      console.log(userid);
+      console.log('userid',userid);
 
       if (!userid) {
-        return NextResponse.json({ message: 'User ID not provided', data: null }, { status: 400 });
+        return NextResponse.json({ message: 'User ID not provided', data: userid }, { status: 400 });
       }
       // Query documents where user_id == userid 
       const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid)));
