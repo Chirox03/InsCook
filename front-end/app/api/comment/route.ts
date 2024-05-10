@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/firebase';
+import { db } from '@/firebase'
 import { collection, doc, getDoc, getDocs, updateDoc, query, where, addDoc, deleteDoc } from 'firebase/firestore';
 import CommentType from '@/types/CommentType';
 
@@ -123,4 +123,4 @@ type ResponseData = {
       return NextResponse.json({ message: 'Method not allowed', data: null }, { status: 405 });
     }
   }
-  
+
