@@ -11,13 +11,13 @@ return (
         <Link href="/NewPost">
         <i className="fi fi-br-plus text-2xl"></i>
         </Link>
-        <Link href="/NewPost">
+        {/* <Link href="/NewPost">
         <i className="fi fi-br-heart text-2xl"></i>
-        </Link>
+        </Link> */}
         <Link href="/Search">
         <i className="fi fi-bs-search text-2xl"></i>
         </Link>
-        <Link href="/UserProfile">
+        <Link href={`/UserProfile/${auth.id}`}>
         <i className="fi fi-br-user text-2xl"></i>
         </Link>
     </div>
