@@ -6,14 +6,18 @@ import PostType from "@/types/PostType";
 import Navbar from "@/components/NavBar";
 import { useEffect ,useState} from "react";
 import { useAuth } from "@/context/AuthContext";
+import {useRouter} from "next/navigation"
 function HomePage() {
   const  [PostList,setPostList] = useState<PostType[]>([]);
   const {state: auth, dispatch } = useAuth();
+  const router = useRouter();
+  if(auth==null) {
+    router.push("/Login")
+    return null;}
  useEffect( ()=>{
-  
   const fetchPosts = async () =>{
     try{
-      const response = await fetch(`api/home?userID=${auth.id}`,{
+      const response = await fetch(`api/home?userID=${auth?.id}`,{
       method: 'GET', // or 'POST', 'PUT', etc.
       headers: {
         'Content-Type': 'application/json', // Example header
@@ -22,6 +26,9 @@ function HomePage() {
       if(response.ok){
         const data = await response.json();
         setPostList(data.data as PostType[])
+      }else {
+        const data = await response.json();
+        console.log(data.message)
       }
     }catch(error)
     {

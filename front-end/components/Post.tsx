@@ -9,26 +9,26 @@ interface PostProps {
 }
 const  Post:  React.FC<PostProps> = ({post}) =>{
   const router = useRouter();
-  // console.log(post)
-  const handlePostClick = (e: React.MouseEvent<HTMLButtonElement>) =>
+  console.log(post)
+  const handlePostClick = (e: React.MouseEvent<HTMLDivElement>) =>
   {
     e.preventDefault();
-    router.push(`/post/${post.id}`)
+    router.push(`/Post/${post.id}`)
   }
   return (
     <div className="w-full my-2">
         <div className="mt-6">
           <div className="flex flex-row m-2 ml-1 items-start">
-            <img className="w-16 h-16 rounded-full" src="\image.png" alt="User Avatar" />
+            <img className="w-16 h-16 rounded-full" src={post.user.avatar} alt="User Avatar" />
             <div className="ml-2 pt-2 flex font-sans flex-col">
               <div className="text-left font-sans font-semibold text-slate-600 text-md">{post.user.username}</div>
-              <div className="text-left font-normal text-xs text-gray-400">{getRelativeTime(post.timestamp)}</div>
+              <div className="text-left font-normal text-xs text-gray-400">{post?.timestamp && new Date(post?.timestamp?.seconds * 1000).toLocaleDateString()}</div>
             </div>
           </div>
           <div className="h-400 rounded-s">
             <img src={post.image||undefined} alt="food image" />
           </div>
-          <div className="mt-2 flex flex-row justify-start">
+          <div className="mt-2 flex flex-row justify-start" onClick={(e)=>handlePostClick(e)}>
             <div className="flex flex-col mr-2">
               { (post.isLiked===true) ? (<i className="fi fi-sr-heart "></i>) : <i className="fi fi-rr-heart"></i>}
             <span className="text-xs not-italic -mt-2">{post.likes}</span>
@@ -43,7 +43,7 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
           <p className="text-left md-2 font-sans">
            {post.caption}
           
-          <button onClick={(e)=>handlePostClick(e)} type="button" className="ml-2 text-xs underline hover:underline-offset-0"  >
+          <button type="button" className="ml-2 text-xs underline hover:underline-offset-0"  >
              - See post... -
           </button>
           </p>

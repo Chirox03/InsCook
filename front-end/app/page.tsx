@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const {state: auth, dispatch } = useAuth();
   const router = useRouter()
-  if (auth.id==null) router.push('/Login');
+  console.log(auth)
+  if (auth==null) router.push('/Login');
   return (
     <main className="">
         <HomePage/>

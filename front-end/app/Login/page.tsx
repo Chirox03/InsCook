@@ -16,8 +16,11 @@ function Login(){
         setPassword("");
     },[])
     const {state: auth, dispatch } = useAuth();
+    useEffect(()=>{
+        if(auth!=null) router.push("/")
+    },[])
     const handleForm = async (event: React.FormEvent) =>{
-        console.log("logining")
+        console.log(email,password)
         event.preventDefault();
         try{
 
@@ -29,11 +32,12 @@ function Login(){
             body: JSON.stringify({'email':email,'password':password})
         })
         const responseData = await res.json();
-
+        
         if(res.ok){
             toast.success("Log in sucessfully");
-            dispatch({type:"LOG_IN",payload:responseData.data.id})
+            dispatch({type:"LOG_IN",payload:responseData.data})
             // console.log(responseData.data,auth)
+            // console.log(auth)
             router.push('/');
         }else{
             console.log(responseData)

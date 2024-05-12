@@ -2,7 +2,7 @@ import PostType from '@/types/PostType';
 import { NextRequest, NextResponse } from 'next/server'
 import { useRouter } from 'next/router'
 import { db } from '@/firebase'
-import { collection, getDocs,doc,getDoc ,addDoc,updateDoc,where,query} from "firebase/firestore";
+import { collection, getDocs,doc,getDoc ,addDoc,updateDoc,where,query,limit} from "firebase/firestore";
 import { CollectionReference, QuerySnapshot, QueryDocumentSnapshot ,DocumentData} from "firebase/firestore"
 type ResponseData = {
     message: string,
@@ -19,7 +19,7 @@ type ResponseData = {
             return NextResponse.json({ message: 'User ID is missing', data: null }, { status: 400 });
           }
 
-          const collectionRef = collection(db, 'Post');
+          const collectionRef = query(collection(db, 'Post'), limit(10));
           const postSnapshot = await getDocs(collectionRef)
           
           if (postSnapshot.empty) {
@@ -30,12 +30,15 @@ type ResponseData = {
             for (const postdoc of postSnapshot.docs) {
               const postData = postdoc.data() 
               console.log(postData)
-              const docRef = doc(db, 'User', postData.user_id);
-              const userDoc = await getDoc(docRef)
+              if(postData.user_id !=null)
+                {
+
+                  const docRef = doc(db, 'User', postData.user_id);
+                  const userDoc = await getDoc(docRef)
               const userData = userDoc.data();
               const post: PostType = {
                 id: postdoc.id,
-                user: {'userID':userDoc.id,'username':userData?.name},
+                user: {'userID':userDoc.id,'username':userData?.name,'avatar':userData?.avatar},
                 timestamp: postData.timestamp,
                 title: postData.title,
                 caption: postData.caption,
@@ -54,6 +57,7 @@ type ResponseData = {
               post.isSaved = !saveQuerySnapshot.empty;
               postsData.push(post)
               console.log(post)
+            }
             }
 
           return NextResponse.json( { message: 'Posts retrieved successfully', data: postsData },{status:200});

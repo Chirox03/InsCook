@@ -51,13 +51,14 @@ function mapPost(recipe: RecipeType,id:string): APiPost{
 export default function NewPost() {
   const router = useRouter();
   const {state: auth} = useAuth();
+  if (auth==null) router.push("/Login");
   const {state: recipe, dispatch } = useRecipes();
   useEffect(() => {
     console.log('Recipe state updated:', recipe);
   }, [recipe]); 
   const prepareFormData = async() =>{
     const data = new FormData();
-    data.append('user_id',auth.id as string) ;
+    data.append('user_id',auth?.id as string) ;
     data.append('title', recipe.title);
     data.append('comment_number','0');
     data.append('like_number','0');
@@ -163,7 +164,7 @@ export default function NewPost() {
             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
         </svg>
        </button>
-       <span className='p-1 text-gray'>UserName</span>
+       <span className='p-1 text-gray'>{auth?.data.name}</span>
        <button type="button" className="flex items-center justify-stretch px-2 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700" onClick={handleSave}>
         Save
        </button>

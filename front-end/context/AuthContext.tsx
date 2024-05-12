@@ -1,32 +1,43 @@
 import AuthType from '@/types/AuthType';
 import RecipeType from '@/types/RecipeType';
 import StepType from '@/types/StepType';
-
+import { Auth } from 'firebase/auth';
+import { useEffect } from 'react';
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
-
 type Action = 
   | { type: 'LOG_OUT'; payload: null }
-  | { type: 'LOG_IN'; payload: string}
+  | { type: 'LOG_IN'; payload: AuthType}
 
 
-const initialState: AuthType = {id:null};
+const initialState: AuthType|null = null;
 
-const reducer = (state: AuthType, action: Action): AuthType => {
+const reducer = (state: AuthType|null, action: Action): AuthType|null => {
   switch (action.type) {
     case 'LOG_IN':
-      console.log("New log in")
-      return {id:action.payload}
+      // console.log(action.payload);
+      localStorage.setItem('authToken', JSON.stringify(action.payload));
+      return action.payload;
     case 'LOG_OUT':
-      return {id:null};
+      localStorage.removeItem('authToken');
+      return null;
     default:
       return state;
   }
 };
 
-const AuthContext = createContext<{ state: AuthType; dispatch: React.Dispatch<Action> } | undefined>(undefined);
+const AuthContext = createContext<{ state: AuthType|null; dispatch: React.Dispatch<Action> } | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      // console.log(token)
+      dispatch({ type: 'LOG_IN', payload: JSON.parse(token) });
+    }
+    // console.log(state)
+  }, []);
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
       {children}
