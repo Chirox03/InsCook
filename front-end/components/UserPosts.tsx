@@ -1,6 +1,7 @@
 import PostDetail from "@/app/Post/[pid]/page";
 import BASE_URL from "@/config";
 import { useEffect, useState } from "react";
+import Post from "@/components/Post"
 
 
 function UserPosts({ params }: { params: { pid: string }}) {
@@ -37,13 +38,13 @@ function UserPosts({ params }: { params: { pid: string }}) {
             console.error('Error:', error);
             });
     },[])
-    // console.log('Posts',posts)
+    console.log('Posts',posts)
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {posts.map((id: string) => (
-                        <PostDetail params={{ pid:id.id}} />
-                    ))}
+                {posts.map((post) => (
+                    <Post key={post.id} post={post} />
+                ))}
                 </div>
                 
         </div>
