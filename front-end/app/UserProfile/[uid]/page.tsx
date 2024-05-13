@@ -12,37 +12,33 @@ import UserPosts from "@/components/UserPosts";
 
 interface APiUser{
   id:number;
-  name: string;
-  biography: string;
-  avatar:string;
-  numpost: number;
-  numfollowers: number;
-  numfollowing: number;
-
+  data: {
+    name: string;
+    biography: string;
+    avatar:string;
+  }
 }
 interface AppUserProfile{
   userID: number;
-  name: string;
-  avatar:Blob|null;
-  description: string;
-  numpost: number;
-  numfollowers: number;
-  numfollowing: number;
+  data: {
+    name: string;
+    biography: string;
+    avatar:string;
+  }
 }
 const mapUser = async (apiUser: APiUser): Promise<AppUserProfile> => {
-  const { id, name, biography, avatar, numpost, numfollowers, numfollowing } = apiUser;
+  const { id, data} = apiUser;
   // const avatarRef = ref(storage, avatar);
   // const avatarURL = await getDownloadURL(avatarRef);
   // const response = await fetch(avatarURL);
   // const avatarBlob = await response.blob();
   const appUser: AppUserProfile = {
       userID: id,
-      name: name,
-      description: biography,
-      avatar: null, // Save avatar as Blob
-      numpost: numpost,
-      numfollowers: numfollowers,
-      numfollowing: numfollowing,
+      data: {
+        name: data.name,
+        biography: data.biography,
+        avatar: data.avatar,
+      }
   };
 
   return appUser;
@@ -73,9 +69,11 @@ function UserProfile({ params }: { params: { uid: string }}) {
         }})
         let data = await res.json();
         data.userID = params.uid;
+        console.log(data)
         // console.log(data)
 
        if(res.ok){
+        console.log('???',data)
         setUserProfile(await mapUser(data.data));}
         else notFound();
       }
@@ -91,16 +89,16 @@ function UserProfile({ params }: { params: { uid: string }}) {
 
   
   // const user: AppUserPro = mapUser(apiUser)
-  console.log(userProfile)
+  console.log('Hello',userProfile)
   const [state, setState] = useState(0)
   // if(userProfile==null) return notFound();
   return (
     <div className="my-2 flex flex-col content-center h-full flex-grow overflow-y-auto">
      <div className="mx-5 mb-5">
         <div className="flex my-2">
-        <img className='max-h-28 rounded-full overflow-hidden align-left' src={userProfile?.avatar instanceof Blob ? URL.createObjectURL(userProfile.avatar):"/image.png"} alt="avatar"/>
+        <img className='max-h-28 rounded-full overflow-hidden align-left' src={userProfile?.data.avatar instanceof Blob ? URL.createObjectURL(userProfile.data.avatar):"/image.png"} alt="avatar"/>
         <div className="mx-3">
-        <h2 className="text-sm font-medium">{userProfile?.name}</h2>
+        <h2 className="text-sm font-medium">{userProfile?.data.name}</h2>
         <div className="flex justify-between py-2">
         <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
             <Link href={`/Edit/${params.uid}`}>Edit</Link>
@@ -110,23 +108,23 @@ function UserProfile({ params }: { params: { uid: string }}) {
         </div>
        </div>
         {/* <h2 className="font-sans text-sm font-medium">{user.hobbies}</h2> */}
-        <p className="font-sans text-sm">{userProfile?.description}</p>
+        <p className="font-sans text-sm">{userProfile?.data.biography}</p>
         </div>
         
         <div className="inline-flex justify-stretch shadow-sm" role="group">
         <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(0)}>   
-            <span className="text-xs"> {userProfile?.numpost}</span>
-            <br/>
+            {/* <span className="text-xs"> {userProfile?.numpost}</span>
+            <br/> */}
             <span className="text-sm ">Posts</span>
         </button>
         <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100 hover:bg-gray-100 hover:text-blue-700 focus:z-10   focus:border-t-2 focus:border-black focus:text-slate-900  focus:text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(1)}>
-        <span className="text-xs"> {userProfile?.numfollowers}</span>
-            <br/>
+        {/* <span className="text-xs"> {userProfile?.numfollowers}</span>
+            <br/> */}
             <span className="text-sm ">Followers</span>
         </button>
         <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(2)}>
-        <span className="text-xs"> {userProfile?.numfollowing}</span>
-            <br/>
+        {/* <span className="text-xs"> {userProfile?.numfollowing}</span>
+            <br/> */}
             <span className="text-sm ">Following</span>
         </button>
         </div>

@@ -9,7 +9,7 @@ interface PostProps {
 }
 const  Post:  React.FC<PostProps> = ({post}) =>{
   const router = useRouter();
-  console.log(post)
+  // console.log(post)
   const handlePostClick = (e: React.MouseEvent<HTMLDivElement>) =>
   {
     e.preventDefault();

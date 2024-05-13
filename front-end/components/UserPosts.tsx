@@ -38,7 +38,7 @@ function UserPosts({ params }: { params: { pid: string }}) {
             console.error('Error:', error);
             });
     },[])
-    console.log('Posts',posts)
+    // console.log('Posts',posts)
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
