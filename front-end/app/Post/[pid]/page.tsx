@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import UserType from "@/types/UserType";
 import { useRouter } from "next/navigation";
+import UserProfile from "@/app/UserProfile/[uid]/page";
 
 interface APiPost{
   user_id:string;
@@ -126,7 +127,11 @@ function PostDetail({ params }: { params: { pid: string }}) {
     e.preventDefault();
     router.back();
   }
-  
+  const handleUserClick = (e:React.MouseEvent<HTMLDivElement>) =>{
+    e.preventDefault();
+    router.prefetch(`/UserProfile/${user?.id}`)
+    router.push(`/UserProfile/${user?.id}`)
+  }
   console.log(post)
   // const post: Post = mapPost(apiPost)
   return (
@@ -168,7 +173,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
             </div>
             <div className="ml-2 flex font-sans flex-col">
               <div className="flex flex-row flex-auto py-4 px-2">
-                <div className="text-md">{user?.data.name}</div>
+                <div className="text-md font-semibold cursor-pointer" onClick={(e)=>handleUserClick(e)}>{user?.data.name}</div>
                 <div className="ml-4">{post?.timestamp && new Date(post?.timestamp?.seconds * 1000).toLocaleDateString()}</div>
               </div>
               <div className="text-left"></div>
@@ -201,16 +206,16 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <h2 ><span className="px-2 text-lg font-semibold">Serve for:</span> {post?.pax} pax</h2> 
         </div>
         
-        <h2 className="px-2 text-lg font-semibold">Instruction:</h2>
+        <h2 className="px-2 text-lg font-semibold mb-5">Instruction:</h2>
         {post?.instructions?.map((instruction,index) => (
-        <div>
-        <div className="flex space-x-4 items-center">
-          <div className="rounded-full h-6 w-6 bg-coral flex items-center justify-center">
+        <div className="mb-5">
+        <div className="flex space-x-4 items-center mb-2">
+          <div className="rounded-full h-8 w-8 bg-coral flex items-center justify-center">
             <span className="text-white text-sm font-bold">{index+1}</span>
           </div>
           <h2 className="text-lg font-medium text-gray-800">Step {index+1}</h2>
           </div>
-          <p className="">
+          <p className="mb-2 text-md">
             {instruction.content}
             </p> 
             <img src={instruction.image} alt="step image"></img>
