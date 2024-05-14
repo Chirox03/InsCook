@@ -14,13 +14,16 @@ type Action =
   | { type: 'CHANGE_INGRE'; payload:string[]}
   | { type: 'CHANGE_INSTRUCTION'; payload:StepType[]}
   | {type: 'CHANGE_STEP'; payload: {id: number; content: StepType}}
-  | { type: 'CHANGE_COVER'; payload: string|Blob|null};
+  | { type: 'CHANGE_COVER'; payload: string|Blob|null}
+  | { type: 'SET_RECIPE'; payload: RecipeType}
+  | { type: 'CHANGE_METHOD'; payload: string};
 
 const initialState: RecipeType = {
   id: null,
   image: null,
   title: '',
   description: '',
+  method:'Fry',
   pax: 1,
   duration: 5,
   ingredients: [],
@@ -50,6 +53,10 @@ const reducer = (state: RecipeType, action: Action): RecipeType => {
       return { ...state, instructions: state.instructions.filter((_, index) => index !== action.payload) };
     case 'CHANGE_COVER':
       return { ...state, image:action.payload };
+    case 'CHANGE_METHOD':
+      return { ...state, method:action.payload };
+    case 'SET_RECIPE':
+      return  action.payload ;
     case 'CHANGE_STEP':
     const {id, content } = action.payload;
 

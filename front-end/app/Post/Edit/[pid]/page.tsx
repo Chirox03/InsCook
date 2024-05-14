@@ -30,7 +30,7 @@ interface APiPost{
   step: Array<StepType>;
 }
 
-function mapPost(recipe: RecipeType,id:string): APiPost{
+function mapApiPost(recipe: RecipeType,id:string): APiPost{
   const post: APiPost = {
     user_id :id,
     title: recipe.title,
@@ -48,7 +48,26 @@ function mapPost(recipe: RecipeType,id:string): APiPost{
   }
   return post;
 }
-export default function NewPost() {
+function mapPost(apiPost: APiPost,id:string): RecipeType{
+  const post: RecipeType = {
+    id: id,
+    image: apiPost.image,
+    likes: apiPost.like_number,
+    comments: apiPost.comment_number,
+    title: apiPost.title,
+    description: apiPost.caption,
+    duration: apiPost.duration,
+    category:apiPost.category,
+    method:apiPost.method,
+    pax: apiPost.pax,
+    timestamp:null,
+    ingredients: apiPost.ingredients as Array<string>,
+    instructions: apiPost.step,
+    user_id :apiPost.user_id
+  }
+  return post;
+}
+const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
   const router = useRouter();
   const {state: auth} = useAuth();
   if (auth==null) router.push("/Login");
@@ -60,8 +79,6 @@ export default function NewPost() {
     const data = new FormData();
     data.append('user_id',auth?.id as string) ;
     data.append('title', recipe.title);
-    data.append('comment_number','0');
-    data.append('like_number','0');
     data.append('category',recipe.category);
     data.append('timestamp', new Date().toISOString() );
     data.append('is_private','false');
@@ -81,12 +98,29 @@ export default function NewPost() {
     });
    return data;
   }
-     
+  const fetchPostbyId = async () =>{
+    try{
+        const response = await axios.get(`${BASE_URL}/api/posts?id=${params.pid}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        dispatch({ type: 'SET_RECIPE', payload: mapPost(response.data.data,params.pid)});
+      }
+      catch(error){
+        console.error('Error fetching posts:', error);
+        toast.error('Error fetching posts:')
+        return null;
+      }
+  }
+  useEffect(()=>{
+    fetchPostbyId();
+  },[])
+  console.log(recipe)
   const handleSave = async() => {
     try {
       const preparedData = await prepareFormData();
-   
-      const response = await axios.post('/api/posts', preparedData, {
+      const response = await axios.put('/api/posts', preparedData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -125,10 +159,6 @@ export default function NewPost() {
     newIngredients[index] = e.target.value;
     dispatch({ type: 'CHANGE_INGRE', payload: newIngredients });
   };
-  const handleMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.preventDefault();
-    dispatch({ type: 'CHANGE_METHOD', payload: e.target.value });
-  };
 
   const addIngredientInput = () => {
     dispatch({type: 'ADD_INGRE' ,payload: "" });
@@ -144,8 +174,6 @@ export default function NewPost() {
     dispatch({type: 'DEL_STEP',payload: index})
   }
   const handleUploadCoverImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-   // Get the selected file
-   //e.preventDefault();
     const reader = new FileReader(); 
     if(e.target.files && e.target.files.length > 0){
       const file = e.target.files[0]; 
@@ -160,7 +188,6 @@ export default function NewPost() {
     }
 };
   return (
-
     <div className='pb-20'>
         <div className='fixed p-2 top-0 left-0 right-0 flex flex-row justify-between bg-white shadow-md rounded-sm '>
         <button type="button" className="flex items-center justify-stretch px-2 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white rounded-lg gap-x-2 sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
@@ -174,7 +201,7 @@ export default function NewPost() {
        </button>
         </div>
 
-      <form className='mt-14'>
+      <form className='mt-20'>
        <div className="flex items-center justify-center">
         <label>
           <input name="cover" onChange={(e)=>handleUploadCoverImage(e)} id="dropzone-file" type="file" className="visible" />
@@ -182,7 +209,7 @@ export default function NewPost() {
           (
             null
           ): (
-            <img className="pt-5 pb-6" alt='step image' src={recipe.image instanceof Blob ? URL.createObjectURL(recipe.image):undefined}/>
+            <img className="pt-5 pb-6" alt='step image' src={recipe.image instanceof Blob ? URL.createObjectURL(recipe.image):recipe.image}/>
           )
         }
         </label>
@@ -192,23 +219,6 @@ export default function NewPost() {
     <label className='font-semibold'>Name of recipe</label>
         <textarea name="title" className="my-5  border rounded-md block p-2.5 w-full focus:ring-coral text-lg" placeholder="Your tittle" value={recipe.title} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleTitleChange(e)}></textarea>
         <textarea name="intro"className="my-5 border rounded-md block p-2.5  w-full focus:ring-coral text-sm" placeholder="Introduction" value={recipe.description} onChange={(e) => handleDescriptionChange(e)}></textarea>
-        <div className="mr-24 flex flex-row justify-between gap-3 py-2">
-        <label className='font-semibold'>Method</label>
-        <div className="mr-2">
-              <select
-                name="filter"
-                className="text-sm h-8 rounded-md mr-2 p-1" 
-                value={recipe.pax}
-                onChange={(e) => handleMethodChange(e)}>
-                <option value={'Fry'}>Fry</option>
-                <option value={'Stir'}>Stir</option>
-                <option value={'Steam'}>Steam</option>
-                <option value={'Boil'}>Boil</option>
-                <option value={'Grill'}>Grill</option>
-                <option value={'Bake'}>Bake</option>
-              </select>
-        </div>
-        </div>
         <div className="mr-24 flex flex-row justify-between gap-3 py-2">
         <label className='font-semibold'>Portion</label>
         <div className="mr-2">
@@ -279,3 +289,10 @@ export default function NewPost() {
     </div>
   )
 }
+const EditPost = ({ params }: { params: { pid: string } }) => (
+  <RecipesProvider>
+      <EditPostComponent params={params} />
+  </RecipesProvider>
+);
+
+export default EditPost;

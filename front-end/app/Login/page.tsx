@@ -18,6 +18,7 @@ function Login(){
     const {state: auth, dispatch } = useAuth();
     useEffect(()=>{
         if(auth!=null) router.push("/")
+            
     },[])
     const handleForm = async (event: React.FormEvent) =>{
         console.log(email,password)
@@ -36,8 +37,7 @@ function Login(){
         if(res.ok){
             toast.success("Log in sucessfully");
             dispatch({type:"LOG_IN",payload:responseData.data})
-            // console.log(responseData.data,auth)
-            // console.log(auth)
+            router.prefetch("/");
             router.push('/');
         }else{
             console.log(responseData)
