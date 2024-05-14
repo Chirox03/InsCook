@@ -125,6 +125,10 @@ export default function NewPost() {
     newIngredients[index] = e.target.value;
     dispatch({ type: 'CHANGE_INGRE', payload: newIngredients });
   };
+  const handleMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    dispatch({ type: 'CHANGE_METHOD', payload: e.target.value });
+  };
 
   const addIngredientInput = () => {
     dispatch({type: 'ADD_INGRE' ,payload: "" });
@@ -188,6 +192,23 @@ export default function NewPost() {
     <label className='font-semibold'>Name of recipe</label>
         <textarea name="title" className="my-5  border rounded-md block p-2.5 w-full focus:ring-coral text-lg" placeholder="Your tittle" value={recipe.title} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleTitleChange(e)}></textarea>
         <textarea name="intro"className="my-5 border rounded-md block p-2.5  w-full focus:ring-coral text-sm" placeholder="Introduction" value={recipe.description} onChange={(e) => handleDescriptionChange(e)}></textarea>
+        <div className="mr-24 flex flex-row justify-between gap-3 py-2">
+        <label className='font-semibold'>Method</label>
+        <div className="mr-2">
+              <select
+                name="filter"
+                className="text-sm h-8 rounded-md mr-2 p-1" 
+                value={recipe.pax}
+                onChange={(e) => handleMethodChange(e)}>
+                <option value={'Fry'}>Fry</option>
+                <option value={'Stir'}>Stir</option>
+                <option value={'Steam'}>Steam</option>
+                <option value={'Boil'}>Boil</option>
+                <option value={'Grill'}>Grill</option>
+                <option value={'Bake'}>Bake</option>
+              </select>
+        </div>
+        </div>
         <div className="mr-24 flex flex-row justify-between gap-3 py-2">
         <label className='font-semibold'>Portion</label>
         <div className="mr-2">

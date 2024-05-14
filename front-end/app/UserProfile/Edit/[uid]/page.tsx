@@ -8,6 +8,7 @@ import BASE_URL from '@/config';
 import { notFound } from 'next/navigation';
 import {toast } from 'react-toastify';
 import { useRouter } from 'next/navigation'
+import { RecipesProvider } from '@/context/RecipesContext';
 const imageStyle = {
     borderRadius: '50%',
     mt: -50,
@@ -153,6 +154,8 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
 
   
   return (
+    <RecipesProvider>
+
     <form>
       <div className="space-y-12">
         <div className="border-b border-gray-900/10 pb-12">
@@ -186,7 +189,7 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
                   rows={3}
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   value={userProfile?.description}
-                />
+                  />
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about yourself.</p>
             </div>
@@ -265,5 +268,6 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
         </button>
       </div>
     </form>
+                  </RecipesProvider>
   )
 }

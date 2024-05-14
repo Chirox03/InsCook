@@ -24,6 +24,7 @@ interface APiPost{
   duration: number;
   image:string;
   pax: number;
+  method:string;
   ingredients: Array<string>
   step: Array<StepType>;
 }
@@ -38,6 +39,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
     description: apiPost.caption,
     duration: apiPost.duration,
     category:apiPost.category,
+    method:apiPost.method,
     pax: apiPost.pax,
     timestamp:null,
     ingredients: apiPost.ingredients as Array<string>,
@@ -300,7 +302,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
       : `${post?.duration} minutes`} </h2> 
         <h2 ><span className="px-2 text-lg font-semibold">Serve for:</span> {post?.pax} pax</h2> 
         </div>
-        
+        <h2 className="px-2 text-lg font-semibold mb-5">Method:</h2>
         <h2 className="px-2 text-lg font-semibold mb-5">Instruction:</h2>
         {post?.instructions?.map((instruction,index) => (
         <div className="mb-5">
