@@ -1,7 +1,7 @@
 'use client'
 import ImageCarousel from "@/components/ImageCarousel"
 import Image from "next/image"
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import RecipeType from "@/types/RecipeType";
 import { toast } from "react-toastify";
 import BASE_URL from "@/config";
@@ -51,33 +51,17 @@ function PostDetail({ params }: { params: { pid: string }}) {
   const {state: auth, dispatch } = useAuth();
   const [post,setPost] = useState<RecipeType|null>(null)
   const  [user,setUser] = useState<UserType|null>(null)
-  const handleLike = async () =>{
-    // try{
-    //   const res = await fetch(BASE_URL+`/api/like`,{
-    //     method: 'GET', 
-    //     headers: {
-    //       'Content-Type': 'application/json', 
-    //     },
-    //     body:JSON.stringify({
-    //       'userid': auth.id,
-    //       'postid':params.pid
-    //     })})
-    //   const responseData = await res.json();
-    //   if(res.ok){
-    //     setPost(mapPost(responseData.data as APiPost,params.pid))
-    //   }else {
-    //     toast.error(responseData.message)
-    //   }
-    //   }catch(error){
-    //     console.error('Error fetching posts:', error);
-    //   }
-
-  }
-
   const router = useRouter()
-  const handleComment = (link: string) => {
-    // Navigate to the specified link
-    window.location.href = link;
+  const [like,setLike] = useState<boolean|null> (null)
+  const handleComment = (e:React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.disabled=true;
+    try{
+      router.prefetch(`Comment/${params.pid}`)
+      router.push(`Comment/${params.pid}`)
+    }catch(error){
+      console.log(error);
+      e.currentTarget.disabled=false;
+    }
   };
   if(auth==null) 
     {
@@ -85,7 +69,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
       return null;
     }
 
-  useEffect ( ( )=>{
+  useEffect ( ()=>{
     const fetchPostbyId = async () =>{
       try{
           const response = await axios.get(`${BASE_URL}/api/posts?id=${params.pid}`, {
@@ -95,6 +79,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
           });
           await fetchUserbyId(response.data.data.user_id);
           setPost(mapPost(response.data.data as APiPost,params.pid))
+          await fetchLike();
         }
         catch(error){
           console.error('Error fetching posts:', error);
@@ -106,7 +91,6 @@ function PostDetail({ params }: { params: { pid: string }}) {
     }
     const fetchUserbyId = async (id:String) =>{
       try{
-        console.log("id:",id)
         const response = await axios.get(`${BASE_URL}/api/userinfo?userid=${id}`, {
           headers: {
             'Content-Type': 'application/json',
@@ -121,7 +105,9 @@ function PostDetail({ params }: { params: { pid: string }}) {
         toast.error('Error fetching posts:')
       }
     }
+   
     fetchPostbyId();
+
   },[])
   const handleBack = (e: React.MouseEvent<HTMLButtonElement>) =>{
     e.preventDefault();
@@ -132,8 +118,84 @@ function PostDetail({ params }: { params: { pid: string }}) {
     router.prefetch(`/UserProfile/${user?.id}`)
     router.push(`/UserProfile/${user?.id}`)
   }
-  console.log(post)
-  // const post: Post = mapPost(apiPost)
+  const fetchLike = async() => {
+    try{
+        const response = await axios.get(`${BASE_URL}/api/like?postid=${params.pid}`)
+        console.log(response.data)
+        setPost(prevPost => prevPost ? { ...prevPost, likes: response.data.data.length } : prevPost);
+        if(response.data.data.find( user => user.id===auth.id))
+          setLike(true);
+        else setLike(false)
+        
+    }catch(error){
+        console.log("Error fetching like",error)
+    }
+}
+  const handleLike = async (e:React.MouseEvent<HTMLButtonElement>) =>{
+    e.preventDefault();
+    e.currentTarget.disabled=true;
+    console.log("like")
+    try{
+      const response = await axios.put(`${BASE_URL}/api/like`, {
+      userid: auth?.id,
+      postid: params.pid
+      });
+      console.log("like succesfully")
+      
+      await fetchLike();
+      e.currentTarget.disabled=false;
+    }
+    catch(error){
+      console.error('Error fetching posts:', error);
+      toast.error('Error fetching posts:')
+      e.currentTarget.disabled=false;
+      return null;
+    }
+  }
+  const handleLikeView = (e:React.MouseEvent<HTMLButtonElement>) =>{
+    e.preventDefault();
+    e.currentTarget.disabled=true;
+    try{
+      router.prefetch(`Like/${params.pid}`)
+      router.push(`Like/${params.pid}`)
+    }catch(error)
+    {
+      console.log(error);
+      e.currentTarget.disabled=false;
+    }
+  }
+  const [showMenu, setShowMenu] = useState(false);
+  const handleMenuToggle = () => {
+    setShowMenu(!showMenu);
+  };
+  const handleGetSharingLink = () => {
+    const sharingLink = `${window.location.origin}/Post/${params.pid}`;
+    navigator.clipboard.writeText(sharingLink).then(() => {
+      toast.success('Sharing link copied to clipboard!');
+    }).catch((err) => {
+      toast.error('Failed to copy sharing link.');
+    });
+    setShowMenu(false);
+  };
+
+  const handleEditPost = () => {
+    // Implement edit post logic here
+    router.prefetch(`Edit/${params.pid}`)
+    router.push(`Edit/${params.pid}`)
+    setShowMenu(false);
+  };
+
+  const handleDeletePost = async () => {
+    try {
+      await axios.delete(`${BASE_URL}/api/posts/${params.pid}`);
+      toast.success('Post deleted successfully');
+      router.push('/');
+    } catch (error) {
+      toast.error('Error deleting post');
+    }
+    setShowMenu(false);
+  };
+  console.log("likr",like)
   return (
     <div className="h-full">
         {/* Back button */}
@@ -145,12 +207,23 @@ function PostDetail({ params }: { params: { pid: string }}) {
        </button>
        <div className="mx-2 mt-2 flex flex-row justify-start">
         <div>
-            <i className="fi fi-rr-heart mr-3" onClick={handleLike}> </i>
+            <button onClick={(e)=>handleLike(e)}>
+              {
+                (like===false)?
+                <i className="fi fi-rr-heart mr-3" > </i>
+                :
+                <i className="fi fi-sr-heart mr-3"></i>
+              }
+            </button>
             <br/>
-            <span className="text-xs p-1">{post?.likes}</span>
+            <button onClick={(e)=>handleLikeView(e)}>
+            <span className="text-xs p-1 cursor-default" >{post?.likes}</span>
+            </button>
         </div>
         <div>
-            <i className="fi fi-rr-comment mr-3" onClick={() => handleComment(`/Comment/${params.pid}`)}></i>
+          <button onClick={(e) => handleComment(e)}>
+            <i className="fi fi-rr-comment mr-3" ></i>
+          </button>
             <br/>
             <span className="text-xs p-1">{post?.comments}</span>
         </div>
@@ -158,7 +231,29 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <i className="fi fi-rr-bookmark mr-3"></i>
         </div>
         <div>
-        <i className="fi fi-rr-menu-dots mr-2 "></i>
+        <i className="fi fi-rr-menu-dots mr-2" onClick={handleMenuToggle}></i>
+        {showMenu && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+              <button
+                className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                onClick={handleGetSharingLink}
+              >
+                Get Sharing Link
+              </button>
+              <button
+                className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+                onClick={handleEditPost}
+              >
+                Edit Post
+              </button>
+              <button
+                className="block w-full px-4 py-2 text-left text-sm text-red-700 hover:bg-red-100"
+                onClick={handleDeletePost}
+              >
+                Delete Post
+              </button>
+            </div>
+          )}
         </div>
         </div>
         </div>
