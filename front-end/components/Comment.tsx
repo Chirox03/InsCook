@@ -6,7 +6,7 @@ interface CommentProps {
     comment: CommentType; // Assuming CommentType is the type of your comment object
   }
   const Comment: React.FC<CommentProps> = ({ comment }) => {
-    console.log(comment.timestamp)
+    // console.log(comment.timestamp)
   return (
     <div className='pt-2 grid grid-cols-12 px-4 divide-y divide-solid'>
       <div className="col-start-1 col-span-full flex items-start mb-4">

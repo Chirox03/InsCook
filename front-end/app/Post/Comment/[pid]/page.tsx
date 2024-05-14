@@ -4,8 +4,10 @@ import Image from 'next/image'
 import Comment from '@/components/Comment'
 import CommentType from '@/types/CommentType'
 import BASE_URL from "@/config";
+import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 export default function CommentPage({ params }: { params: { pid: string }}) {
+
 
   const handleCommentSubmit = (commentContent:string)=>{
     const newComment: CommentType = {
@@ -26,10 +28,38 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
       if(newComment !== ""){
         handleCommentSubmit(newComment);
         (e.target as HTMLInputElement).value = '';
+        console.log('Haha',newComment)
+        const createNewComment = async() => {
+          const commentData = {
+            content: newComment,
+            userid: useAuth.id,
+            postid: params.cid,
+          };
+          try {
+            const response = await fetch(BASE_URL+`/api/comment`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(commentData),
+            });
+        
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+        
+            const responseData = await response.json();
+            console.log(responseData.data);
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        }
+        createNewComment()
       }
     }
   }
   const router = useRouter();
+
   const [comments,setComments] = useState<Array<CommentType>>([])
 
   useEffect(() => {
@@ -60,9 +90,11 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
         console.error('Error:', error);
         });
   },[])
+
 const handleBack = ()=>{
   router.back();
 }
+
   return (
     <div className='relative'>
         {/* Back bar */}

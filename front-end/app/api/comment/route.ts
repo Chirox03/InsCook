@@ -24,10 +24,10 @@ type ResponseData = {
     return comment;
   };
 
-  export async function PUT(req: NextRequest) { //Add comment
+  export async function POST(req: NextRequest) { //Add comment
     const { method } = req;
   
-    if (method === 'PUT') {
+    if (method === 'POST') {
       try {
         // Extract data from request body
         const { content, userid, postid } = await req.json();
