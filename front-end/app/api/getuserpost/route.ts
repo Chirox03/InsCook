@@ -16,6 +16,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
           username: username, 
           avatar: useravatar,
       },
+      image: postinfo.image,
       timestamp: new Date(postinfo.datetime), 
       title: postinfo.title,
       caption: postinfo.caption,

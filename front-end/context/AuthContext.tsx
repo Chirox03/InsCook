@@ -9,7 +9,15 @@ type Action =
   | { type: 'LOG_IN'; payload: AuthType}
 
 
-const initialState: AuthType|null = null;
+  const initialState: AuthType | null = (() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        return JSON.parse(token);
+      }
+    }
+    return null;
+  })();
 
 const reducer = (state: AuthType|null, action: Action): AuthType|null => {
   switch (action.type) {

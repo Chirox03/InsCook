@@ -5,7 +5,8 @@ import Comment from '@/components/Comment'
 import CommentType from '@/types/CommentType'
 import BASE_URL from "@/config";
 import { useAuth } from '@/context/AuthContext'
-export default function CommentPage({ params }: { params: { cid: string }}) {
+import { useRouter } from 'next/navigation'
+export default function CommentPage({ params }: { params: { pid: string }}) {
 
 
   const handleCommentSubmit = (commentContent:string)=>{
@@ -57,55 +58,14 @@ export default function CommentPage({ params }: { params: { cid: string }}) {
       }
     }
   }
-  // console.log(useAuth.id)
-  // const [comments, setComments] = useState<Array<CommentType>>([
-  //   { id:"123",
-  //     content:"give me your price,give me your price,give me your price,give me your price,",
-  //     user:{
-  //       userID: "123",
-  //       username: "Thuong Le"
-  //     },
-  //     timestamp: new Date(2024, 2, 25),
-  //     reply:[
-  //       {
-  //       id:"123",
-  //       user:{
-  //           userID: "123",
-  //           username: "Thuong Le"
-  //       },
-        
-  //     timestamp: new Date(2024, 2, 25),
-  //     content:"Hello",
-  //     reply:[]
-  //     }]
-  //    },
-  //    {
-  //     id:"123",
-  //     content:"Hello",
-  //     timestamp: new Date(2024, 2, 25),
-  //     user:{
-  //       userID: "123",
-  //       username: "Thuong Le"
-  //    },
-  //     reply:[{
-  //       id:"123",
-  //       user:{
-  //           userID: "123",
-  //           username: "Thuong Le"
-  //       },
-  //       content:"Hi how are yout?",
-  //     timestamp: new Date(2024, 2, 25),
-  //     reply:[]
-  //     }]
-  //    }
-  // ])
+  const router = useRouter();
 
   const [comments,setComments] = useState<Array<CommentType>>([])
 
   useEffect(() => {
     const fetchComments = async () => {
       try{
-        const res = await fetch(BASE_URL+`/api/comment?postid=${params.cid}`,
+        const res = await fetch(BASE_URL+`/api/comment?postid=${params.pid}`,
         {method: 'GET',
         headers: {
           'Content-Type': 'application/json', 
@@ -131,13 +91,15 @@ export default function CommentPage({ params }: { params: { cid: string }}) {
         });
   },[])
 
-  // console.log(comments)
+const handleBack = ()=>{
+  router.back();
+}
 
   return (
     <div className='relative'>
         {/* Back bar */}
         <div className="fixed px-2 py-2 align-center grid grid-cols-3 sm:left-48 sm:right-48 left-0.5 right-0.5 top-0 bg-white shadow-md rounded-sm">
-        <button type="button" className=" px-2 col-start-1 text-sm text-gray-700 transition-colors duration-200 bg-white rounded-lg w-12 dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700 align-left w-12">
+        <button onClick={handleBack} type="button" className=" px-2 col-start-1 text-sm text-gray-700 transition-colors duration-200 bg-white rounded-lg w-12 dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700 align-left w-12">
         <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
         </svg>

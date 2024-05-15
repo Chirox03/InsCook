@@ -9,6 +9,7 @@ export default interface RecipeType{
     description: string;
     duration: number;
     category:string;
+    method:string;
     pax: number;
     ingredients: Array<string>;
     instructions: Array<StepType>;
