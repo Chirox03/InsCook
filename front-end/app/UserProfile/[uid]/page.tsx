@@ -92,7 +92,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
   
   // const user: AppUserPro = mapUser(apiUser)
   console.log('Hello',userProfile)
-  const [state, setState] = useState(2)
+  const [state, setState] = useState(0)
   const {state: auth, dispatch } = useAuth();
   const [yourProfile, setyourProfile] = useState(false);
   if (auth.id == params.uid)
@@ -134,9 +134,9 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <span className="text-sm ">Following</span>
         </button>
         </div>
-      {/* {state == 0 && <UserPosts params={{ pid:params.uid}}/>} */}
+      {state == 0 && <UserPosts params={{ pid:params.uid}}/>}
       {/* {state == 1 && <FollowersPage params={{ pid:params.uid}}/>} */}
-      {state == 2 && <FollowingPage params={{ pid:params.uid}}/>}
+      {/* {state == 2 && <FollowingPage params={{ pid:params.uid}}/>} */}
       
      
     </div>

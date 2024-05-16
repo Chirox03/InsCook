@@ -3,12 +3,36 @@ import Link from 'next/link'
 import PostType from '@/types/PostType'
 import getRelativeTime from "./DateCalculate"
 import { useEffect,useState } from "react"
+import BASE_URL from "@/config";
+import { toast } from "react-toastify";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation"
+import axios from "axios";
+import UserType from "@/types/UserType"
 interface PostProps {
   post: PostType;
 }
 const  Post:  React.FC<PostProps> = ({post}) =>{
   const router = useRouter();
+  const [newpost, setnewPost] = useState({
+    id: post.id,
+    user:{
+        userID: post.user.userID,
+        username: post.user.userID,
+        avatar: post.user.userID,
+    },
+    image:post.image,
+    timestamp: post.timestamp,
+    title: post.title,
+    caption:post.caption,
+    likes: post.likes,
+    comments: post.comments,
+    isSaved: post.isSaved,
+    isLiked:post.isLiked,
+  });
+  const {state: auth, dispatch } = useAuth();
+  const [like,setLike] = useState<boolean|null> (null)
+  const  [user,setUser] = useState<UserType|null>(null)
   // console.log(post)
   const handlePostClick = (e: React.MouseEvent<HTMLDivElement>) =>
   {
@@ -21,6 +45,85 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
     router.prefetch(`/UserProfile/${post.user.userID}`)
     router.push(`/UserProfile/${post.user.userID}`)
   }
+
+  useEffect(() => {
+  const fetchUserbyId = async (id:String) =>{
+      try{
+        const response = await axios.get(`${BASE_URL}/api/userinfo?userid=${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        console.log("User",response.data.data);
+        setUser(response.data.data);
+        return;
+      }
+      catch(error){
+        console.error('Error fetching posts:', error);
+        toast.error('Error fetching posts:')
+      }
+    }
+    fetchUserbyId(post.user.userID)
+  },[])
+  // console.log('User ne', user)
+  const fetchLike = async() => {
+    try{
+        const response = await axios.get(`${BASE_URL}/api/like?postid=${post.id}`)
+        console.log(response.data)
+        setnewPost(prevnewPost => prevnewPost ? { ...prevnewPost, likes: response.data.data.length } : prevnewPost);
+        if(response.data.data.find( user => user.id===auth.id))
+          setLike(true);
+        else setLike(false)
+        
+    }catch(error){
+        console.log("Error fetching like",error)
+    }
+  }
+
+  const handleLike = async (e:React.MouseEvent<HTMLButtonElement>) =>{
+    e.preventDefault();
+    e.currentTarget.disabled=true;
+    console.log("like")
+    try{
+      const response = await axios.put(`${BASE_URL}/api/like`, {
+      userid: auth?.id,
+      postid: post.id
+      });
+      console.log("like succesfully")
+      
+      await fetchLike();
+      e.currentTarget.disabled=false;
+    }
+    catch(error){
+      console.error('Error fetching posts:', error);
+      toast.error('Error fetching posts:')
+      e.currentTarget.disabled=false;
+      return null;
+    }
+  }
+  const handleLikeView = (e:React.MouseEvent<HTMLButtonElement>) =>{
+    e.preventDefault();
+    e.currentTarget.disabled=true;
+    try{
+      router.prefetch(`Like/${post.id}`)
+      router.push(`Like/${post.id}`)
+    }catch(error)
+    {
+      console.log(error);
+      e.currentTarget.disabled=false;
+    }
+  }
+
+  const handleComment = (e:React.MouseEvent<HTMLButtonElement>) => {
+    e.currentTarget.disabled=true;
+    try{
+      router.prefetch(`${BASE_URL}/Post/Comment/${post.id}`)
+      router.push(`${BASE_URL}/Post/Comment/${post.id}`)
+    }catch(error){
+      console.log(error);
+      e.currentTarget.disabled=false;
+    }
+  };
   return (
     <div className="w-full my-2">
         <div className="mt-6">
@@ -34,13 +137,26 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
           <div className="h-400 rounded-s">
             <img className="w-full h-80" src={post.image||undefined} alt="food image" />
           </div>
-          <div className="mt-2 flex flex-row justify-start cursor-pointer" onClick={(e)=>handlePostClick(e)}>
+          <div className="mt-2 flex flex-row justify-start cursor-pointer" >
             <div className="flex flex-col mr-2">
-              { (post.isLiked===true) ? (<i className="fi fi-sr-heart "></i>) : <i className="fi fi-rr-heart"></i>}
-            <span className="text-xs not-italic -mt-2">{post.likes}</span>
+            <button onClick={(e)=>handleLike(e)}>
+              {
+                (post.isLiked===false)?
+                <i className="fi fi-rr-heart mr-3" > </i>
+                :
+                <i className="fi fi-sr-heart mr-3"></i>
+              }
+            </button>
+            {/* <br/> */}
+              {/* { (post.isLiked===true) ? (<i className="fi fi-sr-heart "></i>) : <i className="fi fi-rr-heart"></i>} */}
+            <button onClick={(e)=>handleLikeView(e)}>
+              <span className="text-xs not-italic -mt-2">{post.likes}</span>
+            </button>
             </div>
             <div className="flex flex-col mr-2">
-            <i className="fi fi-rr-comment"></i>
+            <button onClick={(e) => handleComment(e)}>
+              <i className="fi fi-rr-comment"></i>
+            </button>
             <span className="text-xs not-italic -mt-2">{post.comments}</span>
             </div>
             {post.isSaved===true ? <i className="fi fi-sr-bookmark mr-2"></i> : <i className="fi mr-2fi-rr-bookmark"></i>}
