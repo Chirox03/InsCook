@@ -174,10 +174,10 @@ export default function NewPost() {
        </button>
         </div>
 
-      <form className='mt-14'>
+      <form className='mt-20'>
        <div className="flex items-center justify-center">
         <label>
-          <input name="cover" onChange={(e)=>handleUploadCoverImage(e)} id="dropzone-file" type="file" className="visible" />
+          <input name="cover" onChange={(e)=>handleUploadCoverImage(e)} id="dropzone-file" type="file" className="visible bg-coral" />
         { !recipe.image?
           (
             null

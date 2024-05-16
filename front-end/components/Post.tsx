@@ -25,7 +25,7 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
     <div className="w-full my-2">
         <div className="mt-6">
           <div className="flex flex-row m-2 ml-1 items-start">
-            <img className="w-16 h-16 rounded-full" src={post.user.avatar} alt="User Avatar" />
+            <img className="w-16 h-16 rounded-full" src={post?.user.avatar} alt="User Avatar" />
             <div className="ml-2 pt-2 flex font-sans flex-col">
               <div className="text-left font-sans font-semibold text-slate-600 text-md cursor-pointer" onClick={(e)=>handleUserClick(e)}>{post.user.username}</div>
               <div className="text-left font-normal text-xs text-gray-400">{post?.timestamp && new Date(post?.timestamp?.seconds * 1000).toLocaleDateString()}</div>
