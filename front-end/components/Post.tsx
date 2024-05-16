@@ -50,7 +50,7 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
            {post.caption}
           
           <button type="button" className="ml-2 text-xs underline hover:underline-offset-0"  >
-             - See post... -
+            <Link href={`/Post/${post.id}`}>- See post... -</Link>
           </button>
           </p>
         </div>

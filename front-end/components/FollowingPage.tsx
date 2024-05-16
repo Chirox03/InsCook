@@ -1,9 +1,10 @@
 import UserFollowing from "@/components/UserFollowing"
 import BASE_URL from "@/config";
+import UserType from "@/types/UserType";
 import { useEffect, useState } from "react";
 
 function FollowingPage({ params }: { params: { pid: string }}) {
-    const [followingUsers, setFollowingUsers] = useState<any[]>([]);
+    const [followingUsers, setFollowingUsers] = useState<UserType[]>([]);
 
     useEffect(() => {
         // console.log("djaskl")
@@ -37,12 +38,12 @@ function FollowingPage({ params }: { params: { pid: string }}) {
             });
     },[])
 
-    console.log('Following',followingUsers)
+    // console.log('Following',followingUsers)
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {followingUsers.map((id: number) => (
-                        <UserFollowing params={{pid:id.id}} />
+                    {followingUsers.map((user) => (
+                        <UserFollowing key={user.id} user={user} />
                     ))}
                 </div>
         </div>

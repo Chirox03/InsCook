@@ -9,6 +9,8 @@ import FollowingPage from "../../../components/FollowingPage";
 import { notFound } from "next/navigation";
 import BASE_URL from "@/config";
 import UserPosts from "@/components/UserPosts";
+import { useAuth } from "@/context/AuthContext";
+
 
 interface APiUser{
   id:number;
@@ -90,17 +92,21 @@ function UserProfile({ params }: { params: { uid: string }}) {
   
   // const user: AppUserPro = mapUser(apiUser)
   console.log('Hello',userProfile)
-  const [state, setState] = useState(0)
+  const [state, setState] = useState(2)
+  const {state: auth, dispatch } = useAuth();
+  const [yourProfile, setyourProfile] = useState(false);
+  if (auth.id == params.uid)
+    setyourProfile(true)
   // if(userProfile==null) return notFound();
   return (
     <div className="my-2 flex flex-col content-center h-full flex-grow overflow-y-auto">
      <div className="mx-5 mb-5">
         <div className="flex my-2">
-        <img className='max-h-28 rounded-full overflow-hidden align-left' src={userProfile?.data.avatar instanceof Blob ? URL.createObjectURL(userProfile.data.avatar):"/image.png"} alt="avatar"/>
+        <img className='max-h-28 rounded-full overflow-hidden align-left' src={userProfile?.data.avatar} alt="avatar"/>
         <div className="mx-3">
         <h2 className="text-sm font-medium">{userProfile?.data.name}</h2>
         <div className="flex justify-between py-2">
-        <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+        <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" onClick={() => setyourProfile(!yourProfile)}>
             <Link href={`/Edit/${params.uid}`}>Edit</Link>
         </button>
         <FollowButton/>
@@ -128,8 +134,8 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <span className="text-sm ">Following</span>
         </button>
         </div>
-      {state == 0 && <UserPosts params={{ pid:params.uid}}/>}
-      {state == 1 && <FollowersPage params={{ pid:params.uid}}/>}
+      {/* {state == 0 && <UserPosts params={{ pid:params.uid}}/>} */}
+      {/* {state == 1 && <FollowersPage params={{ pid:params.uid}}/>} */}
       {state == 2 && <FollowingPage params={{ pid:params.uid}}/>}
       
      
