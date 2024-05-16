@@ -1,10 +1,11 @@
 import PostDetail from "@/app/Post/[pid]/page";
 import BASE_URL from "@/config";
 import { useEffect, useState } from "react";
-
+import Post from "@/components/Post"
+import PostType from "@/types/PostType";
 
 function UserPosts({ params }: { params: { pid: string }}) {
-    const [posts, setposts] = useState<any[]>([]);
+    const [posts, setposts] = useState<PostType[]>([]);
 
     useEffect(() => {
         // console.log("djaskl")
@@ -25,7 +26,7 @@ function UserPosts({ params }: { params: { pid: string }}) {
             }
         
             const responseData = await response.json();
-            setposts(responseData.data);
+            setposts(responseData.data as PostType[]);
             } catch (error) {
             console.error('Error fetching following users:', error);
             return null;
@@ -41,9 +42,9 @@ function UserPosts({ params }: { params: { pid: string }}) {
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {posts.map((id: string) => (
-                        <PostDetail params={{ pid:id.id}} />
-                    ))}
+                {posts.map((post) => (
+                    <Post key={post.id} post={post} />
+                ))}
                 </div>
                 
         </div>
