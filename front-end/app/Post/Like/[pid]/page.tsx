@@ -8,8 +8,18 @@ import UserType from "@/types/UserType";
 export default function LikeView({ params }: { params: { pid: string }}){
     const {state: auth, dispatch } = useAuth();
     const [users,setUsers] = useState<UserType[]>([]);
+    const [followers,setFollower] = useState();
     const router = useRouter();
     useEffect( ()=>{
+        const fetchFollower = async()=>{
+            try{
+                const response = await axios.get(`${BASE_URL}/api/follow?useridid=${auth?.id}`)
+                setFollower(response.data.data);
+                console.log("get follower")
+            }catch(error){
+                console.log("Error fetching followers",error)
+            }
+        }
         const fetchLike = async() => {
             try{
                 const response = await axios.get(`${BASE_URL}/api/like?postid=${params.pid}`)
@@ -20,10 +30,28 @@ export default function LikeView({ params }: { params: { pid: string }}){
             }
         }
         fetchLike();
-    },[])
+        fetchFollower();
+    }, [auth?.id, params.pid])
+
     console.log(users)
     const handleBack = ()=>{
         router.back();
+    }
+    const isFollowed = (userId: string) => {
+        return followers.some(follower => follower.id === userId);
+    };
+    const handleFollow = async (id:string) =>{
+        try{
+            const response = await axios.put(`${BASE_URL}/api/follow`,
+                {
+                    user1: auth?.id,
+                    user2: id
+                }
+            )
+            
+        }catch(error){
+            console.log("Error when follow user",error)
+        }
     }
     return (
              <div className="flex flex-col w-[100%] bg-white">
@@ -43,9 +71,13 @@ export default function LikeView({ params }: { params: { pid: string }}){
                             <div className="ml-2 leading-snug text-sm text-gray-900 font-bold">{user.data.name}</div>
                     </div>
                     {
-                        user.id!==auth?.id ?
-                        <button className="h-8 px-3 text-md font-bold text-blue-400 border border-blue-400 rounded-full hover:bg-blue-100">Follow</button>
-                        : null
+                        user.id===auth?.id ?
+                        null:(
+                                (!isFollowed(user.id))?
+                                <button className="h-8 px-3 text-md font-bold text-blue-400 border border-blue-400 rounded-full hover:bg-blue-100" onClick={()=> handleFollow(user.id)}>Follow</button>
+                                :  <button className="h-8 px-3 text-md font-bold text-blue-400 border border-blue-400 rounded-full hover:bg-blue-100">Followed</button>
+                        )
+                       
                     }
                    </div>:null
                     )
