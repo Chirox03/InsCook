@@ -90,10 +90,11 @@ function UserProfile({ params }: { params: { uid: string }}) {
   console.log('Hello',userProfile)
   const [state, setState] = useState(0)
   const {state: auth, dispatch } = useAuth();
-  const [yourProfile, setyourProfile] = useState(false);
-  if (auth.id == params.uid)
-    setyourProfile(true)
+  const [yourProfile, setyourProfile] = useState(auth.id === params.uid);
+  // if (auth.id == params.uid)
+  //   setyourProfile(true)
   // if(userProfile==null) return notFound();
+  // console.log('Auth',auth.id)
   return (
     <div className="my-2 flex flex-col content-center h-full flex-grow overflow-y-auto">
      <div className="mx-5 mb-5">
