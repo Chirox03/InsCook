@@ -32,6 +32,7 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
   });
   const {state: auth, dispatch } = useAuth();
   const [like,setLike] = useState<boolean|null> (null)
+  const [save,setSave] = useState<boolean> (null)
   const  [user,setUser] = useState<UserType|null>(null)
   // console.log(post)
   const handlePostClick = (e: React.MouseEvent<HTMLDivElement>) =>
@@ -114,6 +115,7 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
     }
   }
 
+  
   const handleComment = (e:React.MouseEvent<HTMLButtonElement>) => {
     e.currentTarget.disabled=true;
     try{
@@ -124,6 +126,43 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
       e.currentTarget.disabled=false;
     }
   };
+
+  const fetchSave = async() => {
+    try{
+        const response = await axios.get(`${BASE_URL}/api/like?userid=${post.user.userID}`)
+        // console.log(response.data)
+        // setnewPost(prevnewPost => prevnewPost ? { ...prevnewPost, likes: response.data.data.length } : prevnewPost);
+        if(response.data.data.find( savepost => savepost.id===post.id))
+          setSave(true);
+        else setSave(false)
+        setnewPost(prevnewPost => prevnewPost ? { ...prevnewPost, isSaved: save } : prevnewPost);
+        
+    }catch(error){
+        console.log("Error fetching save",error)
+    }
+  }
+
+  const handleSave = async(e:React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.currentTarget.disabled=true;
+    // console.log("save")
+    try{
+      const response = await axios.put(`${BASE_URL}/api/storage`, {
+      userid: auth?.id,
+      postid: post.id
+      });
+      console.log("save succesfully")
+      
+      await fetchSave();
+      e.currentTarget.disabled=false;
+    }
+    catch(error){
+      console.error('Error fetching posts:', error);
+      toast.error('Error fetching posts:')
+      e.currentTarget.disabled=false;
+      return null;
+    }
+  }
   return (
     <div className="w-full my-2">
         <div className="mt-6">
@@ -149,17 +188,29 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
             </button>
             {/* <br/> */}
               {/* { (post.isLiked===true) ? (<i className="fi fi-sr-heart "></i>) : <i className="fi fi-rr-heart"></i>} */}
-            <button onClick={(e)=>handleLikeView(e)}>
-              <span className="text-xs not-italic -mt-2">{post.likes}</span>
-            </button>
+            
             </div>
             <div className="flex flex-col mr-2">
             <button onClick={(e) => handleComment(e)}>
               <i className="fi fi-rr-comment"></i>
             </button>
-            <span className="text-xs not-italic -mt-2">{post.comments}</span>
+            {/* <span className="text-xs not-italic -mt-2">{post.comments}</span> */}
             </div>
-            {post.isSaved===true ? <i className="fi fi-sr-bookmark mr-2"></i> : <i className="fi mr-2fi-rr-bookmark"></i>}
+            <div className="flex flex-col mr-2">
+            <button onClick={(e) => handleSave(e)}>
+              {
+                (post.isSaved===true)?
+                <i className="fi fi-rr-bookmark mr-3" > </i>
+                :
+                <i className="fi fi-sr-bookmark mr-3"></i>
+              }
+            </button>
+            </div>
+          </div>
+          <div className="mt-2 flex flex-row justify-start cursor-pointer" >
+          <button onClick={(e)=>handleLikeView(e)}>
+              <p className="text-xs not-italic -mt-2">{post.likes} lượt thích</p>
+          </button>
           </div>
           <p className="text-left font-bold text-lg text-slate-600">{post.title}</p>
           <p className="text-left md-2 font-sans">
