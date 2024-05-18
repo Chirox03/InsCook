@@ -48,15 +48,6 @@ const mapUser = async (apiUser: APiUser): Promise<AppUserProfile> => {
 }
 
 function UserProfile({ params }: { params: { uid: string }}) {
-  // const apiUser: APiUser = {
-  //   id: 1,
-  //   name: "Loc Tran",
-  //   description: "do nothing all day",
-  //   numpost: 3,
-  //   numfollowers: 123,
-  //   numfollowing: 321,
-  
-  // }
   const router = useRouter()
   const [userProfile,setUserProfile] = useState<AppUserProfile|null|undefined>(undefined);
   // console.log(params.uid)
@@ -111,9 +102,11 @@ function UserProfile({ params }: { params: { uid: string }}) {
         <div className="mx-3">
         <h2 className="text-sm font-medium">{userProfile?.data.name}</h2>
         <div className="flex justify-between py-2">
-        <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" onClick={() => setyourProfile(!yourProfile)}>
-            <Link href={`/Edit/${params.uid}`}>Edit</Link>
-        </button>
+        {yourProfile && (
+            <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+              <Link href={`/Edit/${params.uid}`}>Edit</Link>
+          </button>
+        )}
         <FollowButton/>
         </div>
         </div>
@@ -144,10 +137,10 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <span className="text-sm ">Following</span>
         </button>
         </div>
-      {/* {state == 0 && <UserPosts params={{ pid:params.uid}}/>} */}
+      {state == 0 && <UserPosts params={{ pid:params.uid}}/>}
       {state == 1 && handleStorage()}
-      {/* {state == 2 && <FollowersPage params={{ pid:params.uid}}/>} */}
-      {/* {state == 3 && <FollowingPage params={{ pid:params.uid}}/>} */}
+      {state == 2 && <FollowersPage params={{ pid:params.uid}}/>}
+      {state == 3 && <FollowingPage params={{ pid:params.uid}}/>}
       
      
     </div>
