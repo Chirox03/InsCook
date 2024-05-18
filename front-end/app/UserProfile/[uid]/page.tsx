@@ -10,7 +10,8 @@ import { notFound } from "next/navigation";
 import BASE_URL from "@/config";
 import UserPosts from "@/components/UserPosts";
 import { useAuth } from "@/context/AuthContext";
-
+import Storage from "../Storage/[uid]/page";
+import { useRouter } from "next/navigation";
 
 interface APiUser{
   id:number;
@@ -56,6 +57,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
   //   numfollowing: 321,
   
   // }
+  const router = useRouter()
   const [userProfile,setUserProfile] = useState<AppUserProfile|null|undefined>(undefined);
   // console.log(params.uid)
   useEffect (()=>{
@@ -88,7 +90,10 @@ function UserProfile({ params }: { params: { uid: string }}) {
     fetchProfile();
   } ,[])
 
-
+  const handleStorage = () => {
+    router.prefetch(`/UserProfile/Storage/${params.uid}`)
+    router.push(`/UserProfile/Storage/${params.uid}`)
+  }
   
   // const user: AppUserPro = mapUser(apiUser)
   console.log('Hello',userProfile)
@@ -123,20 +128,26 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <br/> */}
             <span className="text-sm ">Posts</span>
         </button>
-        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100 hover:bg-gray-100 hover:text-blue-700 focus:z-10   focus:border-t-2 focus:border-black focus:text-slate-900  focus:text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(1)}>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(1)}>   
+            {/* <span className="text-xs"> {userProfile?.numpost}</span>
+            <br/> */}
+            <span className="text-sm ">Storage</span>
+        </button>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100 hover:bg-gray-100 hover:text-blue-700 focus:z-10   focus:border-t-2 focus:border-black focus:text-slate-900  focus:text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(2)}>
         {/* <span className="text-xs"> {userProfile?.numfollowers}</span>
             <br/> */}
             <span className="text-sm ">Followers</span>
         </button>
-        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(2)}>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(3)}>
         {/* <span className="text-xs"> {userProfile?.numfollowing}</span>
             <br/> */}
             <span className="text-sm ">Following</span>
         </button>
         </div>
-      {state == 0 && <UserPosts params={{ pid:params.uid}}/>}
-      {/* {state == 1 && <FollowersPage params={{ pid:params.uid}}/>} */}
-      {/* {state == 2 && <FollowingPage params={{ pid:params.uid}}/>} */}
+      {/* {state == 0 && <UserPosts params={{ pid:params.uid}}/>} */}
+      {state == 1 && handleStorage()}
+      {/* {state == 2 && <FollowersPage params={{ pid:params.uid}}/>} */}
+      {/* {state == 3 && <FollowingPage params={{ pid:params.uid}}/>} */}
       
      
     </div>

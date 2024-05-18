@@ -181,9 +181,9 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
             <button onClick={(e)=>handleLike(e)}>
               {
                 (post.isLiked===false)?
-                <i className="fi fi-rr-heart mr-3" > </i>
+                <i className="fi fi-rr-heart" > </i>
                 :
-                <i className="fi fi-sr-heart mr-3"></i>
+                <i className="fi fi-sr-heart"></i>
               }
             </button>
             {/* <br/> */}
@@ -200,9 +200,9 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
             <button onClick={(e) => handleSave(e)}>
               {
                 (post.isSaved===true)?
-                <i className="fi fi-rr-bookmark mr-3" > </i>
+                <i className="fi fi-rr-bookmark" > </i>
                 :
-                <i className="fi fi-sr-bookmark mr-3"></i>
+                <i className="fi fi-sr-bookmark"></i>
               }
             </button>
             </div>
