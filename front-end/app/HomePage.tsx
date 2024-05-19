@@ -12,7 +12,6 @@ function HomePage() {
   const  [PostList,setPostList] = useState<PostType[]>([]);
   const {state: auth, dispatch } = useAuth();
   const router = useRouter();
- 
  useEffect( ()=>{
   const fetchPosts = async () =>{
     try{

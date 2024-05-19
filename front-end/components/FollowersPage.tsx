@@ -1,10 +1,10 @@
 import UserFollow from "@/components/UserFollow"
 import BASE_URL from "@/config";
+import UserType from "@/types/UserType";
 import { useEffect, useState } from "react";
 
-
 function FollowersPage({ params }: { params: { pid: string }}) {
-    const [followersUsers, setFollowersUsers] = useState<any[]>([]);
+    const [followersUsers, setFollowersUsers] = useState<UserType[]>([]);
 
     useEffect(() => {
         // console.log("djaskl")
@@ -25,7 +25,7 @@ function FollowersPage({ params }: { params: { pid: string }}) {
             }
         
             const responseData = await response.json();
-            setFollowersUsers(responseData.data);
+            setFollowersUsers(responseData.data as UserType[]);
             } catch (error) {
             console.error('Error fetching following users:', error);
             return null;

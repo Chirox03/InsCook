@@ -2,10 +2,11 @@
 import PostDetail from "@/app/Post/[pid]/page";
 import BASE_URL from "@/config";
 import { useEffect, useState } from "react";
-
+import Post from "@/components/Post"
+import PostType from "@/types/PostType";
 
 function UserPosts({ params }: { params: { pid: string }}) {
-    const [posts, setposts] = useState<any[]>([]);
+    const [posts, setposts] = useState<PostType[]>([]);
 
     useEffect(() => {
         // console.log("djaskl")
@@ -26,7 +27,7 @@ function UserPosts({ params }: { params: { pid: string }}) {
             }
         
             const responseData = await response.json();
-            setposts(responseData.data);
+            setposts(responseData.data as PostType[]);
             } catch (error) {
             console.error('Error fetching following users:', error);
             return null;
