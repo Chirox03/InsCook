@@ -25,7 +25,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
   return post;
 };
     
-export async function PUT(req: NextRequest){
+export async function PUT(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Like');
   const collectionUser = collection(db, 'User');
   const collectionStorage = collection(db, 'Storage');
@@ -53,7 +53,7 @@ export async function PUT(req: NextRequest){
       if (!PostSnapshot.data()) {
         return NextResponse.json({ message: 'Post not found', data: null }, { status: 404 });
       }
-
+    
       // Query document where user_id == userid and post_id == postid
       const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid), where('post_id', '==', postid)));
       const saveSnapshot = await getDocs(query(collectionStorage, where('user_id', '==', userid), where('post_id', '==', postid)));
@@ -61,30 +61,36 @@ export async function PUT(req: NextRequest){
 
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();
-      const userinfo = (await getDoc(doc(db, "User", postdata.user_id))).data();
-      const isLiked = querySnapshot.docs.map(doc => doc.ref);
-      if (querySnapshot.empty) {
+
+        const userinfo = (await getDoc(doc(db, "User", postdata?.user_id))).data();
+        const isLiked = querySnapshot.docs.map(doc => doc.ref);
+        if (querySnapshot.empty) {
+        // @ts-ignore
         postdata.like_number += 1;
+        // @ts-ignore
         postdata.isLiked = true;
         addDoc(collectionRef, {'post_id': postid, 'user_id': userid});
         updateDoc(documentRef, postdata);
-        const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, !saved, true);
+        const output = mapToPostType(postdata, postid, userinfo?.name, userinfo?.avatar, !saved, true);
         return NextResponse.json( { message: 'Like successfully!', data: output },{ status:200 });
       } else {
+         // @ts-ignore
         postdata.like_number -= 1;
+        // @ts-ignore
         postdata.isLiked = false;
         deleteDoc(isLiked[0]);
         updateDoc(documentRef, postdata);
-        const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, !saved, false);
+        const output = mapToPostType(postdata, postid, userinfo?.name, userinfo?.avatar, !saved, false);
         return NextResponse.json( { message: 'Removing like successfully!', data: output },{ status:200 });
       }
+
     } catch (error) {
       console.error(error);
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
     }
   }
   else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
 }
 
@@ -94,7 +100,6 @@ const mapToUserType = (userinfo: any, userid: string): UserType => {
     data: {
         avatar: userinfo.avatar,
         biography: userinfo.biography,
-        birth: userinfo.birth,
         name: userinfo.name
     }
   };
@@ -102,7 +107,7 @@ const mapToUserType = (userinfo: any, userid: string): UserType => {
   return user;
 };
     
-export async function GET(req: NextRequest){
+export async function GET(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Like');
   const collectionUser = collection(db, 'User');
   const { method } = req;
@@ -146,6 +151,6 @@ export async function GET(req: NextRequest){
     }
   }
   else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
 }

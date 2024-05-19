@@ -8,12 +8,13 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 export default function CommentPage({ params }: { params: { pid: string }}) {
 
-
+  const {state: auth, dispatch } = useAuth();
   const handleCommentSubmit = (commentContent:string)=>{
     const newComment: CommentType = {
       id : '123',
       content: commentContent,
       timestamp: new Date(),
+      /* @ts-ignore */
       user:{
         userID: '123',
         username: 'Hai Nguyen',
@@ -32,8 +33,8 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
         const createNewComment = async() => {
           const commentData = {
             content: newComment,
-            userid: useAuth.id,
-            postid: params.cid,
+            userid: auth?.id,
+            postid: params.pid,
           };
           try {
             const response = await fetch(BASE_URL+`/api/comment`, {
@@ -89,7 +90,7 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
       .catch((error) => {
         console.error('Error:', error);
         });
-  },[])
+  },[params.pid])
 
 const handleBack = ()=>{
   router.back();

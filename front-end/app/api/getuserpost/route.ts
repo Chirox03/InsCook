@@ -29,7 +29,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
   return post;
 };
 
-export async function GET(req: NextRequest){
+export async function GET(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Post');
   const collectionLike = collection(db, 'Like');
   const collectionStorage = collection(db, 'Storage');
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest){
         const like = likeSnapshot.empty;
         const saveSnapshot = await getDocs(query(collectionStorage, where('user_id', '==', userid), where('post_id', '==', doc.id)));
         const saved = saveSnapshot.empty;
-        output.push(mapToPostType(doc.data(), doc.id, userinfo.name, userinfo.avatar, !saved, !like));
+        output.push(mapToPostType(doc.data(), doc.id, userinfo?.name, userinfo?.avatar, !saved, !like));
       }
 
       return NextResponse.json( { message: 'Posts retrieved successfully', data: output },{status:200});      
@@ -72,7 +72,7 @@ export async function GET(req: NextRequest){
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
 }
 

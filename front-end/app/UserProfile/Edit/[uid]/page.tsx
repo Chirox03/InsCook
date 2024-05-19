@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable @next/next/no-img-element */
 import Image from 'next/image'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { getStorage, ref ,uploadBytes} from "firebase/storage";
@@ -100,7 +101,7 @@ export default function EditProfile({ params }: { params: { uid: string }}) {
       }
     };
     fetchProfile()
-   },[])
+   },[params.uid])
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
  
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {

@@ -9,7 +9,7 @@ type ResponseData = {
   data: UserType|null
 }
 
-export async function POST(req: NextRequest){
+export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
   
   if (method === 'POST') {
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest){
       const { email, password } = await req.json();
       console.log(email, password)
       const user = await signInWithEmailAndPassword(auth, email, password);
+      /* @ts-ignore */
       const documentId = user.user.reloadUserInfo.localId;
 
       // Create a reference to the document with the specified ID in the specified collection
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest){
 
       let userdata = {"id": documentId, "data": documentSnapshot.data()};
       if (!documentSnapshot.exists()) {
+        /* @ts-ignore */
         userdata.data = null;
       }
       console.log(auth.currentUser);
@@ -45,7 +47,7 @@ export async function POST(req: NextRequest){
       return NextResponse.json({ message: 'Wrong email or password', data:null },{status:401});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed', data: null}),{status:405};
+    return NextResponse.json({ message: 'Method not allowed', data: null},{status:405});
   }
 }
 

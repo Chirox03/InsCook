@@ -8,9 +8,11 @@ export default function Search() {
   const [pax,setPax] = useState<number>(1);
   const [method,setMethod] = useState<string>('Fry')
   const handleChangeDuration = (event: React.ChangeEvent<HTMLSelectElement>) => {
+     /*@ts-ignore */
     setDuration(event.target.value);
   }
   const handleChangePax = (event: React.ChangeEvent<HTMLSelectElement>) =>{
+     /*@ts-ignore */
     setPax(event.target.value);
   }
   const handleChangeMethod= (event: React.ChangeEvent<HTMLSelectElement>) =>{
@@ -59,11 +61,11 @@ export default function Search() {
                 value={duration}
                 onChange={handleChangeDuration}
                 className="text-xs h-6 rounded-md mr-2 p-1" >
-                <option value={5} >5p</option>
-                <option value={15}>15p</option>
-                <option value={30}>30p</option>
-                <option value={60}>1h</option>
-                <option value={61}>1h+</option>
+                <option value={'5'} >5p</option>
+                <option value={'15'}>15p</option>
+                <option value={'30'}>30p</option>
+                <option value={'60'}>1h</option>
+                <option value={'61'}>1h+</option>
               </select>
             </div>
           </div>
@@ -75,11 +77,11 @@ export default function Search() {
                 value={pax}
                 onChange={handleChangePax}
                 className="text-xs h-6 rounded-md mr-2 p-1" >
-                <option value={1}>1 Pax</option>
-                <option value={2}>2 Pax</option>
-                <option value={3}>3 Pax</option>
-                <option value={4}>4 Pax</option>
-                <option value={5}>4+ Pax</option>
+                <option value={'1'}>1 Pax</option>
+                <option value={'2'}>2 Pax</option>
+                <option value={'3'}>3 Pax</option>
+                <option value={'4'}>4 Pax</option>
+                <option value={'5'}>4+ Pax</option>
               </select>
             </div>
           </div>
