@@ -46,7 +46,7 @@ interface StepProps {
         </label>
         {
             step.image ?(
-              <img className="rounded-xs max-w-48 max-h-48" src={step.image instanceof Blob?URL.createObjectURL(step.image): step.image} alt='step image'/>
+              <img className="rounded-xs max-w-56 max-h-56" src={step.image instanceof Blob?URL.createObjectURL(step.image): step.image} alt='step image'/>
             ):(null)
         }
     </div>

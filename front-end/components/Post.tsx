@@ -155,6 +155,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
           <div className="ml-2 pt-2 flex font-sans flex-col">
             <div className="text-left font-sans font-semibold text-slate-600 text-md cursor-pointer" onClick={handleUserClick}>{post.user.username}</div>
             <div className="text-left font-normal text-xs text-gray-400">{post?.timestamp && new Date(post?.timestamp?.seconds * 1000).toLocaleDateString()}</div>
+
           </div>
         </div>
         <div className="h-400 rounded-s">
