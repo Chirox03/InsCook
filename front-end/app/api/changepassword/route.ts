@@ -6,7 +6,7 @@ type ResponseData = {
   message: string
 }
 
-export async function POST(req: NextRequest){
+export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
   
   if (method === 'POST') {
@@ -25,6 +25,6 @@ export async function POST(req: NextRequest){
       return NextResponse.json({ message: 'Wrong email or password' },{status:401});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed' }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' },{status:405});
   }
 }

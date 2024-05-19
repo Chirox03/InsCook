@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image"
 import Link from 'next/link'
 import PostType from '@/types/PostType'
@@ -28,6 +29,7 @@ const  Post:  React.FC<PostProps> = ({post}) =>{
             <img className="w-16 h-16 rounded-full" src={post?.user.avatar} alt="User Avatar" />
             <div className="ml-2 pt-2 flex font-sans flex-col">
               <div className="text-left font-sans font-semibold text-slate-600 text-md cursor-pointer" onClick={(e)=>handleUserClick(e)}>{post.user.username}</div>
+              {/* @ts-ignore */}
               <div className="text-left font-normal text-xs text-gray-400">{post?.timestamp && new Date(post?.timestamp?.seconds * 1000).toLocaleDateString()}</div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 "use client"
+/* eslint-disable @next/next/no-img-element */
 import { ref, getDownloadURL } from "firebase/storage";
 import {storage} from "@/firebase"
 import FollowButton from "@/components/FollowButton";
@@ -86,7 +87,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
       
     }
     fetchProfile();
-  } ,[])
+  } ,[params.uid])
 
 
   

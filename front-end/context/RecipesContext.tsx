@@ -17,7 +17,7 @@ type Action =
   | { type: 'CHANGE_COVER'; payload: string|Blob|null}
   | { type: 'SET_RECIPE'; payload: RecipeType}
   | { type: 'CHANGE_METHOD'; payload: string};
-
+{/* @ts-ignore */}
 const initialState: RecipeType = {
   id: null,
   image: null,

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image"
 import { useEffect, useState } from "react";
 
@@ -63,7 +64,7 @@ function UserFollow({ params }: { params: { pid: string }}) {
             .catch((error) => {
             console.error('Error:', error);
             });
-    },[])
+    },[params.pid])
 
     console.log(user)
     return (

@@ -4,6 +4,7 @@ import StepType from '@/types/StepType';
 import { Auth } from 'firebase/auth';
 import { useEffect } from 'react';
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import { useRouter ,usePathname} from 'next/navigation';
 type Action = 
   | { type: 'LOG_OUT'; payload: null }
   | { type: 'LOG_IN'; payload: AuthType}
@@ -37,6 +38,8 @@ const AuthContext = createContext<{ state: AuthType|null; dispatch: React.Dispat
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const router = useRouter();
+  const pathname = usePathname();
   useEffect(() => {
 
     const token = localStorage.getItem('authToken');
@@ -44,7 +47,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // console.log(token)
       dispatch({ type: 'LOG_IN', payload: JSON.parse(token) });
     }
-    // console.log(state)
+    else  if (pathname !== '/Login' && pathname !== '/SignUp') {
+      router.push('/Login');
+    }
   }, []);
   return (
     <AuthContext.Provider value={{ state, dispatch }}>

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image"
 import { useEffect, useState } from "react";
 
@@ -62,7 +63,7 @@ function UserFollowing({ params }: { params: { pid: string }}) {
             .catch((error) => {
             console.error('Error:', error);
             });
-    },[])
+    },[params.pid])
     
     return (
         <div className="flex items-center justify-between border rounded p-[1rem]">

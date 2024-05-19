@@ -8,7 +8,7 @@ type ResponseData = {
     message: string,
     data: PostType|null
   }
-  export async function GET(req: NextRequest) {
+  export async function GET(req: NextRequest):Promise<NextResponse> {
       const { method} = req;
       const searchParams = req.nextUrl.searchParams
       const userID = searchParams.get('userID')
@@ -67,6 +67,6 @@ type ResponseData = {
         return NextResponse.json({ message: 'Internal server error',data: null },{status:505});
       }
     } else {
-      return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};
+      return NextResponse.json({ message: 'Method not allowed' , data: null},{status:405});
     }
   }

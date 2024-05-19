@@ -1,7 +1,7 @@
 "use client"
 import { RecipesProvider, useRecipes } from '@/context/RecipesContext';
-import NewPost from './NewPost';
-export default function page(){
+import NewPost from '../../components/NewPost';
+export default function NewPostPage(){
     return (
      <RecipesProvider>
         <NewPost/>
