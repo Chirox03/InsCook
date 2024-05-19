@@ -11,6 +11,7 @@ function HomePage() {
   const  [PostList,setPostList] = useState<PostType[]>([]);
   const {state: auth, dispatch } = useAuth();
   const router = useRouter();
+  // console.log(auth.id)
   if(auth==null) {
     router.push("/Login")
     return null;}
@@ -38,7 +39,7 @@ function HomePage() {
   };
   fetchPosts()
  },[])
- 
+  console.log(PostList)
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
           <h1 className="text-lg mb-4 font-sans w-full">InsCook</h1>

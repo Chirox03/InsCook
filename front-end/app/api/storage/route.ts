@@ -91,6 +91,7 @@ export async function PUT(req: NextRequest){
 }
 
 export async function GET(req: NextRequest){
+    console.log('aaa')
     const collectionLike = collection(db, 'Like');
     const collectionRef = collection(db, 'Storage');
     const { method } = req;

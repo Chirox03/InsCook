@@ -10,7 +10,8 @@ import { notFound } from "next/navigation";
 import BASE_URL from "@/config";
 import UserPosts from "@/components/UserPosts";
 import { useAuth } from "@/context/AuthContext";
-
+import Storage from "../Storage/[uid]/page";
+import { useRouter } from "next/navigation";
 
 interface APiUser{
   id:number;
@@ -47,15 +48,7 @@ const mapUser = async (apiUser: APiUser): Promise<AppUserProfile> => {
 }
 
 function UserProfile({ params }: { params: { uid: string }}) {
-  // const apiUser: APiUser = {
-  //   id: 1,
-  //   name: "Loc Tran",
-  //   description: "do nothing all day",
-  //   numpost: 3,
-  //   numfollowers: 123,
-  //   numfollowing: 321,
-  
-  // }
+  const router = useRouter()
   const [userProfile,setUserProfile] = useState<AppUserProfile|null|undefined>(undefined);
   // console.log(params.uid)
   useEffect (()=>{
@@ -88,16 +81,20 @@ function UserProfile({ params }: { params: { uid: string }}) {
     fetchProfile();
   } ,[])
 
-
+  const handleStorage = () => {
+    router.prefetch(`/UserProfile/Storage/${params.uid}`)
+    router.push(`/UserProfile/Storage/${params.uid}`)
+  }
   
   // const user: AppUserPro = mapUser(apiUser)
   console.log('Hello',userProfile)
   const [state, setState] = useState(0)
   const {state: auth, dispatch } = useAuth();
-  const [yourProfile, setyourProfile] = useState(false);
-  if (auth.id == params.uid)
-    setyourProfile(true)
+  const [yourProfile, setyourProfile] = useState(auth.id === params.uid);
+  // if (auth.id == params.uid)
+  //   setyourProfile(true)
   // if(userProfile==null) return notFound();
+  // console.log('Auth',auth.id)
   return (
     <div className="my-2 flex flex-col content-center h-full flex-grow overflow-y-auto">
      <div className="mx-5 mb-5">
@@ -106,9 +103,11 @@ function UserProfile({ params }: { params: { uid: string }}) {
         <div className="mx-3">
         <h2 className="text-sm font-medium">{userProfile?.data.name}</h2>
         <div className="flex justify-between py-2">
-        <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" onClick={() => setyourProfile(!yourProfile)}>
-            <Link href={`/Edit/${params.uid}`}>Edit</Link>
-        </button>
+        {yourProfile && (
+            <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+              <Link href={`/Edit/${params.uid}`}>Edit</Link>
+          </button>
+        )}
         <FollowButton/>
         </div>
         </div>
@@ -123,20 +122,26 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <br/> */}
             <span className="text-sm ">Posts</span>
         </button>
-        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100 hover:bg-gray-100 hover:text-blue-700 focus:z-10   focus:border-t-2 focus:border-black focus:text-slate-900  focus:text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(1)}>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(1)}>   
+            {/* <span className="text-xs"> {userProfile?.numpost}</span>
+            <br/> */}
+            <span className="text-sm ">Storage</span>
+        </button>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100 hover:bg-gray-100 hover:text-blue-700 focus:z-10   focus:border-t-2 focus:border-black focus:text-slate-900  focus:text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(2)}>
         {/* <span className="text-xs"> {userProfile?.numfollowers}</span>
             <br/> */}
             <span className="text-sm ">Followers</span>
         </button>
-        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(2)}>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(3)}>
         {/* <span className="text-xs"> {userProfile?.numfollowing}</span>
             <br/> */}
             <span className="text-sm ">Following</span>
         </button>
         </div>
       {state == 0 && <UserPosts params={{ pid:params.uid}}/>}
-      {/* {state == 1 && <FollowersPage params={{ pid:params.uid}}/>} */}
-      {/* {state == 2 && <FollowingPage params={{ pid:params.uid}}/>} */}
+      {state == 1 && handleStorage()}
+      {state == 2 && <FollowersPage params={{ pid:params.uid}}/>}
+      {state == 3 && <FollowingPage params={{ pid:params.uid}}/>}
       
      
     </div>
