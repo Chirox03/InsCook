@@ -4,7 +4,7 @@ import UserType from "@/types/UserType";
 import { useEffect, useState } from "react";
 
 function FollowersPage({ params }: { params: { pid: string }}) {
-    const [followersUsers, setFollowersUsers ] = useState<UserType[]>([]);
+    const [followersUsers, setFollowersUsers    ] = useState<UserType[]>([]);
 
     useEffect(() => {
         // console.log("djaskl")
