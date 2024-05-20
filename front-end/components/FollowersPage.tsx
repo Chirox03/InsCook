@@ -41,8 +41,9 @@ function FollowersPage({ params }: { params: { pid: string }}) {
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {followersUsers.map((id: string,index) => (
-                        <UserFollow params={{ pid:id}} key={index} />
+                    {followersUsers.map((user) => (
+                        <UserFollowing key={user.id} user={user}/>
+
                     ))}
                 </div>
                 
