@@ -5,7 +5,7 @@ interface UserProps{
     user:UserType
 }
 
-const UserFollowing:  React.FC<UserProps> = ({user}) =>{
+const UserFollowing:  React.FC<UserProps> = ({user }) =>{
 
     return (
         <div className="flex items-center justify-between border rounded p-[1rem]">
