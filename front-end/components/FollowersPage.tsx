@@ -4,7 +4,7 @@ import UserType from "@/types/UserType";
 import { useEffect, useState } from "react";
 
 function FollowersPage({ params }: { params: { pid: string }}) {
-    const [followersUsers, setFollowersUsers ] = useState<UserType[]>([]);
+    const [followersUsers, setFollowersUsers    ] = useState<UserType[]>([]);
 
     useEffect(() => {
         // console.log("djaskl")
@@ -41,8 +41,9 @@ function FollowersPage({ params }: { params: { pid: string }}) {
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {followersUsers.map((id: string,index) => (
-                        <UserFollow params={{ pid:id}} key={index} />
+                    {followersUsers.map((user) => (
+                        <UserFollow key={user.id} user={user}/>
+
                     ))}
                 </div>
                 
