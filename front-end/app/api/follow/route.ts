@@ -14,7 +14,6 @@ const mapToUserType = (userinfo: any, userid: string): UserType => {
     data: {
         avatar: userinfo.avatar,
         biography: "",
-        birth: new Date,
         name: userinfo.name,
     }
   };
@@ -22,7 +21,7 @@ const mapToUserType = (userinfo: any, userid: string): UserType => {
   return user;
 };
     
-export async function PUT(req: NextRequest){
+export async function PUT(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Followed');
   const { method } = req;
   
@@ -52,11 +51,11 @@ export async function PUT(req: NextRequest){
     }
   }
   else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
 }
 
-export async function GET(req: NextRequest){
+export async function GET(req: NextRequest):Promise<NextResponse>{
     const collectionRef = collection(db, 'Followed');
     const UserRef = collection(db, "User");
     const { method } = req;
@@ -89,6 +88,6 @@ export async function GET(req: NextRequest){
       }
     }
     else {
-      return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+      return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
     }
   }

@@ -7,5 +7,4 @@ export default interface CommentType{
     }
     timestamp: Date;
     content: string;
-    reply: Array<CommentType>
 }

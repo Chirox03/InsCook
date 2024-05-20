@@ -29,7 +29,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
   return post;
 };
     
-export async function PUT(req: NextRequest){
+export async function PUT(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Storage');
   const collectionUser = collection(db, 'User');
   const collectionLike = collection(db, 'Like');
@@ -65,18 +65,23 @@ export async function PUT(req: NextRequest){
 
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();
+      /* @ts-ignore */
       const userinfo = (await getDoc(doc(db, "User", postdata.user_id))).data();
       const isSaved = querySnapshot.docs.map(doc => doc.ref);
       if (querySnapshot.empty) {
+        /* @ts-ignore */
         postdata.isSaved = true;
         addDoc(collectionRef, {'post_id': postid, 'user_id': userid});
         updateDoc(documentRef, postdata);
+        /* @ts-ignore */
         const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, true, !liked);
         return NextResponse.json( { message: 'Stored successfully!', data: output },{ status:200 });
       } else {
+        /* @ts-ignore */
         postdata.isSaved = false;
         deleteDoc(isSaved[0]);
         updateDoc(documentRef, postdata);
+        /* @ts-ignore */
         const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, false, !liked);
         return NextResponse.json( { message: 'Removing stored post successfully!', data: output },{ status:200 });
       }
@@ -86,12 +91,11 @@ export async function PUT(req: NextRequest){
     }
   }
   else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
 }
 
-export async function GET(req: NextRequest){
-    console.log('aaa')
+export async function GET(req: NextRequest):Promise<NextResponse>{
     const collectionLike = collection(db, 'Like');
     const collectionRef = collection(db, 'Storage');
     const { method } = req;
@@ -124,8 +128,11 @@ export async function GET(req: NextRequest){
             const element = postsids[i];
             console.log(element);
             const postinfo = (await getDoc(doc(db, 'Post', element))).data();
+            /* @ts-ignore */
             const userinfo = (await getDoc(doc(db, "User", postinfo.user_id))).data();
+            /* @ts-ignore */
             const liked = (await getDocs(query(collectionLike, where('user_id', '==', postinfo.user_id), where('post_id', '==', element)))).empty;
+            /* @ts-ignore */
             out.push(mapToPostType(postinfo, element, userinfo.name, userinfo.avatar, true, !liked));
         }
 
@@ -136,7 +143,7 @@ export async function GET(req: NextRequest){
         return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
       }
     } else {
-      return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+      return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
     }
   }
 

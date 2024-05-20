@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 import { Carousel } from "./MaterialTailwind.ts"
 export default function ImageCarousel() {
   return (

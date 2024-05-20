@@ -7,7 +7,7 @@ type ResponseData = {
   data: UserType|null
 }
 
-export async function POST(req: NextRequest){
+export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
   
   if (method === 'POST') {
@@ -25,6 +25,6 @@ export async function POST(req: NextRequest){
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed', data: null}),{status:405};
+    return NextResponse.json({ message: 'Method not allowed', data: null},{status:405});
   }
 }

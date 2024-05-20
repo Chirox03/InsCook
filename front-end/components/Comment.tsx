@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react'
 import Image from 'next/image'
 import CommentType from '@/types/CommentType'
@@ -21,8 +22,9 @@ interface CommentProps {
       </div>
     </div>
     {/* reply section */}
-    {comment.reply && comment.reply.map((reply) =>
-    <div className="pt-2 col-start-2 col-span-full flex items-start mb-4">
+    {/* @ts-ignore */}
+    {comment.reply && comment.reply.map((reply,index) =>
+    <div className="pt-2 col-start-2 col-span-full flex items-start mb-4" key={index}>
       <img className="w-16 h-16 rounded-full mr-4" src="\image.png" alt="User Avatar" />
       <div className="flex-1 pr-4">
         <p className="font-semibold text-slate-800 text-md mb-1">{reply.user.username}

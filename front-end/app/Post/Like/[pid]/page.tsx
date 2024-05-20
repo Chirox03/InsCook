@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react"
 import axios from "axios";
 import BASE_URL from "@/config";
@@ -38,6 +39,7 @@ export default function LikeView({ params }: { params: { pid: string }}){
         router.back();
     }
     const isFollowed = (userId: string) => {
+         /*@ts-ignore */
         return followers.some(follower => follower.id === userId);
     };
     const handleFollow = async (id:string) =>{
@@ -67,7 +69,7 @@ export default function LikeView({ params }: { params: { pid: string }}){
                 {users.map((user)=>( user && user.data.avatar && user.data.name ?
                         <div key={user.id} className="p-3 flex mt-2 items-center justify-between border-t cursor-pointer hover:bg-gray-200">
                     <div className="flex items-center">
-                        <img className="rounded-full h-10 w-10" src={user.data.avatar}/>
+                        <img className="rounded-full h-10 w-10" src={user.data.avatar} alt="avatar"/>
                             <div className="ml-2 leading-snug text-sm text-gray-900 font-bold">{user.data.name}</div>
                     </div>
                     {

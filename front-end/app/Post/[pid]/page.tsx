@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable @next/next/no-img-element */
 import ImageCarousel from "@/components/ImageCarousel"
 import Image from "next/image"
 import React, { useEffect, useState } from "react";
@@ -65,11 +66,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
       e.currentTarget.disabled=false;
     }
   };
-  if(auth==null) 
-    {
-      router.push("/Login");
-      return null;
-    }
+  
 
   useEffect ( ()=>{
     const fetchPostbyId = async () =>{
@@ -107,10 +104,13 @@ function PostDetail({ params }: { params: { pid: string }}) {
         toast.error('Error fetching posts:')
       }
     }
-   
+    if(auth==null) 
+      {
+        router.push("/Login");
+      }
     fetchPostbyId();
-
-  },[])
+// eslint-disable-next-line react-hooks/exhaustive-deps
+  },[params.pid,auth,router])
   const handleBack = (e: React.MouseEvent<HTMLButtonElement>) =>{
     e.preventDefault();
     router.back();
@@ -125,6 +125,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
         const response = await axios.get(`${BASE_URL}/api/like?postid=${params.pid}`)
         console.log(response.data)
         setPost(prevPost => prevPost ? { ...prevPost, likes: response.data.data.length } : prevPost);
+        /* @ts-ignore */
         if(response.data.data.find( user => user.id===auth.id))
           setLike(true);
         else setLike(false)
@@ -271,6 +272,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
             <div className="ml-2 flex font-sans flex-col">
               <div className="flex flex-row flex-auto py-4 px-2">
                 <div className="text-md font-semibold cursor-pointer" onClick={(e)=>handleUserClick(e)}>{user?.data.name}</div>
+                {/*@ts-ignore */}
                 <div className="ml-4">{post?.timestamp && new Date(post?.timestamp?.seconds * 1000).toLocaleDateString()}</div>
               </div>
               <div className="text-left"></div>
@@ -279,6 +281,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
         <h1 className='my-5 text-center text-gray-900 font-bold break-normal text-3xl md:text-5xl'>{post?.title}</h1>
         <div className="my-2">
           { (post?.image) ?
+          /* @ts-ignore */
             <img src={post?.image}  className="w-full h-400" alt="cover image"priority={true}></img> 
             : null
           }
@@ -289,23 +292,23 @@ function PostDetail({ params }: { params: { pid: string }}) {
     <legend className="px-2 text-lg font-semibold underline decoration-2"> Ingredients
     </legend>
     <div className="flex flex-col gap-2 px-2 text-base">
-        {post?.ingredients?.map((ingredient) => (
-          <div>
+        {post?.ingredients?.map((ingredient,index) => (
+          <div key={index}>
         <a href="#">{ingredient}</a>
         <hr/>
             </div>
           ))}
     </div>
 </fieldset>
-        <h2 ><span className="px-2 text-lg font-semibold">Duration: </span> {post?.duration >= 60
-      ? `${Math.floor(post?.duration / 60)}h${post?.duration % 60 > 0 ? '+' : ''}`
+      {/* @ts-ignore */}
+        <h2 ><span className="px-2 text-lg font-semibold">Duration: </span> {post?.duration >= 60 ? `${Math.floor(post?.duration / 60)}h${post?.duration % 60 > 0 ? '+' : ''}`
       : `${post?.duration} minutes`} </h2> 
         <h2 ><span className="px-2 text-lg font-semibold">Serve for:</span> {post?.pax} pax</h2> 
         </div>
         <h2 className="px-2 text-lg font-semibold mb-5">Method:</h2>
         <h2 className="px-2 text-lg font-semibold mb-5">Instruction:</h2>
         {post?.instructions?.map((instruction,index) => (
-        <div className="mb-5">
+        <div className="mb-5" key={index}>
         <div className="flex space-x-4 items-center mb-2">
           <div className="rounded-full h-8 w-8 bg-coral flex items-center justify-center">
             <span className="text-white text-sm font-bold">{index+1}</span>
@@ -315,6 +318,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
           <p className="mb-2 text-md">
             {instruction.content}
             </p> 
+             {/*@ts-ignore */}
             <img src={instruction.image} alt="step image"></img>
         </div>
           ))}
