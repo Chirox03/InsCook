@@ -42,7 +42,7 @@ function FollowersPage({ params }: { params: { pid: string }}) {
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
                     {followersUsers.map((user) => (
-                        <UserFollowing key={user.id} user={user}/>
+                        <UserFollow key={user.id} user={user}/>
 
                     ))}
                 </div>
