@@ -82,16 +82,12 @@ function UserProfile({ params }: { params: { uid: string }}) {
     fetchProfile();
   } ,[params.uid])
 
-  const handleStorage = () => {
-    router.prefetch(`/UserProfile/Storage/${params.uid}`)
-    router.push(`/UserProfile/Storage/${params.uid}`)
-  }
   
   // const user: AppUserPro = mapUser(apiUser)
   console.log('Hello',userProfile)
   const [state, setState] = useState(0)
   const {state: auth, dispatch } = useAuth();
-  const [yourProfile, setyourProfile] = useState(auth.id === params.uid);
+  const [yourProfile, setyourProfile] = useState(auth?.id === params.uid);
   // if (auth.id == params.uid)
   //   setyourProfile(true)
   // if(userProfile==null) return notFound();
@@ -110,6 +106,9 @@ function UserProfile({ params }: { params: { uid: string }}) {
           </button>
         )}
         <FollowButton/>
+        <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+              <Link href={`Storage/${params.uid}`}>Storage</Link>
+        </button>
         </div>
         </div>
        </div>
@@ -123,26 +122,21 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <br/> */}
             <span className="text-sm ">Posts</span>
         </button>
-        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(1)}>   
-            {/* <span className="text-xs"> {userProfile?.numpost}</span>
-            <br/> */}
-            <span className="text-sm ">Storage</span>
-        </button>
-        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100 hover:bg-gray-100 hover:text-blue-700 focus:z-10   focus:border-t-2 focus:border-black focus:text-slate-900  focus:text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(2)}>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100 hover:bg-gray-100 hover:text-blue-700 focus:z-10   focus:border-t-2 focus:border-black focus:text-slate-900  focus:text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(1)}>
         {/* <span className="text-xs"> {userProfile?.numfollowers}</span>
             <br/> */}
             <span className="text-sm ">Followers</span>
         </button>
-        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(3)}>
+        <button type="button" className="flex-1 px-4 py-0 font-medium text-gray-900 bg-white border-x-0 border-gray-100  hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:border-t-2 focus:border-black   focus:text-slate-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" onClick={() => setState(2)}>
         {/* <span className="text-xs"> {userProfile?.numfollowing}</span>
             <br/> */}
             <span className="text-sm ">Following</span>
         </button>
         </div>
       {state == 0 && <UserPosts params={{ pid:params.uid}}/>}
-      {state == 1 && handleStorage()}
-      {state == 2 && <FollowersPage params={{ pid:params.uid}}/>}
-      {state == 3 && <FollowingPage params={{ pid:params.uid}}/>}
+      {/* {state == 1 && handleStorage()} */}
+      {state == 1 && <FollowersPage params={{ pid:params.uid}}/>}
+      {state == 2 && <FollowingPage params={{ pid:params.uid}}/>}
       
      
     </div>

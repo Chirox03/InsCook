@@ -9,7 +9,6 @@ import uploadFile from "@/lib/UploadFile"
 import RecipeType from '@/types/RecipeType';
 import { notFound, useRouter } from 'next/navigation';
 import {toast} from 'react-toastify'
-import fetch from 'node-fetch';
 import { useAuth } from '@/context/AuthContext';
 import { title } from 'process';
 import BASE_URL from '@/config';

@@ -5,41 +5,7 @@ import UserType from "@/types/UserType";
 interface UserProps{
     user:UserType
 }
-
-const UserFollowing:  React.FC<UserProps> = ({user}) =>{
-    useEffect(() => {
-        // console.log("djaskl")
-        const fetchUserInfo = async () => {
-            try {
-            const response = await fetch(`/api/userinfo?userid=${params.pid}`, {
-                method: 'GET',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            });
-        
-            if (!response.ok) {
-                // Handle error response
-                const responseData = await response.json();
-                console.error(responseData.message);
-                return null;
-            }
-        
-            const responseData = await response.json();
-            console.log(responseData.data)
-            setuser(await mapUser(responseData.data));
-            } catch (error) {
-            console.error('Error fetching following users:', error);
-            return null;
-            }
-        };
-        
-        fetchUserInfo()
-            .catch((error) => {
-            console.error('Error:', error);
-            });
-    },[params.pid])
-    
+const UserFollowing:  React.FC<UserProps> = ({user}) => {
     return (
         <div className="flex items-center justify-between border rounded p-[1rem]">
         <div className="flex">

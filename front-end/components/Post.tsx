@@ -72,7 +72,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
     try {
       const response = await axios.get(`${BASE_URL}/api/like?postid=${post.id}`);
       setNewPost(prevNewPost => prevNewPost ? { ...prevNewPost, likes: response.data.data.length } : prevNewPost);
-      setLike(response.data.data.some(user => user.id === auth.id));
+      setLike(response.data.data.some(user => user.id === auth?.id));
     } catch (error) {
       console.log("Error fetching like", error);
     }
@@ -201,7 +201,6 @@ const Post: React.FC<PostProps> = ({ post }) => {
           </button>
         </p>
       </div>
-    </div>
   )
 }
 

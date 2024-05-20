@@ -5,58 +5,7 @@ import UserType from "@/types/UserType";
 interface UserProps{
     user:UserType
 }
-function mapUser(apiUser: APiUser):AppUser {
-    const {id, name, realname} = apiUser;
-    const appUser: AppUser = {
-        userID: id,
-        name: name,
-        realname: realname,
-    };
-    return appUser;
-}
-
-const imageStyle = {
-    borderRadius: '50%',
-    mt: -50,
-    display: 'inline-block',
-  }
-
-function UserFollow({ params }: { params: { pid: string }}) {
-    // console.log(params.pid)
-    const [user, setuser] = useState<AppUser>();
-
-    useEffect(() => {
-        console.log("djaskl")
-        const fetchUserInfo = async () => {
-            try {
-            const response = await fetch(`/api/userinfo?userid=${params.pid}`, {
-                method: 'GET',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            });
-        
-            if (!response.ok) {
-                // Handle error response
-                const responseData = await response.json();
-                console.error(responseData.message);
-                return null;
-            }
-        
-            const responseData = await response.json();
-            console.log(responseData.data)
-            setuser(await mapUser(responseData.data));
-            } catch (error) {
-            console.error('Error fetching following users:', error);
-            return null;
-            }
-        };
-        
-        fetchUserInfo()
-            .catch((error) => {
-            console.error('Error:', error);
-            });
-    },[params.pid])
+const UserFollow:  React.FC<UserProps> = ({user}) =>{
     console.log(user)
     return (
     <div className="flex items-center justify-between border rounded p-[1rem]">
