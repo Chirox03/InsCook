@@ -1,11 +1,11 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { NextRequest, NextResponse } from 'next/server'
-import {  doc, setDoc } from "firebase/firestore";
+import { NextRequest, NextResponse } from 'next/server';
+import {  doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
 
-type ResponseData = {
-  message: string
-}
+// type ResponseData = {
+//   message: string
+// }
 
 export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
     try {
       // Firebase authentication
       const { email, password } = await req.json();
-      console.log(email, password)
+      console.log(email, password);
       if(!email) {
         return NextResponse.json({ message: 'Email is missing',data: null },{status:400});
       }
@@ -34,14 +34,14 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
       /* @ts-ignore */
       const UserID = user.user.reloadUserInfo.localId;
       const newUserData = {
-        "avatar": null,
-        "biography": null,
-        "birth": null,
-        "name": null
-      }
+        'avatar': null,
+        'biography': null,
+        'birth': null,
+        'name': null
+      };
       console.log(UserID);
-      const documentRef = doc(db, "User", UserID);
-      const newUserRef = await setDoc(documentRef, newUserData);
+      const documentRef = doc(db, 'User', UserID);
+      // const newUserRef = await setDoc(documentRef, newUserData);
 
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Register successfully' },{ status:200 });

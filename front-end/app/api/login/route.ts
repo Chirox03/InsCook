@@ -1,13 +1,13 @@
-import { signInWithEmailAndPassword ,setPersistence,browserLocalPersistence } from 'firebase/auth';
-import { NextRequest, NextResponse } from 'next/server'
+import { signInWithEmailAndPassword  } from 'firebase/auth';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth, db } from '@/firebase';
-import { doc , getDoc } from "firebase/firestore";
+import { doc , getDoc } from 'firebase/firestore';
 import UserType from '@/types/UserType';
 
-type ResponseData = {
-  message: string,
-  data: UserType|null
-}
+// type ResponseData = {
+//   message: string,
+//   data: UserType|null
+// }
 
 export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
@@ -22,18 +22,18 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
       }
       */
       const { email, password } = await req.json();
-      console.log(email, password)
+      console.log(email, password);
       const user = await signInWithEmailAndPassword(auth, email, password);
       /* @ts-ignore */
       const documentId = user.user.reloadUserInfo.localId;
 
       // Create a reference to the document with the specified ID in the specified collection
-      const documentRef = doc(db, "User", documentId);
+      const documentRef = doc(db, 'User', documentId);
 
       // Get the document data
       const documentSnapshot = await getDoc(documentRef);
 
-      let userdata = {"id": documentId, "data": documentSnapshot.data()};
+      let userdata = {'id': documentId, 'data': documentSnapshot.data()};
       if (!documentSnapshot.exists()) {
         /* @ts-ignore */
         userdata.data = null;

@@ -1,11 +1,11 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { NextRequest, NextResponse } from 'next/server'
-import {  doc, setDoc } from "firebase/firestore";
-import { auth, db } from '@/firebase';
+// import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import {  doc, setDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
 
-type ResponseData = {
-  message: string
-}
+// type ResponseData = {
+//   message: string
+// }
 
 export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
@@ -18,12 +18,12 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
       // Create user data  
       /* @ts-ignore */
       const newUserData = {
-        "avatar": avatar,
-        "biography": null,
-        "name": name
-      }
+        'avatar': avatar,
+        'biography': null,
+        'name': name
+      };
       console.log(id);
-      const documentRef = doc(db, "User", id);
+      const documentRef = doc(db, 'User', id);
       const newUserRef = await setDoc(documentRef, newUserData);
 
       // Respond with the fetched data 

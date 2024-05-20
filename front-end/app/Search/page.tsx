@@ -1,24 +1,24 @@
-"use client"
+'use client';
 import React, { useState } from 'react'; // Import useState from react
-import { Select, Option, Input } from "@/components/MaterialTailwind.ts";
+import { Select, Option, Input } from '@/components/MaterialTailwind.ts';
 import Post from '@/components/Post';
 
 export default function Search() {
   const [duration,setDuration] = useState<number>(5); // Use useState directly
   const [pax,setPax] = useState<number>(1);
-  const [method,setMethod] = useState<string>('Fry')
+  const [method,setMethod] = useState<string>('Fry');
   const handleChangeDuration = (event: React.ChangeEvent<HTMLSelectElement>) => {
-     /*@ts-ignore */
+    /*@ts-ignore */
     setDuration(event.target.value);
-  }
+  };
   const handleChangePax = (event: React.ChangeEvent<HTMLSelectElement>) =>{
-     /*@ts-ignore */
+    /*@ts-ignore */
     setPax(event.target.value);
-  }
+  };
   const handleChangeMethod= (event: React.ChangeEvent<HTMLSelectElement>) =>{
     setMethod(event.target.value);
-  }
-  const [ingredients,setIngredients] = useState<string[]>([])
+  };
+  const [ingredients,setIngredients] = useState<string[]>([]);
   const [newIngredient,setNewIngredient] = useState<string>('');
   const handleNewIngredientChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewIngredient(event.target.value);
@@ -47,7 +47,7 @@ export default function Search() {
             className="block w-full py-2 pl-10 text-xs text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Find recipes..."
             required
-            />
+          />
           <div className="absolute inset-y-1 right-3 flex items-center pointer-events-none">
             <i className="fi fi-brands-instagram"></i>
           </div>
@@ -93,7 +93,7 @@ export default function Search() {
                 value={method}
                 onChange={handleChangeMethod}
                 className="text-xs h-6 rounded-md mr-2 p-1" 
-                >
+              >
                 <option value={'Fry'}>Fry</option>
                 <option value={'Stir'}>Stir</option>
                 <option value={'Steam'}>Steam</option>
@@ -108,23 +108,23 @@ export default function Search() {
             {
               ingredients.map((ingredient,index)=>(
                 <div className='' key={index}>
-                <label className='m-2'>{ingredient}</label>
-                <button onClick={()=>deleteIngredient(index)}>
-                  <i className="fi fi-rr-trash text-xl"></i>
-                </button>
-               </div>))
+                  <label className='m-2'>{ingredient}</label>
+                  <button onClick={()=>deleteIngredient(index)}>
+                    <i className="fi fi-rr-trash text-xl"></i>
+                  </button>
+                </div>))
             }
-          <div className=''>
-          <input type="text" className='max-w-40 max-h-6 rounded-md text-xs px-2 py-1 ' placeholder='Ingredient' value={newIngredient} onChange={(e)=>setNewIngredient(e.currentTarget.value)}></input>
-          <button className=' w-6 h-6 p-1' onClick={addIngredient}>
-          <i className="fi fi-br-plus"></i>
-          </button>
-          </div>
+            <div className=''>
+              <input type="text" className='max-w-40 max-h-6 rounded-md text-xs px-2 py-1 ' placeholder='Ingredient' value={newIngredient} onChange={(e)=>setNewIngredient(e.currentTarget.value)}></input>
+              <button className=' w-6 h-6 p-1' onClick={addIngredient}>
+                <i className="fi fi-br-plus"></i>
+              </button>
+            </div>
           </div>
         </div>
-        </div>
-        <h2 className='text-md font-sans ml-2'>Search results</h2>
-       </div>
+      </div>
+      <h2 className='text-md font-sans ml-2'>Search results</h2>
+    </div>
 
   );
 }

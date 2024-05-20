@@ -1,25 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/firebase';
-import {  collection, doc , getDocs, updateDoc, where, getDoc, query, addDoc, deleteDoc } from "firebase/firestore";
+import {  collection, doc , getDocs, updateDoc, where, getDoc, query, addDoc, deleteDoc } from 'firebase/firestore';
 import PostType from '@/types/PostType';
 import UserType from '@/types/UserType';
 
 const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
   const post: PostType = {
-      id: postid, 
-      user: {
-          userID: postinfo.user_id,
-          username: username, 
-          avatar: useravatar,
-      },
-      image: postinfo.image,
-      timestamp: new Date(postinfo.datetime), 
-      title: postinfo.title,
-      caption: postinfo.caption,
-      likes: postinfo.like_number,
-      comments: postinfo.comment_number,
-      isSaved: saved, 
-      isLiked: liked, 
+    id: postid, 
+    user: {
+      userID: postinfo.user_id,
+      username: username, 
+      avatar: useravatar,
+    },
+    image: postinfo.image,
+    timestamp: new Date(postinfo.datetime), 
+    title: postinfo.title,
+    caption: postinfo.caption,
+    likes: postinfo.like_number,
+    comments: postinfo.comment_number,
+    isSaved: saved, 
+    isLiked: liked, 
   };
 
   return post;
@@ -27,7 +27,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
     
 export async function PUT(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Like');
-  const collectionUser = collection(db, 'User');
+  // const collectionUser = collection(db, 'User');
   const collectionStorage = collection(db, 'Storage');
   const { method } = req;
   
@@ -62,11 +62,11 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();
 
-        const userinfo = (await getDoc(doc(db, "User", postdata?.user_id))).data();
-        const isLiked = querySnapshot.docs.map(doc => doc.ref);
-        if (querySnapshot.empty) {
+      const userinfo = (await getDoc(doc(db, 'User', postdata?.user_id))).data();
+      const isLiked = querySnapshot.docs.map(doc => doc.ref);
+      if (querySnapshot.empty) {
         // @ts-ignore
-        postdata.like_number += 1;
+        postdata.likeNumber += 1;
         // @ts-ignore
         postdata.isLiked = true;
         addDoc(collectionRef, {'post_id': postid, 'user_id': userid});
@@ -74,8 +74,8 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
         const output = mapToPostType(postdata, postid, userinfo?.name, userinfo?.avatar, !saved, true);
         return NextResponse.json( { message: 'Like successfully!', data: output },{ status:200 });
       } else {
-         // @ts-ignore
-        postdata.like_number -= 1;
+        // @ts-ignore
+        postdata.likeNumber -= 1;
         // @ts-ignore
         postdata.isLiked = false;
         deleteDoc(isLiked[0]);
@@ -98,9 +98,9 @@ const mapToUserType = (userinfo: any, userid: string): UserType => {
   const user: UserType = {
     id: userid,
     data: {
-        avatar: userinfo.avatar,
-        biography: userinfo.biography,
-        name: userinfo.name
+      avatar: userinfo.avatar,
+      biography: userinfo.biography,
+      name: userinfo.name
     }
   };
 
@@ -109,12 +109,12 @@ const mapToUserType = (userinfo: any, userid: string): UserType => {
     
 export async function GET(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Like');
-  const collectionUser = collection(db, 'User');
+  // const collectionUser = collection(db, 'User');
   const { method } = req;
   
   if (method === 'GET') {
     try {
-      const searchParams = req.nextUrl.searchParams
+      const searchParams = req.nextUrl.searchParams;
       const postid = searchParams.get('postid');
       console.log(postid);
 
@@ -140,7 +140,7 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
       let listuserid =  querySnapshot.docs.map(doc => doc.data().user_id);
       let out = [];
       for(let i=0; i < listuserid.length; i++) {
-        const userinfo = (await getDoc(doc(db, "User", listuserid[i]))).data();
+        const userinfo = (await getDoc(doc(db, 'User', listuserid[i]))).data();
         out.push(mapToUserType(userinfo, listuserid[i]));
       }
 

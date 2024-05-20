@@ -1,29 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth, db } from '@/firebase';
-import {  query, collection , getDocs, where, getDoc, doc } from "firebase/firestore";
+import { NextRequest, NextResponse } from 'next/server';
+import {  db } from '@/firebase';
+import {  query, collection , getDocs, where, getDoc, doc } from 'firebase/firestore';
 import PostType from '@/types/PostType';
 
-type ResponseData = {
-  message: string,
-  data: PostType|null
-}
+// type ResponseData = {
+//   message: string,
+//   data: PostType|null
+// }
 
 const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
   const post: PostType = {
-      id: postid, 
-      user: {
-          userID: postinfo.user_id,
-          username: username, 
-          avatar: useravatar,
-      },
-      image: postinfo.image,
-      timestamp: new Date(postinfo.datetime), 
-      title: postinfo.title,
-      caption: postinfo.caption,
-      likes: postinfo.like_number,
-      comments: postinfo.comment_number,
-      isSaved: saved, 
-      isLiked: liked, 
+    id: postid, 
+    user: {
+      userID: postinfo.user_id,
+      username: username, 
+      avatar: useravatar,
+    },
+    image: postinfo.image,
+    timestamp: new Date(postinfo.datetime), 
+    title: postinfo.title,
+    caption: postinfo.caption,
+    likes: postinfo.like_number,
+    comments: postinfo.comment_number,
+    isSaved: saved, 
+    isLiked: liked, 
   };
 
   return post;
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Post');
   const collectionLike = collection(db, 'Like');
   const collectionStorage = collection(db, 'Storage');
-  const collectionUser = collection(db, 'User');
+  //const collectionUser = collection(db, 'User');
   const { method } = req;
   
   if (method === 'GET') {
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
         return NextResponse.json({ message: 'Post not found', data: null },{ status:404 });
       }
 
-      const userinfo = (await getDoc(doc(db, "User", userid))).data();
+      const userinfo = (await getDoc(doc(db, 'User', userid))).data();
       let output: PostType[] = [];
       const posts = querySnapshot.docs.map(doc => doc);
       console.log(posts[0]);
