@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import PostDetail from "@/app/Post/[pid]/page";
 import BASE_URL from "@/config";
 import { useEffect, useState } from "react";
@@ -37,14 +38,14 @@ function UserPosts({ params }: { params: { pid: string }}) {
             .catch((error) => {
             console.error('Error:', error);
             });
-    },[])
+    },[params.pid])
     // console.log('Posts',posts)
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                {posts.map((post) => (
-                    <Post key={post.id} post={post} />
-                ))}
+                    {posts.map((id: string,index) => (
+                        <PostDetail params={{ pid:id}} key={index}/>
+                    ))}
                 </div>
                 
         </div>

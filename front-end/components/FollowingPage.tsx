@@ -36,14 +36,15 @@ function FollowingPage({ params }: { params: { pid: string }}) {
             .catch((error) => {
             console.error('Error:', error);
             });
-    },[])
+    },[params.pid])
 
     // console.log('Following',followingUsers)
     return (
         <div className="flex flex-col w-[100%] bg-white">
                 <div className="divide-y">
-                    {followingUsers.map((user) => (
-                        <UserFollowing key={user.id} user={user} />
+                    {followingUsers.map((id: string,index) => (
+                        <UserFollowing params={{pid:id}} key={index}/>
+
                     ))}
                 </div>
         </div>

@@ -9,6 +9,7 @@ const uploadFile = async (props: FileUploadProps) => {
     const { file, folderPath  } = props;
     const allowedExtensions = ['jpg', 'jpeg', 'png'];
     // Extract the file extension from the file name
+    {/* @ts-ignore */}
     const fileNameParts = file.name.split('.');
     const fileExtension = fileNameParts[fileNameParts.length - 1].toLowerCase();
 

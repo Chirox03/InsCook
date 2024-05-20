@@ -10,7 +10,7 @@ type ResponseData = {
   message: string,
   data: PostType|null
 }
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest) :Promise<NextResponse>{
   const { method} = req;
   if (method === 'GET') {
     try {
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
       const postRef = doc(db, 'Post',postId);
       const postSnapshot = await getDoc(postRef);
       const postinfo = postSnapshot.data();
-      if (postinfo.is_deleted) {
+      if (postinfo?.is_deleted) {
         return NextResponse.json({ message: 'Post not found' ,data: null},{status:404});
       }
 
@@ -40,10 +40,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: 'Internal server error',data: null },{status:505});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null},{status:405});
   }
 }
-export async function POST(req: NextRequest){
+export async function POST(req: NextRequest):Promise<NextResponse>{
 
   const { method } = req;
   if (method === 'POST') {
@@ -58,21 +58,27 @@ export async function POST(req: NextRequest){
         console.error('Image is not a file object');
       }
       const path_in_storage = await uploadFile({file:cover_image,folderPath:'images'})
+      /* @ts-ignore */
       const stepsData = [];
       
       for (const [key, value] of data.entries()) {
         if (key.startsWith('steps[')) { // Identify step fields
+          /* @ts-ignore */
           const stepId = key.match(/steps\[(\d+)]/)[1]; 
           console.log(stepId)
           const stepProperty = key.split(/[\[\]]/)[3]; // Extract property name (content/image)
           console.log(stepProperty)
+          /* @ts-ignore */
           if (!stepsData[stepId]) {
+            /* @ts-ignore */
             stepsData[stepId] = {}; // Initialize step object
           }
+          /* @ts-ignore */
           stepsData[stepId][stepProperty] = value; // Add content or image data
         }
       }
       let steps = [];
+      /* @ts-ignore */
       steps = await Promise.all(stepsData.map(async (step) => {
         if (step.image && step.image instanceof File) {
           const path_in_storage = await uploadFile({ file: step.image ,folderPath: "images/"});
@@ -93,9 +99,12 @@ export async function POST(req: NextRequest){
         'caption':data.get('caption'),
         'is_private':false,
         'is_deleted':false,
+        /* @ts-ignore */
         'duration':data.get('duration') as number,
+        /* @ts-ignore */
         'pax':data.get('pax') as number,
         'timestamp':new Date(),
+        /* @ts-ignore */
         'ingredients':  await JSON.parse(ingredients),
         'step': steps,
         'image':await getDownloadUrlForFile(path_in_storage)
@@ -110,7 +119,7 @@ export async function POST(req: NextRequest){
       return NextResponse.json({ message: error ,data: null },{status:505});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null}),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null},{status:405});
   }
 }
 export async function DELETE(req: NextRequest): Promise<NextResponse> {
@@ -126,6 +135,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
       const postRef = doc(db, "Post", postid);
       const postSnapshot = await getDoc(postRef);
       let postData = postSnapshot.data();
+      /* @ts-ignore */
       postData.is_deleted = true;
       await updateDoc(postRef, postData); // Update the document with new data
 

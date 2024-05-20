@@ -13,34 +13,17 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
   if (method === 'POST') {
     try {
       // Firebase authentication
-      const { email, password } = await req.json();
-      console.log(email, password)
-      if(!email) {
-        return NextResponse.json({ message: 'Email is missing',data: null },{status:400});
-      }
-
-      if(!password) {
-        return NextResponse.json({ message: 'Password is missing',data: null },{status:400});
-      }
-
-      if(password.length<6) {
-        return NextResponse.json({ message: 'Password must be at least 6 characters',data: null },{status:400});
-      }
-      
-      // Create account
-      const user = await createUserWithEmailAndPassword(auth, email, password);
+      const {id ,avatar,name} = await req.json();
 
       // Create user data  
       /* @ts-ignore */
-      const UserID = user.user.reloadUserInfo.localId;
       const newUserData = {
-        "avatar": null,
+        "avatar": avatar,
         "biography": null,
-        "birth": null,
-        "name": null
+        "name": name
       }
-      console.log(UserID);
-      const documentRef = doc(db, "User", UserID);
+      console.log(id);
+      const documentRef = doc(db, "User", id);
       const newUserRef = await setDoc(documentRef, newUserData);
 
       // Respond with the fetched data 

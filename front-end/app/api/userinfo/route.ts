@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/firebase';
 import {  doc , getDoc, updateDoc } from "firebase/firestore";
 import UserType from '@/types/UserType';
-import {BASE_URL} from '@config'
 import uploadFile from '@/lib/UploadFile';
 import getDownloadUrlForFile from '@/lib/GetFile';
 
@@ -12,7 +11,7 @@ type ResponseData = {
   data: UserType|null
 }
     
-export async function PUT(req: NextRequest){
+export async function PUT(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
   if (method === 'PUT') {
     try {
@@ -37,6 +36,7 @@ export async function PUT(req: NextRequest){
       }
 
       // Create a reference to the document with the specified ID in the specified collection
+      /* @ts-ignore */
       const documentRef = doc(db, "User", userid);
 
       // Get the document data
@@ -49,8 +49,11 @@ export async function PUT(req: NextRequest){
       // Update
       const path_in_storage = await uploadFile({file:file,folderPath:'images'});
       let data = documentSnapshot.data();
+      /* @ts-ignore */
       data.avatar = await getDownloadUrlForFile(path_in_storage);
+      /* @ts-ignore */
       data.biography = biography;
+      /* @ts-ignore */
       data.name = name;
       updateDoc(documentRef, data);
 
@@ -61,11 +64,11 @@ export async function PUT(req: NextRequest){
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
 }
 
-export async function GET(req: NextRequest){
+export async function GET(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
 
   if (method === 'GET') {
@@ -96,7 +99,7 @@ export async function GET(req: NextRequest){
       return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
     }
   } else {
-    return NextResponse.json({ message: 'Method not allowed' , data: null }),{status:405};
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
 }
 
