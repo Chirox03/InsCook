@@ -1,0 +1,6 @@
+firebase-admin
+google-cloud-firestore
+ftfy 
+regex 
+tqdm
+git+https://github.com/openai/CLIP.git
