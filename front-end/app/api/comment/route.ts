@@ -72,7 +72,7 @@ export async function GET(req: NextRequest) :Promise<NextResponse>{ //Get commen
       const postid = searchParams.get('postid');
       console.log(postid);
 
-      if (postid==null) {
+      if (postid==null) {   
         return NextResponse.json({ message: 'Post ID not provided', data: null }, { status:400 });
       }
         
