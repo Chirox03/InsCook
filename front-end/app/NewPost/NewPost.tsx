@@ -234,8 +234,16 @@ export default function NewPost() {
                 value={recipe.duration} 
                 onChange={(e) => handleDurationChange(e)}>
                 <option value={5}>5m</option>
+                <option value={10}>10m</option>
                 <option value={15}>15m</option>
+                <option value={20}>20m</option>
+                <option value={25}>25m</option>
                 <option value={30}>30m</option>
+                <option value={35}>35m</option>
+                <option value={40}>40m</option>
+                <option value={45}>45m</option>
+                <option value={50}>50m</option>
+                <option value={55}>55m</option>
                 <option value={60}>1h</option>
                 <option value={61}>1h+</option>
               </select>
