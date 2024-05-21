@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable @next/next/no-img-element */
 import React, { useState } from 'react'
 import Step from '@/components/Step';
 import StepType from '@/types/StepType';
@@ -8,7 +9,6 @@ import uploadFile from "@/lib/UploadFile"
 import RecipeType from '@/types/RecipeType';
 import { notFound, useRouter } from 'next/navigation';
 import {toast} from 'react-toastify'
-import fetch from 'node-fetch';
 import { useAuth } from '@/context/AuthContext';
 import { title } from 'process';
 import BASE_URL from '@/config';
@@ -58,6 +58,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
     description: apiPost.caption,
     duration: apiPost.duration,
     category:apiPost.category,
+     /*@ts-ignore */
     method:apiPost.method,
     pax: apiPost.pax,
     timestamp:null,
@@ -83,9 +84,11 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
     data.append('timestamp', new Date().toISOString() );
     data.append('is_private','false');
     data.append('caption',recipe.description);
+     /*@ts-ignore */
     data.append('duration', recipe.duration as string);
     if(recipe.image !== null)
     data.append('image',recipe.image);
+   /*@ts-ignore */
     data.append('pax',recipe.pax as string),
     data.append('ingredients', JSON.stringify(recipe.ingredients)),
     recipe.instructions.forEach((step, index) => {
@@ -98,24 +101,25 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
     });
    return data;
   }
-  const fetchPostbyId = async () =>{
-    try{
-        const response = await axios.get(`${BASE_URL}/api/posts?id=${params.pid}`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        dispatch({ type: 'SET_RECIPE', payload: mapPost(response.data.data,params.pid)});
-      }
-      catch(error){
-        console.error('Error fetching posts:', error);
-        toast.error('Error fetching posts:')
-        return null;
-      }
-  }
+  
   useEffect(()=>{
+    const fetchPostbyId = async () =>{
+      try{
+          const response = await axios.get(`${BASE_URL}/api/posts?id=${params.pid}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          dispatch({ type: 'SET_RECIPE', payload: mapPost(response.data.data,params.pid)});
+        }
+        catch(error){
+          console.error('Error fetching posts:', error);
+          toast.error('Error fetching posts:')
+          return null;
+        }
+    }
     fetchPostbyId();
-  },[])
+  },[params.pid,dispatch])
   console.log(recipe)
   const handleSave = async() => {
     try {
@@ -274,7 +278,7 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
         <h2 className='font-semibold'>How to</h2>
         <div className='mx-2 my-2'>
                 {recipe.instructions.map((step, index) =>
-                    <Step step={step} id={index} deleteStep={deleteStep} />
+                    <Step key={index} step={step} id={index} deleteStep={deleteStep} />
                 )}
               <button type="button" 
               className='mt-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-coral font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 '

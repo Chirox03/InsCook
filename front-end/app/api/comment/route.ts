@@ -9,7 +9,7 @@ type ResponseData = {
   };
 
 // Define a function to map Firebase document data to CommentType
-  const mapToCommentType = (commentData: any, commentid: String, userinfo: any, userid: String): CommentType => {
+  const mapToCommentType = (commentData: any, commentid: string, userinfo: any, userid: string): CommentType => {
     // Implement mapping logic according to your data structure
     const comment: CommentType = {
       id: commentid,
@@ -24,7 +24,7 @@ type ResponseData = {
     return comment;
   };
 
-  export async function POST(req: NextRequest) { //Add comment
+  export async function POST(req: NextRequest) :Promise<NextResponse>{ //Add comment
     const { method } = req;
   
     if (method === 'POST') {
@@ -62,7 +62,7 @@ type ResponseData = {
     }
   }
 
-  export async function GET(req: NextRequest) { //Get comments of a post
+  export async function GET(req: NextRequest) :Promise<NextResponse>{ //Get comments of a post
     const collectionRef = collection(db, "Comment");
     const { method } = req;
   
@@ -98,7 +98,7 @@ type ResponseData = {
   }
 
   
-  export async function DELETE(req: NextRequest) { //Remove comment
+  export async function DELETE(req: NextRequest) :Promise<NextResponse>{ //Remove comment
     const { method } = req;
   
     if (method === 'DELETE') {

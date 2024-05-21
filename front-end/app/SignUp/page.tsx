@@ -1,10 +1,16 @@
 'use client'
 import Image from "next/image"
 import { toast } from "react-toastify"
-import { useState ,useEffect,FormEvent} from "react"
+import React, { useState ,useEffect,FormEvent} from "react"
 import { useRouter } from "next/navigation"
+import Script from "next/script"
+import { useAuth } from "@/context/AuthContext"
+import { auth } from "@/firebase"
+import { GoogleAuthProvider, signInWithPopup, signInWithRedirect} from "firebase/auth"
+import axios from "axios"
 function SignUp () {
     const router = useRouter()
+    const { state: authState, dispatch } = useAuth();
     const handleForm = async (event: FormEvent<HTMLFormElement>) =>{
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -12,6 +18,7 @@ function SignUp () {
         const password = formData.get('password') as string;
         const repassword = formData.get('repassword') as string;
         console.log(email,password,repassword)
+        
         if(repassword!=password){
             toast.error("Password is not match");
             return;
@@ -43,22 +50,36 @@ function SignUp () {
         toast.error("Error when logging in")
     }
 }
+    const handleSignUpgg = async (e: React.MouseEvent<HTMLButtonElement>) =>{
+        e.preventDefault();
+        try{
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            provider.setCustomParameters({ prompt: 'select_account' });
+            console.log("res",result)
+            const response = await axios.post("/api/signupgg",{
+                'name': result.user.displayName,
+                'avatar': result.user.photoURL,
+                'id':result.user.uid
+            })
+            router.push("/")
+            alert("Signup succesfully !!")
+        }catch(error){
+            alert(error);
+        }
+    }
     return (
         <div className="h-full bg-gradient-to-b font-sans">
-        <script src="https://cdn.tailwindcss.com"></script>
+        <Script src="https://third-party-script.js"></Script>
         <div className="flex flex-col items-center justify-cente">
             <div className="mt-20">
                 <Image src="/icon.png" width={100} height={100} alt="app-icon"/>
             </div>
             <h1 className="text-center text-grey mt-5 mb-20"> Đăng ký để xem công thức thú vị từ bạn bè</h1>
-            <button type="button" className="w-3/4 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+            <button onClick={(e)=>handleSignUpgg(e)} type="button" className="w-3/4 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
             <input type="image" src="./google.png" alt="app-icon" className="w-4 h-4 mr-2"/>
             <span className="text-base">Đăng ký bằng Google</span>
             </button>
-            <button type="button" className="w-3/4 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-            <input type="image" src="./facebook.png" alt="app-icon" className="w-4 h-4 mr-2"/>
-                Đăng ký bằng Facebook
-            </button>   
             <p className="w-full text-center overflow-hidden before:h-[1px] after:h-[1px] after:bg-gray-200 
            after:inline-block after:relative after:align-middle after:w-1/3 
            before:bg-gray-200 before:inline-block before:relative before:align-middle 

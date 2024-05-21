@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable @next/next/no-img-element */
 import React, { useState } from 'react'
 import Step from '@/components/Step';
 import StepType from '@/types/StepType';
@@ -66,9 +67,11 @@ export default function NewPost() {
     data.append('timestamp', new Date().toISOString() );
     data.append('is_private','false');
     data.append('caption',recipe.description);
+    /* @ts-ignore */
     data.append('duration', recipe.duration as string);
     if(recipe.image !== null)
     data.append('image',recipe.image);
+  /* @ts-ignore */
     data.append('pax',recipe.pax as string),
     data.append('ingredients', JSON.stringify(recipe.ingredients)),
     recipe.instructions.forEach((step, index) => {
@@ -272,7 +275,7 @@ export default function NewPost() {
         <h2 className='font-semibold'>How to</h2>
         <div className='mx-2 my-2'>
                 {recipe.instructions.map((step, index) =>
-                    <Step step={step} id={index} deleteStep={deleteStep} />
+                    <Step key={index} step={step} id={index} deleteStep={deleteStep} />
                 )}
               <button type="button" 
               className='mt-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-coral font-medium rounded-md text-sm px-5 py-2.5 me-2 mb-2 '

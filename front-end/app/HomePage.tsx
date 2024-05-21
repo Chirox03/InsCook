@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable @next/next/no-img-element */
 import Post from "@/components/Post";
 import Search from "@/app/Search/page";
 import Image from "next/image";
@@ -11,9 +12,6 @@ function HomePage() {
   const  [PostList,setPostList] = useState<PostType[]>([]);
   const {state: auth, dispatch } = useAuth();
   const router = useRouter();
-  if(auth==null) {
-    router.push("/Login")
-    return null;}
  useEffect( ()=>{
   const fetchPosts = async () =>{
     try{
@@ -36,8 +34,10 @@ function HomePage() {
 
     }
   };
+  if(auth==null) {
+    router.push("/Login")}
   fetchPosts()
- },[])
+ },[auth,router])
  
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
