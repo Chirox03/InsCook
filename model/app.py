@@ -75,7 +75,7 @@ def search():
         result_list = filter
 
     result = {'doc_ids': result_list}
-    print(result)
+    # print(result)
 
     return jsonify(result)
 
