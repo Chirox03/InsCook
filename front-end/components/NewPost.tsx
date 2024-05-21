@@ -52,7 +52,7 @@ function mapPost(recipe: RecipeType,id:string): APiPost{
 export default function NewPost() {
   const router = useRouter();
   const {state: auth} = useAuth();
-  if (auth==null) {router.push('/Login');}
+  // if (auth==null) {router.push('/Login');}
   const {state: recipe, dispatch } = useRecipes();
   useEffect(() => {
     console.log('Recipe state updated:', recipe);
