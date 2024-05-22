@@ -3,6 +3,32 @@ import React, { useState } from 'react';
 import { Select, Option, Input } from '@/components/MaterialTailwind.ts';
 import Post from '@/components/Post';
 import axios from 'axios';
+import BASE_URL from '@/config';
+import PostType from '@/types/PostType';
+
+
+
+const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
+  const post: PostType = {
+    id: postid, 
+    user: {
+      userID: postinfo.user_id,
+      username: username, 
+      avatar: useravatar,
+    },
+    image: postinfo.image,
+    timestamp: (postinfo.datetime), 
+    title: postinfo.title,
+    caption: postinfo.caption,
+    likes: postinfo.like_number,
+    comments: postinfo.comment_number,
+    isSaved: saved, 
+    isLiked: liked, 
+  };
+
+  return post;
+};
+
 
 export default function Search() {
   const [duration, setDuration] = useState<number>(5);
@@ -11,7 +37,8 @@ export default function Search() {
   const [searchText, setSearchText] = useState<string>('');
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [newIngredient, setNewIngredient] = useState<string>('');
-  const [image, setImage] = useState<string | null>(null); // State for the Base64 image string
+  const [image, setImage] = useState<string | null>(null);
+  const [postDataList, setPostDataList] = useState<PostType[]>([]);
 
   const handleChangeDuration = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setDuration(Number(event.target.value));
@@ -48,28 +75,91 @@ export default function Search() {
   const deleteIngredient = (index: number) => {
     setIngredients(ingredients.filter((_, i) => i !== index));
   };
+
+  const fetchPost = async (id:string) => {
+    console.log(id)
+    try {
+      const response = await axios.get(`/api/posts?id=${id}`)
+      // console.log(response.data)
+      // console.log(response.data.user_id)
+      // const user = await fetchuserbyid(response.data.user_id)
+      return response.data
+      }catch (error) {
+        console.error('Error fetching post:', error);
+        throw error;
+
+    }
+    
+  };
+
+  const fetchuserbyid = async (id:string) => {
+    console.log(id)
+    try {
+      
+      const response = await axios.get(`/api/userinfo?userid=${id}`)
+
+      return response.data.data;
+    }catch (error) {
+      console.error('Error fetching post:', error);
+      throw error;
+  };
+}
   const handleSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.currentTarget.disabled = true;
 
     const apiURL = 'http://inscook.duckdns.org:5000/search';
+
+    // const appapi = 'http://127.0.0.1:5000/search'
     try {
       const response = await axios.post(apiURL, {
-        method: method,
-        duration: duration,
-        portion: pax,
-        image: image,
-        text: searchText,
-        ingredients: ingredients,
+        // method: method,
+        // duration: duration,
+        // portion: pax,
+        // image: image,
+        // text: searchText,
+        // ingredients: ingredients,
+        method: 'Fry',
+        duration: null,
+        portion: 2,
+        image: null,
+        text: null,
+        ingredients: null,
       });
-      console.log(response);
+      // console.log(response.data)
+      // const posts = [];
+      // const postDataArray = [];
+
+      // const postPromises = response.data.doc_ids.map(async (pId: string) => {
+      //   // console.log(pId);
+      //    // Assuming the first element contains the post ID
+      //   const postData = await fetchPost(pId); // Fetch post data based on ID
+      //   // posts.push(postData.data);
+      //   console.log('Post Data:', postData);
+      // });
+
+
+      for (let i = 0; i < response.data.doc_ids.length; i++) {
+        const pId = response.data.doc_ids[i];
+        const postData = await fetchPost(pId); // Fetch post data based on ID
+        // console.log(postData)
+        // console.log(userData)
+        setPostDataList((prevList) => [...prevList, mapToPostType(postData.data, pId, '','', false, false)]);
+        // console.log(postData)
+      }
+      // await Promise.all(postPromises);
+      // console.log(response.data);
       e.currentTarget.disabled = false;
+      // console.log('sdasjdlkasjdlkasjd',posts)
+      // return postDataArray;
     } catch (error) {
       console.log(error);
       e.currentTarget.disabled = false;
       return null;
     }
   };
+
+  
 
   return (
     <div className='mt-5'>
@@ -192,6 +282,10 @@ export default function Search() {
       </div>
 
       <h2 className='text-md font-sans ml-2'>Search results</h2>
+      {postDataList.map((postData, index) => (
+        // console.log(postData);
+        <Post key={index} post={postData} />
+      ))}
     </div>
   );
 }

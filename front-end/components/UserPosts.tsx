@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import PostDetail from '@/app/Post/[pid]/page';
+import Post from './Post';
 import BASE_URL from '@/config';
 import { useEffect, useState } from 'react';
 import PostType from '@/types/PostType';
@@ -9,9 +9,10 @@ function UserPosts({ params }: { params: { pid: string }}) {
 
   useEffect(() => {
     // console.log("djaskl")
+    // console.log(params.pid)
     const fetchUserPosts = async () => {
       try {
-        const response = await fetch(BASE_URL+`/api/getuserpost?userid=${params.pid}`, {
+        const response = await fetch(`/api/getuserpost?userid=${params.pid}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -38,12 +39,12 @@ function UserPosts({ params }: { params: { pid: string }}) {
         console.error('Error:', error);
       });
   },[params.pid]);
-  // console.log('Posts',posts)
+  console.log('Posts',posts)
   return (
     <div className="flex flex-col w-[100%] bg-white">
       <div className="divide-y">
         {posts.map((post) => (
-          <PostDetail key={post.id} params={{pid:post.id}}/>
+          <Post key={post.id} post={post}/>
         ))}
       </div>
                 

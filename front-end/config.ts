@@ -1,4 +1,4 @@
 // config.js
-const BASE_URL = 'https://almost-final.vercel.app/'; 
+const BASE_URL = 'https://localhost:3000'; 
 
 export default BASE_URL

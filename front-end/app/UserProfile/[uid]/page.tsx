@@ -58,7 +58,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
       console.log('bruh');
       try{
         // console.log(BASE_URL+`/api/userinfo?userid=${params.uid}`);
-        const res = await fetch(BASE_URL+`/api/userinfo?userid=${params.uid}`,
+        const res = await fetch(`/api/userinfo?userid=${params.uid}`,
           {method: 'GET',
             headers: {
               'Content-Type': 'application/json', 
