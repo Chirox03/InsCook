@@ -1,10 +1,10 @@
 import { signInWithEmailAndPassword, updatePassword  } from 'firebase/auth';
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/firebase';
 
-type ResponseData = {
-  message: string
-}
+// type ResponseData = {
+//   message: string
+// }
 
 export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
@@ -13,10 +13,10 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
     try {
       // Firebase authentication
       const { email, password, newPassword } = await req.json();
-      console.log(email, password, newPassword)
+      console.log(email, password, newPassword);
       const user = await signInWithEmailAndPassword(auth, email, password);
     
-      const changepassword = await updatePassword(user.user, newPassword);
+      //const changepassword = await updatePassword(user.user, newPassword);
 
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Change password successfully' },{ status:200 });

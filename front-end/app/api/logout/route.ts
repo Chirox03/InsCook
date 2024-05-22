@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/firebase';
 import UserType from '@/types/UserType';
 
-type ResponseData = {
-  message: string,
-  data: UserType|null
-}
+// type ResponseData = {
+//   message: string,
+//   data: UserType|null
+// }
 
 export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;

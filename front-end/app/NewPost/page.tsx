@@ -1,10 +1,10 @@
-"use client"
-import { RecipesProvider, useRecipes } from '@/context/RecipesContext';
+'use client';
+import { RecipesProvider } from '@/context/RecipesContext';
 import NewPost from '../../components/NewPost';
 export default function NewPostPage(){
-    return (
-     <RecipesProvider>
-        <NewPost/>
+  return (
+    <RecipesProvider>
+      <NewPost/>
     </RecipesProvider>
-        )
+  );
 }

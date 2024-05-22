@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 
 const Tiptap = () => {
   const editor = useEditor({
@@ -13,12 +13,12 @@ const Tiptap = () => {
         class: 'text-white',
       },
     },
-    content: `Your recipe's name?`,
-  })
+    content: 'Your recipe\'s name?',
+  });
 
   return (
     <EditorContent  editor={editor} />
-  )
-}
+  );
+};
 
-export default Tiptap
+export default Tiptap;

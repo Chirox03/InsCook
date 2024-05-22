@@ -1,29 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/firebase';
-import {  collection, doc , getDocs, updateDoc, where, getDoc, query, addDoc, deleteDoc } from "firebase/firestore";
+import {  collection, doc , getDocs, updateDoc, where, getDoc, query, addDoc, deleteDoc } from 'firebase/firestore';
 import PostType from '@/types/PostType';
 
-type ResponseData = {
-  message: string,
-  data: PostType|null
-}
+// type ResponseData = {
+//   message: string,
+//   data: PostType|null
+// }
 
 const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
   const post: PostType = {
-      id: postid, 
-      user: {
-          userID: postinfo.user_id,
-          username: username, 
-          avatar: useravatar,
-      },
-      image: postinfo.image,
-      timestamp: new Date(postinfo.datetime), 
-      title: postinfo.title,
-      caption: postinfo.caption,
-      likes: postinfo.like_number,
-      comments: postinfo.comment_number,
-      isSaved: saved, 
-      isLiked: liked, 
+    id: postid, 
+    user: {
+      userID: postinfo.user_id,
+      username: username, 
+      avatar: useravatar,
+    },
+    image: postinfo.image,
+    timestamp: new Date(postinfo.datetime), 
+    title: postinfo.title,
+    caption: postinfo.caption,
+    likes: postinfo.like_number,
+    comments: postinfo.comment_number,
+    isSaved: saved, 
+    isLiked: liked, 
   };
 
   return post;
@@ -31,7 +31,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
     
 export async function PUT(req: NextRequest):Promise<NextResponse>{
   const collectionRef = collection(db, 'Storage');
-  const collectionUser = collection(db, 'User');
+  // const collectionUser = collection(db, 'User');
   const collectionLike = collection(db, 'Like');
   const { method } = req;
   
@@ -66,7 +66,7 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();
       /* @ts-ignore */
-      const userinfo = (await getDoc(doc(db, "User", postdata.user_id))).data();
+      const userinfo = (await getDoc(doc(db, 'User', postdata.user_id))).data();
       const isSaved = querySnapshot.docs.map(doc => doc.ref);
       if (querySnapshot.empty) {
         /* @ts-ignore */
@@ -96,54 +96,54 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
 }
 
 export async function GET(req: NextRequest):Promise<NextResponse>{
-    const collectionLike = collection(db, 'Like');
-    const collectionRef = collection(db, 'Storage');
-    const { method } = req;
+  const collectionLike = collection(db, 'Like');
+  const collectionRef = collection(db, 'Storage');
+  const { method } = req;
   
-    if (method === 'GET') {
-      try {
-        const searchParams = req.nextUrl.searchParams
-        const userid = searchParams.get('userid');
-        console.log(userid);
+  if (method === 'GET') {
+    try {
+      const searchParams = req.nextUrl.searchParams;
+      const userid = searchParams.get('userid');
+      console.log(userid);
   
       if (userid==null) {
         return NextResponse.json({ message: 'User ID not provided', data: null }, { status:400 });
       }
   
-        // Create a reference to the document with the specified ID in the specified collection
-        const documentRef = doc(db, "User", userid);
+      // Create a reference to the document with the specified ID in the specified collection
+      const documentRef = doc(db, 'User', userid);
   
-        // Get the document data
-        const documentSnapshot = await getDoc(documentRef);
-        if (!documentSnapshot.data()) {
-          return NextResponse.json( { message: 'User not found', data: null },{ status:404 });
-        }
-        
-        const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid)));
-        const postsids = querySnapshot.docs.map(doc => doc.data().post_id);
-        console.log(postsids);
-
-        let out = []
-        for (let i = 0; i < postsids.length; i++) {
-            const element = postsids[i];
-            console.log(element);
-            const postinfo = (await getDoc(doc(db, 'Post', element))).data();
-            /* @ts-ignore */
-            const userinfo = (await getDoc(doc(db, "User", postinfo.user_id))).data();
-            /* @ts-ignore */
-            const liked = (await getDocs(query(collectionLike, where('user_id', '==', postinfo.user_id), where('post_id', '==', element)))).empty;
-            /* @ts-ignore */
-            out.push(mapToPostType(postinfo, element, userinfo.name, userinfo.avatar, true, !liked));
-        }
-
-        // Respond with the fetched data 
-        return NextResponse.json( { message: 'Get storage posts successfully', data: out },{ status:200 });
-      } catch (error) {
-        console.error(error);
-        return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
+      // Get the document data
+      const documentSnapshot = await getDoc(documentRef);
+      if (!documentSnapshot.data()) {
+        return NextResponse.json( { message: 'User not found', data: null },{ status:404 });
       }
-    } else {
-      return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
+        
+      const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid)));
+      const postsids = querySnapshot.docs.map(doc => doc.data().post_id);
+      console.log(postsids);
+
+      let out = [];
+      for (let i = 0; i < postsids.length; i++) {
+        const element = postsids[i];
+        console.log(element);
+        const postinfo = (await getDoc(doc(db, 'Post', element))).data();
+        /* @ts-ignore */
+        const userinfo = (await getDoc(doc(db, 'User', postinfo.user_id))).data();
+        /* @ts-ignore */
+        const liked = (await getDocs(query(collectionLike, where('user_id', '==', postinfo.user_id), where('post_id', '==', element)))).empty;
+        /* @ts-ignore */
+        out.push(mapToPostType(postinfo, element, userinfo.name, userinfo.avatar, true, !liked));
+      }
+
+      // Respond with the fetched data 
+      return NextResponse.json( { message: 'Get storage posts successfully', data: out },{ status:200 });
+    } catch (error) {
+      console.error(error);
+      return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
     }
+  } else {
+    return NextResponse.json({ message: 'Method not allowed' , data: null },{status:405});
   }
+}
 

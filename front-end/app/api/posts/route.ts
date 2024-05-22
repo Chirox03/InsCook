@@ -1,23 +1,21 @@
-import PostType from '@/types/PostType';
-import { NextRequest, NextResponse } from 'next/server'
-import { collection, getDocs,doc ,getDoc,addDoc,updateDoc, getFirestore} from "firebase/firestore";
-import {db} from "@/firebase"
+import { NextRequest, NextResponse } from 'next/server';
+import { collection,doc ,getDoc,addDoc,updateDoc, getFirestore} from 'firebase/firestore';
+import {db} from '@/firebase';
 import getDownloadUrlForFile from '@/lib/GetFile';
 import uploadFile from '@/lib/UploadFile';
-import FormData from 'form-data';
 // import formidable from 'formidable'; 
-type ResponseData = {
-  message: string,
-  data: PostType|null
-}
+// type ResponseData = {
+//   message: string,
+//   data: PostType|null
+// }
 export async function GET(req: NextRequest) :Promise<NextResponse>{
   const { method} = req;
   if (method === 'GET') {
     try {
       
-      const searchParams = req.nextUrl.searchParams
-      const postId = searchParams.get('id')
-      console.log(postId)
+      const searchParams = req.nextUrl.searchParams;
+      const postId = searchParams.get('id');
+      console.log(postId);
       // Check if userID is provided
       if (!postId) {
         return NextResponse.json({ message: 'Post ID is missing', data: null }, { status: 400 });
@@ -50,14 +48,14 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
     try {
       const data = await req.formData();
       const ingredients = data.get('ingredients');
-      const instructions = data.get('instructions');
+      // const instructions = data.get('instructions');
       const cover_image = data.get('image') as File;
       if (cover_image instanceof File) {
-        const path_in_storage = await uploadFile({ file: cover_image,folderPath:'images/'});
+        // const path_in_storage = await uploadFile({ file: cover_image,folderPath:'images/'});
       } else {
         console.error('Image is not a file object');
       }
-      const path_in_storage = await uploadFile({file:cover_image,folderPath:'images'})
+      const path_in_storage = await uploadFile({file:cover_image,folderPath:'images'});
       /* @ts-ignore */
       const stepsData = [];
       
@@ -65,9 +63,9 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
         if (key.startsWith('steps[')) { // Identify step fields
           /* @ts-ignore */
           const stepId = key.match(/steps\[(\d+)]/)[1]; 
-          console.log(stepId)
+          console.log(stepId);
           const stepProperty = key.split(/[\[\]]/)[3]; // Extract property name (content/image)
-          console.log(stepProperty)
+          console.log(stepProperty);
           /* @ts-ignore */
           if (!stepsData[stepId]) {
             /* @ts-ignore */
@@ -81,7 +79,7 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
       /* @ts-ignore */
       steps = await Promise.all(stepsData.map(async (step) => {
         if (step.image && step.image instanceof File) {
-          const path_in_storage = await uploadFile({ file: step.image ,folderPath: "images/"});
+          const path_in_storage = await uploadFile({ file: step.image ,folderPath: 'images/'});
           if (!path_in_storage) {
             throw new Error('Error uploading step image');
           }
@@ -108,9 +106,9 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
         'ingredients':  await JSON.parse(ingredients),
         'step': steps,
         'image':await getDownloadUrlForFile(path_in_storage)
-      }
+      };
 
-      console.log(newPostData)
+      console.log(newPostData);
       const collectionRef = collection(db, 'Post');
       const newPostRef = await addDoc(collectionRef, newPostData);
       return NextResponse.json( { message: 'Posts created successfully', data: {newPostData,id:newPostRef.id} },{status:200});
@@ -132,7 +130,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
       if (!postid) {
         return NextResponse.json({ message: 'Missing post ID', data: null }, { status: 400 }); // Bad request
       }
-      const postRef = doc(db, "Post", postid);
+      const postRef = doc(db, 'Post', postid);
       const postSnapshot = await getDoc(postRef);
       let postData = postSnapshot.data();
       /* @ts-ignore */
