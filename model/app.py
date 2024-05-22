@@ -31,7 +31,7 @@ def search():
             distance_measure=DistanceMeasure.EUCLIDEAN,
             limit=30)
         
-    col2 = None
+    col2 = None 
     if (data["text"]):
         col2 = collection.find_nearest(
             vector_field="embedding",
