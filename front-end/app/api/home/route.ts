@@ -10,7 +10,8 @@ import { collection, getDocs,doc,getDoc ,where,query,limit} from 'firebase/fires
 //   }
 export async function GET(req: NextRequest):Promise<NextResponse> {
   const { method} = req;
-  const searchParams = req.nextUrl.searchParams;
+  const searchParams = new URLSearchParams(req.nextUrl.search);
+  // const searchParams = req.nextUrl.searchParams;
   const userID = searchParams.get('userID');
   if (method === 'GET') {
     try {

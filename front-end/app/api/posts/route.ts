@@ -10,10 +10,12 @@ import uploadFile from '@/lib/UploadFile';
 // }
 export async function GET(req: NextRequest) :Promise<NextResponse>{
   const { method} = req;
+  const searchParams = new URLSearchParams(req.nextUrl.search);
+
   if (method === 'GET') {
     try {
       
-      const searchParams = req.nextUrl.searchParams;
+      // const searchParams = req.nextUrl.searchParams;
       const postId = searchParams.get('id');
       console.log(postId);
       // Check if userID is provided

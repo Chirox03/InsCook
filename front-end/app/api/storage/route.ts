@@ -99,10 +99,11 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
   const collectionLike = collection(db, 'Like');
   const collectionRef = collection(db, 'Storage');
   const { method } = req;
-  
+  const searchParams = new URLSearchParams(req.nextUrl.search);
   if (method === 'GET') {
     try {
-      const searchParams = req.nextUrl.searchParams;
+      
+      // const searchParams = req.nextUrl.searchParams;
       const userid = searchParams.get('userid');
       console.log(userid);
   

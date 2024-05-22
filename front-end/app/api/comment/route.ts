@@ -65,10 +65,11 @@ export async function POST(req: NextRequest) :Promise<NextResponse>{ //Add comme
 export async function GET(req: NextRequest) :Promise<NextResponse>{ //Get comments of a post
   const collectionRef = collection(db, 'Comment');
   const { method } = req;
-  
+  const searchParams = new URLSearchParams(req.nextUrl.search);
   if (method === 'GET') {
     try {
-      const searchParams = req.nextUrl.searchParams;
+      
+      // const searchParams = req.nextUrl.searchParams;
       const postid = searchParams.get('postid');
       console.log(postid);
 

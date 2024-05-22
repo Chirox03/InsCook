@@ -35,10 +35,10 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
   const collectionStorage = collection(db, 'Storage');
   //const collectionUser = collection(db, 'User');
   const { method } = req;
-  
+  const url = new URL(req.url);
   if (method === 'GET') {
     try {
-      const url = new URL(req.url);
+      
       const userid = url.searchParams.get('userid');
       console.log('userid',userid);
 
