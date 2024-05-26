@@ -61,25 +61,34 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
 
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();
-
-      const userinfo = (await getDoc(doc(db, 'User', postdata?.user_id))).data();
+      const userref = doc(db, 'User', (postdata?.user_id));
+      let userinfo = (await getDoc(userref)).data();
       const isLiked = querySnapshot.docs.map(doc => doc.ref);
       if (querySnapshot.empty) {
         // @ts-ignore
-        postdata.likeNumber += 1;
+        postdata.like_number += 1;
+        console.log(postdata.like_number)
+        userinfo.likenum += 1;
         // @ts-ignore
         postdata.isLiked = true;
         addDoc(collectionRef, {'post_id': postid, 'user_id': userid});
-        updateDoc(documentRef, postdata);
+        updateDoc(documentRef, {
+          'like_number': postdata.like_number
+        });
+        updateDoc(userref, userinfo);
         const output = mapToPostType(postdata, postid, userinfo?.name, userinfo?.avatar, !saved, true);
         return NextResponse.json( { message: 'Like successfully!', data: output },{ status:200 });
       } else {
         // @ts-ignore
-        postdata.likeNumber -= 1;
+        postdata.like_number -= 1;
+        userinfo.likenum -= 1;
         // @ts-ignore
         postdata.isLiked = false;
         deleteDoc(isLiked[0]);
-        updateDoc(documentRef, postdata);
+        updateDoc(documentRef, {
+          'like_number': postdata.like_number
+        });
+        updateDoc(userref, userinfo);
         const output = mapToPostType(postdata, postid, userinfo?.name, userinfo?.avatar, !saved, false);
         return NextResponse.json( { message: 'Removing like successfully!', data: output },{ status:200 });
       }
