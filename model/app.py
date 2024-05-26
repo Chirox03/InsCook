@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from credential import db
 from PIL import Image
 import torch
@@ -11,6 +12,7 @@ from google.cloud.firestore_v1.vector import Vector
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/search', methods=['POST'])
 def search():

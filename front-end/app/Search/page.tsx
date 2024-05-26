@@ -81,9 +81,10 @@ export default function Search() {
     try {
       const response = await axios.get(`/api/posts?id=${id}`)
       // console.log(response.data)
-      // console.log(response.data.user_id)
-      // const user = await fetchuserbyid(response.data.user_id)
-      return response.data
+      // console.log(response.data)
+      const user = await fetchuserbyid(response.data.data.user_id)
+      // console.log(response.data)
+      return { postData:response.data,user};
       }catch (error) {
         console.error('Error fetching post:', error);
         throw error;
@@ -93,7 +94,7 @@ export default function Search() {
   };
 
   const fetchuserbyid = async (id:string) => {
-    console.log(id)
+    // console.log(id)
     try {
       
       const response = await axios.get(`/api/userinfo?userid=${id}`)
@@ -108,11 +109,11 @@ export default function Search() {
     e.preventDefault();
     e.currentTarget.disabled = true;
 
-    const apiURL = 'http://inscook.duckdns.org:5000/search';
+    // const apiURL = 'http://inscook.duckdns.org:5000/search';
 
-    // const appapi = 'http://127.0.0.1:5000/search'
+    const appapi = 'http://127.0.0.1:5000/search'
     try {
-      const response = await axios.post(apiURL, {
+      const response = await axios.post(appapi, {
         // method: method,
         // duration: duration,
         // portion: pax,
@@ -141,10 +142,10 @@ export default function Search() {
 
       for (let i = 0; i < response.data.doc_ids.length; i++) {
         const pId = response.data.doc_ids[i];
-        const postData = await fetchPost(pId); // Fetch post data based on ID
-        // console.log(postData)
-        // console.log(userData)
-        setPostDataList((prevList) => [...prevList, mapToPostType(postData.data, pId, '','', false, false)]);
+        const {postData,user} = await fetchPost(pId); // Fetch post data based on ID
+        console.log(postData)
+        console.log(user)
+        setPostDataList((prevList) => [...prevList, mapToPostType(postData.data, pId, user.data.name, user.data.avatar, false, false)]);
         // console.log(postData)
       }
       // await Promise.all(postPromises);
