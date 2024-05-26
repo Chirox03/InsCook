@@ -38,7 +38,7 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
         /* @ts-ignore */
         userdata.data = null;
       }
-      console.log(auth.currentUser);
+      // console.log(auth.currentUser);
 
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Login successfully', data: userdata },{ status:200 });
