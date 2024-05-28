@@ -42,9 +42,9 @@ export async function POST(req: NextRequest) :Promise<NextResponse>{ //Add comme
       const commentData = {
         content: content,
         datetime: new Date().toISOString(), // Assuming timestamp is stored as ISO string
-        isPrivate: false,
-        userID: userid,
-        postID: postid,
+        is_private: false,
+        user_id: userid,
+        post_id: postid,
       };
   
       // Add the comment data to Firestore

@@ -67,13 +67,15 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       if (querySnapshot.empty) {
         // @ts-ignore
         postdata.like_number += 1;
-        console.log(postdata.like_number)
-        userinfo.likenum += 1;
+        console.log(postdata?.like_number)
+        if (userinfo) {
+          userinfo.likenum -= 1;
+        }
         // @ts-ignore
         postdata.isLiked = true;
         addDoc(collectionRef, {'post_id': postid, 'user_id': userid});
         updateDoc(documentRef, {
-          'like_number': postdata.like_number
+          'like_number': postdata?.like_number
         });
         updateDoc(userref, userinfo);
         const output = mapToPostType(postdata, postid, userinfo?.name, userinfo?.avatar, !saved, true);
@@ -81,12 +83,14 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       } else {
         // @ts-ignore
         postdata.like_number -= 1;
-        userinfo.likenum -= 1;
+        if (userinfo) {
+          userinfo.likenum -= 1;
+        }
         // @ts-ignore
         postdata.isLiked = false;
         deleteDoc(isLiked[0]);
         updateDoc(documentRef, {
-          'like_number': postdata.like_number
+          'like_number': postdata?.like_number
         });
         updateDoc(userref, userinfo);
         const output = mapToPostType(postdata, postid, userinfo?.name, userinfo?.avatar, !saved, false);
