@@ -109,23 +109,23 @@ export default function Search() {
     e.preventDefault();
     e.currentTarget.disabled = true;
 
-    // const apiURL = 'http://inscook.duckdns.org:5000/search';
+    const apiURL = 'http://inscook.duckdns.org:5000/search';
 
-    const appapi = 'http://127.0.0.1:5000/search'
+    // const appapi = 'http://127.0.0.1:5000/search'
     try {
-      const response = await axios.post(appapi, {
-        // method: method,
-        // duration: duration,
-        // portion: pax,
-        // image: image,
-        // text: searchText,
-        // ingredients: ingredients,
-        method: 'Fry',
-        duration: null,
-        portion: 2,
-        image: null,
-        text: null,
-        ingredients: null,
+      const response = await axios.post(apiURL, {
+        method: method,
+        duration: duration,
+        portion: pax,
+        image: image,
+        text: searchText,
+        ingredients: ingredients,
+        // method: 'Fry',
+        // duration: null,
+        // portion: 2,
+        // image: null,
+        // text: null,
+        // ingredients: null,
       });
       // console.log(response.data)
       // const posts = [];
