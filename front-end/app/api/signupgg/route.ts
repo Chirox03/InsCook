@@ -20,7 +20,8 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
       const newUserData = {
         'avatar': avatar,
         'biography': null,
-        'name': name
+        'name': name,
+        'likenum': 0
       };
       console.log(id);
       const documentRef = doc(db, 'User', id);

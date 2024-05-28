@@ -37,7 +37,8 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
         'avatar': null,
         'biography': null,
         'birth': null,
-        'name': null
+        'name': null,
+        'likenum': 0
       };
       console.log(UserID);
       const documentRef = doc(db, 'User', UserID);
