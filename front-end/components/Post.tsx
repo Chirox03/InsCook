@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import DateCalculate from './DateCalculate';
 //import UserType from '@/types/UserType';
 
 interface PostProps {
@@ -16,7 +17,7 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post }) => {
   const router = useRouter();
-  console.log(post)
+  // console.log(post)
   // const [newPost, setNewPost] = useState({
   //   id: post.id,
   //   user: {
@@ -156,7 +157,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
           <div className="ml-2 pt-2 flex font-sans flex-col">
             <div className="text-left font-sans font-semibold text-slate-600 text-md cursor-pointer" onClick={(e)=>handleUserClick(e)}>{post.user.username}</div>
             {/* @ts-ignore */}
-            <div className="text-left font-normal text-xs text-gray-400"></div>
+            <div className="text-left font-normal text-xs text-gray-400">{DateCalculate(post?.timestamp)}</div>
           </div>
         </div>
       </div>
