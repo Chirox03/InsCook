@@ -17,7 +17,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
       avatar: useravatar,
     },
     image: postinfo.image,
-    timestamp: (postinfo.datetime), 
+    timestamp: postinfo.timestamp, 
     title: postinfo.title,
     caption: postinfo.caption,
     likes: postinfo.like_number,
@@ -34,7 +34,7 @@ export default function Search() {
   const [duration, setDuration] = useState<number>(5);
   const [pax, setPax] = useState<number>(1);
   const [method, setMethod] = useState<string>('Fry');
-  const [searchText, setSearchText] = useState<string>('');
+  const [searchText, setSearchText] = useState<string | null>('');
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [newIngredient, setNewIngredient] = useState<string>('');
   const [image, setImage] = useState<string | null>(null);
@@ -112,21 +112,29 @@ export default function Search() {
     const apiURL = 'http://inscook.duckdns.org:5000/search';
 
     // const appapi = 'http://127.0.0.1:5000/search'
+    setSearchText(searchText === '' ? null : searchText);
     try {
       const response = await axios.post(apiURL, {
-        method: method,
-        duration: duration,
-        portion: pax,
-        image: image,
-        text: searchText,
-        ingredients: ingredients,
-        // method: 'Fry',
-        // duration: null,
-        // portion: 2,
-        // image: null,
-        // text: null,
-        // ingredients: null,
+        // method: method,
+        // duration: duration,
+        // portion: pax,
+        // image: image,
+        // text: searchText,
+        // ingredients: ingredients,
+        method: 'Fry',
+        duration: null,
+        portion: 2,
+        image: null,
+        text: null,
+        ingredients: null,
       });
+      // console.log(method)
+      // console.log(duration)
+      // console.log(pax)
+      // console.log(image)
+      // console.log(searchText)
+      // console.log(ingredients)
+      
       // console.log(response.data)
       // const posts = [];
       // const postDataArray = [];
@@ -139,7 +147,9 @@ export default function Search() {
       //   console.log('Post Data:', postData);
       // });
 
-
+      if (response.data)
+        {
+          
       for (let i = 0; i < response.data.doc_ids.length; i++) {
         const pId = response.data.doc_ids[i];
         const {postData,user} = await fetchPost(pId); // Fetch post data based on ID
@@ -148,6 +158,10 @@ export default function Search() {
         setPostDataList((prevList) => [...prevList, mapToPostType(postData.data, pId, user.data.name, user.data.avatar, false, false)]);
         // console.log(postData)
       }
+    }
+    else{
+      console.log('khong co')
+    }
       // await Promise.all(postPromises);
       // console.log(response.data);
       e.currentTarget.disabled = false;
@@ -155,7 +169,7 @@ export default function Search() {
       // return postDataArray;
     } catch (error) {
       console.log(error);
-      e.currentTarget.disabled = false;
+      // e.currentTarget.disabled = false;
       return null;
     }
   };
@@ -173,7 +187,7 @@ export default function Search() {
             type="search"
             className="block w-full py-2 pl-10 text-xs text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Find recipes..."
-            value={searchText}
+            value={searchText ?? ''}
             onChange={handleSearchTextChange}
             required
           />

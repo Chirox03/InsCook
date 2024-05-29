@@ -13,7 +13,7 @@ const extractDate = (timestamp: Date): Date => {
           val = val + timestamp2[i]
       }
   }
-  console.log(values)
+  // console.log(values)
   // const day = values[0].val
   const day = parseInt(values[0]?.val, 10); // Convert to number
   const monthName = values[1]?.val.toString();
@@ -22,7 +22,7 @@ const extractDate = (timestamp: Date): Date => {
   const minute = parseInt(values[5]?.val, 10); // Convert to number
   const seconds = parseInt(values[6]?.val, 10); // Convert to number
 
-  console.log(year)
+  // console.log(year)
   const months: { [key: string]: number } = {
       "January": 1,
       "February": 2,
@@ -39,7 +39,7 @@ const extractDate = (timestamp: Date): Date => {
   };
 
   const month = months[monthName];
-  console.log(month)
+  // console.log(month)
   return new Date(year, month - 1, day, hour, minute, seconds); // Subtract 1 from month to match Date constructor's month numbering (0-indexed)
 };
 
@@ -47,8 +47,8 @@ const DateCalculate = (timestamp: Date): string => {
   const now = new Date();
   // console.log(timestamp)
   const postDate = extractDate(timestamp)
-  console.log(now)
-  console.log(postDate)
+  // console.log(now)
+  // console.log(postDate)
   const seconds = Math.floor((now.getTime() - postDate.getTime()) / 1000);
   console.log(seconds)
   let interval = Math.floor(seconds / 31536000);

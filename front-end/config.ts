@@ -1,4 +1,4 @@
 // config.js
-const BASE_URL = 'https://locahost:3000'; 
+const BASE_URL = 'https://test-inscook.vercel.app'; 
 
 export default BASE_URL
