@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/search",
+        "destination": "http://inscook.duckdns.org:5000/search"
+      }
+    ]
+  }
+  
