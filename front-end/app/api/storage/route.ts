@@ -126,13 +126,18 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
         const element = postsids[i];
         console.log(element);
         const postinfo = (await getDoc(doc(db, 'Post', element))).data();
+        if(postinfo)
+          {
         /* @ts-ignore */
         const userinfo = (await getDoc(doc(db, 'User', postinfo.user_id))).data();
         /* @ts-ignore */
+  
         const liked = (await getDocs(query(collectionLike, where('user_id', '==', postinfo.user_id), where('post_id', '==', element)))).empty;
         /* @ts-ignore */
-        out.push(mapToPostType(postinfo, element, userinfo.name, userinfo.avatar, true, !liked));
+        if(postinfo && userinfo)
+          out.push(mapToPostType(postinfo, element, userinfo.name, userinfo.avatar, true, !liked));
         // console.log(postinfo.timestamp)
+}
       }
 
       // Respond with the fetched data 
