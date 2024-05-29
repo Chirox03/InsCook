@@ -61,26 +61,23 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       // Query document where user_id == userid and post_id == postid
       const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid), where('post_id', '==', postid)));
       const likeSnapshot = await getDocs(query(collectionLike, where('user_id', '==', userid), where('post_id', '==', postid)));
-      const liked = likeSnapshot.empty;   
+      const liked = likeSnapshot.empty;
 
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();
       /* @ts-ignore */
       const userinfo = (await getDoc(doc(db, 'User', postdata.user_id))).data();
       const isSaved = querySnapshot.docs.map(doc => doc.ref);
-      if (querySnapshot.empty) {
+      console.log(isSaved);
+      if (isSaved.length == 0) {
         /* @ts-ignore */
-        postdata.isSaved = true;
         addDoc(collectionRef, {'post_id': postid, 'user_id': userid});
-        updateDoc(documentRef, postdata);
         /* @ts-ignore */
         const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, true, !liked);
         return NextResponse.json( { message: 'Stored successfully!', data: output },{ status:200 });
       } else {
         /* @ts-ignore */
-        postdata.isSaved = false;
         deleteDoc(isSaved[0]);
-        updateDoc(documentRef, postdata);
         /* @ts-ignore */
         const output = mapToPostType(postdata, postid, userinfo.name, userinfo.avatar, false, !liked);
         return NextResponse.json( { message: 'Removing stored post successfully!', data: output },{ status:200 });
