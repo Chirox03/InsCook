@@ -17,7 +17,7 @@ const mapToPostType = (postinfo: any, postid: string, username: string, useravat
       avatar: useravatar,
     },
     image: postinfo.image,
-    timestamp: new Date(postinfo.datetime), 
+    timestamp: postinfo.timestamp, 
     title: postinfo.title,
     caption: postinfo.caption,
     likes: postinfo.like_number,
@@ -132,6 +132,7 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
         const liked = (await getDocs(query(collectionLike, where('user_id', '==', postinfo.user_id), where('post_id', '==', element)))).empty;
         /* @ts-ignore */
         out.push(mapToPostType(postinfo, element, userinfo.name, userinfo.avatar, true, !liked));
+        // console.log(postinfo.timestamp)
       }
 
       // Respond with the fetched data 

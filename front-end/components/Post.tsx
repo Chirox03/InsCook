@@ -39,7 +39,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
   const handleLike = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await axios.put(`$/api/like`, {
+      await axios.put(`/api/like`, {
         userid: auth?.id,
         postid: post.id
       });

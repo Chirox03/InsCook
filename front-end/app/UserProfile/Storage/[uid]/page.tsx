@@ -14,9 +14,9 @@ export default function Storage({ params }: { params: { uid: string }}){
   useEffect( ()=>{
     const fetchSave = async() => {
       try{
-        const response = await axios.get(`${BASE_URL}/api/storage?userid=${params.uid}`);
+        const response = await axios.get(`/api/storage?userid=${params.uid}`);
         setPosts(response.data.data);
-        console.log('setPosts');
+        console.log(response.data.data);
       }catch(error){
         console.log('Error fetching save',error);
       }
