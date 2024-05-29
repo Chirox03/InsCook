@@ -61,7 +61,7 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       // Query document where user_id == userid and post_id == postid
       const querySnapshot = await getDocs(query(collectionRef, where('user_id', '==', userid), where('post_id', '==', postid)));
       const likeSnapshot = await getDocs(query(collectionLike, where('user_id', '==', userid), where('post_id', '==', postid)));
-      const liked = likeSnapshot.empty;
+      const liked = likeSnapshot.empty;   
 
       // Respond with the fetched data 
       let postdata = PostSnapshot.data();

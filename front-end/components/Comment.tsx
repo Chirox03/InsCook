@@ -14,7 +14,7 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
         <img className="w-16 h-16 rounded-full mr-4" src="\image.png" alt="User Avatar" />
         <div className="flex-1 pr-4">
           <p className="font-semibold text-slate-800 text-md mb-1">{comment.user.username}
-            <span className='ml-2 font-normal text-xs text-gray-400'>{DateCalculate(comment.timestamp.toISOString())}</span></p>
+            <span className='ml-2 font-normal text-xs text-gray-400'>{DateCalculate(comment.timestamp)}</span></p>
           <p className="text-sm font-normal text-slate-600">{comment.content}</p>
           <div className="flex mt-1">
             <button className="text-xs text-gray-500">Reply</button>

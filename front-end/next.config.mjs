@@ -2,6 +2,7 @@
 const nextConfig = {
   images: {
     domains: ['*', 'firebasestorage.googleapis.com'], // Allow loading images from all domains
+    domains: ['storage.googleapis.com'],
   },
   async headers() {
     return [

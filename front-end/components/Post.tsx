@@ -9,7 +9,6 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import DateCalculate from './DateCalculate';
-//import UserType from '@/types/UserType';
 
 interface PostProps {
   post: PostType;
@@ -17,34 +16,9 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post }) => {
   const router = useRouter();
-  // console.log(post)
-  // const [newPost, setNewPost] = useState({
-  //   id: post.id,
-  //   user: {
-  //     userID: post.user.userID,
-  //     username: post.user.userID,
-  //     avatar: post.user.userID,
-  //   },
-  //   image: post.image,
-  //   timestamp: post.timestamp,
-  //   title: post.title,
-  //   caption: post.caption,
-  //   likes: post.likes,
-  //   comments: post.comments,
-  //   isSaved: post.isSaved,
-  //   isLiked: post.isLiked,
-  // });
-
-  const { state: auth, dispatch } = useAuth();
-  const [like, setLike] = useState<boolean | null>(post.isLiked);
+  const { state: auth } = useAuth();
+  const [like, setLike] = useState<boolean>(post.isLiked);
   const [save, setSave] = useState<boolean>(post.isSaved);
-  //const [user, setUser] = useState<UserType | null>(null);
-
-  // const handlePostClick = (e: React.MouseEvent<HTMLDivElement>) => {
-  //   e.preventDefault();
-  //   router.prefetch(`/Post/${post.id}`);
-  //   router.push(`/Post/${post.id}`);
-  // };
 
   const handleUserClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -52,27 +26,10 @@ const Post: React.FC<PostProps> = ({ post }) => {
     router.push(`/UserProfile/${post.user.userID}`);
   };
 
-  // useEffect(() => {
-  //   const fetchUserById = async (id: String) => {
-  //     try {
-  //       const response = await axios.get(`${BASE_URL}/api/userinfo?userid=${id}`, {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //       });
-  //       setUser(response.data.data);
-  //     } catch (error) {
-  //       console.error('Error fetching user:', error);
-  //       toast.error('Error fetching user');
-  //     }
-  //   };
-  //   fetchUserById(post.user.userID);
-  // }, [post.user.userID]);
-
   const fetchLike = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/like?postid=${post.id}`);
-      //setNewPost(prevNewPost => prevNewPost ? { ...prevNewPost, likes: response.data.data.length } : prevNewPost);
+      console.log(response.data)
       setLike(response.data.data.some((user: { id: string | null | undefined; }) => user.id === auth?.id));
     } catch (error) {
       console.log('Error fetching like', error);
@@ -81,44 +38,36 @@ const Post: React.FC<PostProps> = ({ post }) => {
 
   const handleLike = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.currentTarget.disabled = true;
     try {
       await axios.put(`${BASE_URL}/api/like`, {
         userid: auth?.id,
         postid: post.id
       });
-      await fetchLike();
+      // setLike(prevLike => !prevLike);
+      await fetchLike()
     } catch (error) {
       console.error('Error liking post:', error);
       toast.error('Error liking post');
-    } finally {
-      e.currentTarget.disabled = false;
     }
   };
 
   const handleLikeView = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.currentTarget.disabled = true;
     try {
       router.prefetch(`/Like/${post.id}`);
       router.push(`/Like/${post.id}`);
     } catch (error) {
       console.log(error);
-    } finally {
-      e.currentTarget.disabled = false;
     }
   };
 
   const handleComment = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.currentTarget.disabled = true;
     try {
       router.prefetch(`${BASE_URL}/Post/Comment/${post.id}`);
       router.push(`${BASE_URL}/Post/Comment/${post.id}`);
     } catch (error) {
       console.log(error);
-    } finally {
-      e.currentTarget.disabled = false;
     }
   };
 
@@ -126,7 +75,6 @@ const Post: React.FC<PostProps> = ({ post }) => {
     try {
       const response = await axios.get(`${BASE_URL}/api/storage?userid=${auth?.id}`);
       setSave(response.data.data.some((savePost: { id: string; }) => savePost.id === post.id));
-      //setNewPost(prevNewPost => prevNewPost ? { ...prevNewPost, isSaved: save } : prevNewPost);
     } catch (error) {
       console.log('Error fetching save', error);
     }
@@ -134,18 +82,15 @@ const Post: React.FC<PostProps> = ({ post }) => {
 
   const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.currentTarget.disabled = true;
     try {
       await axios.put(`${BASE_URL}/api/storage`, {
         userid: auth?.id,
         postid: post.id
       });
-      await fetchSave();
+      setSave(prevSave => !prevSave);
     } catch (error) {
       console.error('Error saving post:', error);
       toast.error('Error saving post');
-    } finally {
-      e.currentTarget.disabled = false;
     }
   };
 
@@ -155,8 +100,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
         <div className="flex flex-row m-2 ml-1 items-start">
           <img className="w-16 h-16 rounded-full" src={post?.user?.avatar} alt="User Avatar" />
           <div className="ml-2 pt-2 flex font-sans flex-col">
-            <div className="text-left font-sans font-semibold text-slate-600 text-md cursor-pointer" onClick={(e)=>handleUserClick(e)}>{post.user.username}</div>
-            {/* @ts-ignore */}
+            <div className="text-left font-sans font-semibold text-slate-600 text-md cursor-pointer" onClick={handleUserClick}>{post.user.username}</div>
             <div className="text-left font-normal text-xs text-gray-400">{DateCalculate(post?.timestamp)}</div>
           </div>
         </div>
@@ -168,23 +112,23 @@ const Post: React.FC<PostProps> = ({ post }) => {
         <div className="flex flex-col mr-2">
           <button onClick={handleLike}>
             {
-              like === false ?
-                <i className="fi fi-rr-heart"></i> :
-                <i className="fi fi-sr-heart"></i>
+              like ?
+                <i className="fi fi-sr-heart text-black-500"></i> :
+                <i className="fi fi-rr-heart text-gray-500"></i>
             }
           </button>
         </div>
         <div className="flex flex-col mr-2">
           <button onClick={handleComment}>
-            <i className="fi fi-rr-comment"></i>
+            <i className="fi fi-rr-comment text-gray-500"></i>
           </button>
         </div>
         <div className="flex flex-col mr-2">
           <button onClick={handleSave}>
             {
               save ?
-                <i className="fi fi-sr-bookmark"></i> :
-                <i className="fi fi-rr-bookmark"></i>
+                <i className="fi fi-sr-bookmark text-black-500"></i> :
+                <i className="fi fi-rr-bookmark text-gray-500"></i>
             }
           </button>
         </div>

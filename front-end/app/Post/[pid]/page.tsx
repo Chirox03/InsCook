@@ -12,6 +12,7 @@ import axios from 'axios';
 import UserType from '@/types/UserType';
 import { useRouter } from 'next/navigation';
 import UserProfile from '@/app/UserProfile/[uid]/page';
+import DateCalculate from '@/components/DateCalculate';
 
 interface APiPost{
   user_id:string;
@@ -28,6 +29,7 @@ interface APiPost{
   method:string;
   ingredients: Array<string>
   step: Array<StepType>;
+  timestamp:Date;
 }
 
 function mapPost(apiPost: APiPost,id:string): RecipeType{
@@ -42,7 +44,7 @@ function mapPost(apiPost: APiPost,id:string): RecipeType{
     category:apiPost.category,
     method:apiPost.method,
     pax: apiPost.pax,
-    timestamp:null,
+    timestamp:apiPost.timestamp,
     ingredients: apiPost.ingredients as Array<string>,
     instructions: apiPost.step,
     user_id :apiPost.user_id
@@ -273,7 +275,7 @@ function PostDetail({ params }: { params: { pid: string }}) {
             <div className="flex flex-row flex-auto py-4 px-2">
               <div className="text-md font-semibold cursor-pointer" onClick={(e)=>handleUserClick(e)}>{user?.data.name}</div>
               {/*@ts-ignore */}
-              <div className="ml-4">{post?.timestamp && new Date(post?.timestamp?.seconds * 1000).toLocaleDateString()}</div>
+              <div className="ml-4">{DateCalculate(post?.timestamp)}</div>
             </div>
             <div className="text-left"></div>
           </div>
@@ -307,21 +309,25 @@ function PostDetail({ params }: { params: { pid: string }}) {
         </div>
         <h2 className="px-2 text-lg font-semibold mb-5">Method:</h2>
         <h2 className="px-2 text-lg font-semibold mb-5">Instruction:</h2>
-        {post?.instructions?.map((instruction,index) => (
-          <div className="mb-5" key={index}>
-            <div className="flex space-x-4 items-center mb-2">
-              <div className="rounded-full h-8 w-8 bg-coral flex items-center justify-center">
-                <span className="text-white text-sm font-bold">{index+1}</span>
-              </div>
-              <h2 className="text-lg font-medium text-gray-800">Step {index+1}</h2>
+        {post?.instructions?.map((instruction, index) => (
+        <div className="mb-5" key={index}>
+          <div className="flex space-x-4 items-center mb-2">
+            <div className="rounded-full h-8 w-8 bg-coral flex items-center justify-center">
+              <span className="text-white text-sm font-bold">{index + 1}</span>
             </div>
-            <p className="mb-2 text-md">
-              {instruction.content}
-            </p> 
-            {/*@ts-ignore */}
-            <img src={instruction.image} alt="step image"></img>
+            <h2 className="text-lg font-medium text-gray-800">Step {index + 1}</h2>
           </div>
-        ))}
+          <p className="mb-2 text-md">
+            {instruction.content}
+          </p>
+          {instruction.image && (
+            <img src={typeof instruction.image === 'string' ? instruction.image : URL.createObjectURL(instruction.image)}
+            alt="step image"
+            />
+          )}
+        </div>
+      ))}
+
       </div>
     </div>
   );

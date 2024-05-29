@@ -1,13 +1,16 @@
-const extractDate = (timestamp: string): Date => {
+const extractDate = (timestamp: Date): Date => {
   // 26 May 2024 at 22:50:16 UTC+7
+  if (timestamp==null)
+    return new Date()
+  let timestamp2=timestamp.toString()
   let values = []
   let val = ''
-  for (let i = 0; i < timestamp.length; i++) {
-      if (timestamp[i] == ' ' || timestamp[i] == ':') {
+  for (let i = 0; i < timestamp2.length; i++) {
+      if (timestamp2[i] == ' ' || timestamp2[i] == ':') {
           values.push({ val })
           val = ''
       } else {
-          val = val + timestamp[i]
+          val = val + timestamp2[i]
       }
   }
   console.log(values)
@@ -40,7 +43,7 @@ const extractDate = (timestamp: string): Date => {
   return new Date(year, month - 1, day, hour, minute, seconds); // Subtract 1 from month to match Date constructor's month numbering (0-indexed)
 };
 
-const DateCalculate = (timestamp: string): string => {
+const DateCalculate = (timestamp: Date): string => {
   const now = new Date();
   // console.log(timestamp)
   const postDate = extractDate(timestamp)
