@@ -115,25 +115,25 @@ export default function Search() {
     setSearchText(searchText === '' ? null : searchText);
     try {
       const response = await axios.post(apiURL, {
-        // method: method,
-        // duration: duration,
-        // portion: pax,
-        // image: image,
-        // text: searchText,
-        // ingredients: ingredients,
-        method: 'Fry',
-        duration: null,
-        portion: 2,
-        image: null,
-        text: null,
-        ingredients: null,
+        method: method,
+        duration: duration,
+        portion: pax,
+        image: image,
+        text: searchText,
+        ingredients: ingredients,
+        // method: 'Fry',
+        // duration: null,
+        // portion: 2,
+        // image: null,
+        // text: null,
+        // ingredients: null,
       });
-      // console.log(method)
-      // console.log(duration)
-      // console.log(pax)
-      // console.log(image)
-      // console.log(searchText)
-      // console.log(ingredients)
+      console.log(method)
+      console.log(duration)
+      console.log(pax)
+      console.log(image)
+      console.log(searchText)
+      console.log(ingredients)
       
       // console.log(response.data)
       // const posts = [];
