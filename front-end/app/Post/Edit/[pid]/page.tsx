@@ -77,7 +77,9 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
     console.log('Recipe state updated:', recipe);
   }, [recipe]); 
   const prepareFormData = async() =>{
+    console.log(recipe)
     const data = new FormData();
+    data.append('postId',params.pid)
     data.append('user_id',auth?.id as string) ;
     data.append('title', recipe.title);
     data.append('category',recipe.category);
@@ -99,6 +101,7 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
       // Append image file
       data.append(`steps[${index}][image]`, step.image as File);
     });
+    console.log("data",data)
     return data;
   };
   
@@ -124,6 +127,7 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
   const handleSave = async() => {
     try {
       const preparedData = await prepareFormData();
+      console.log(preparedData)
       const response = await axios.put('/api/posts', preparedData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -132,7 +136,7 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
       const responseData = response.data;
       console.log('Upload Post successfully:', responseData);
       toast.success('Upload Post successfully');
-      router.push(`/Post/${responseData.data.id}`);
+      router.push(`/Post/${params.pid}`);
     }catch(error){
       console.log('Error upload new post',error);
       toast.error('Error when save this post');
@@ -177,6 +181,10 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
   const deleteStep = (index:number) =>{
     dispatch({type: 'DEL_STEP',payload: index});
   };
+  const handleMethodChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    dispatch({ type: 'CHANGE_METHOD', payload: e.target.value });
+  };
   const handleUploadCoverImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const reader = new FileReader(); 
     if(e.target.files && e.target.files.length > 0){
@@ -191,6 +199,9 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
       dispatch({type:'CHANGE_COVER',payload: null});
     }
   };
+  const handleBack = () =>{
+    router.back();
+  }
   return (
     <div className='pb-20'>
       <div className='fixed p-2 top-0 left-0 right-0 flex flex-row justify-between bg-white shadow-md rounded-sm '>
@@ -223,6 +234,23 @@ const  EditPostComponent = ({ params }: { params: { pid: string }}) =>{
           <label className='font-semibold'>Name of recipe</label>
           <textarea name="title" className="my-5  border rounded-md block p-2.5 w-full focus:ring-coral text-lg" placeholder="Your tittle" value={recipe.title} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => handleTitleChange(e)}></textarea>
           <textarea name="intro"className="my-5 border rounded-md block p-2.5  w-full focus:ring-coral text-sm" placeholder="Introduction" value={recipe.description} onChange={(e) => handleDescriptionChange(e)}></textarea>
+          <div className="mr-24 flex flex-row justify-between gap-3 py-2">
+            <label className='font-semibold'>Method</label>
+            <div className="mr-2">
+              <select
+                name="filter"
+                className="text-sm h-8 rounded-md mr-2 p-1" 
+                value={recipe.pax}
+                onChange={(e) => handleMethodChange(e)}>
+                <option value={'Fry'}>Fry</option>
+                <option value={'Stir'}>Stir</option>
+                <option value={'Steam'}>Steam</option>
+                <option value={'Boil'}>Boil</option>
+                <option value={'Grill'}>Grill</option>
+                <option value={'Bake'}>Bake</option>
+              </select>
+            </div>
+          </div>
           <div className="mr-24 flex flex-row justify-between gap-3 py-2">
             <label className='font-semibold'>Portion</label>
             <div className="mr-2">
