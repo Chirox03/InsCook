@@ -99,7 +99,7 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
 
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
+      return NextResponse.json({ message: 'Internal server error', data: error },{status:505});
     }
   }
   else {
@@ -125,6 +125,7 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
   // const collectionUser = collection(db, 'User');
   const { method } = req;
   const searchParams = new URLSearchParams(req.nextUrl.search);
+  console.log("liked")
   if (method === 'GET') {
     try {
       
@@ -138,10 +139,8 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
 
       // Create a reference to the document with the specified ID in the specified collection
       const documentRef = doc(db, 'Post', postid);
-
       // Get the post data
       const PostSnapshot = await getDoc(documentRef);
-
       // Check if PostSnapshot is empty
       if (!PostSnapshot.data()) {
         return NextResponse.json({ message: 'Post not found', data: null }, { status: 404 });
@@ -155,13 +154,14 @@ export async function GET(req: NextRequest):Promise<NextResponse>{
       let out = [];
       for(let i=0; i < listuserid.length; i++) {
         const userinfo = (await getDoc(doc(db, 'User', listuserid[i]))).data();
-        out.push(mapToUserType(userinfo, listuserid[i]));
+        if(userinfo)
+          out.push(mapToUserType(userinfo, listuserid[i]));
       }
 
       return NextResponse.json( { message: 'Get liked user successfully!', data: out },{ status:200 });
     } catch (error) {
       console.error(error);
-      return NextResponse.json({ message: 'Internal server error', data: null },{status:505});
+      return NextResponse.json({ message: 'Internal server error', data: error },{status:505});
     }
   }
   else {

@@ -28,7 +28,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 
   const fetchLike = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/like?postid=${post.id}`);
+      const response = await axios.get(`/api/like?postid=${post.id}`);
       console.log(response.data)
       setLike(response.data.data.some((user: { id: string | null | undefined; }) => user.id === auth?.id));
     } catch (error) {
@@ -39,11 +39,11 @@ const Post: React.FC<PostProps> = ({ post }) => {
   const handleLike = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await axios.put(`${BASE_URL}/api/like`, {
+      await axios.put(`$/api/like`, {
         userid: auth?.id,
         postid: post.id
       });
-      // setLike(prevLike => !prevLike);
+      setLike(prevLike => !prevLike);
       await fetchLike()
     } catch (error) {
       console.error('Error liking post:', error);
@@ -73,7 +73,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
 
   const fetchSave = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/storage?userid=${auth?.id}`);
+      const response = await axios.get(`/api/storage?userid=${auth?.id}`);
       setSave(response.data.data.some((savePost: { id: string; }) => savePost.id === post.id));
     } catch (error) {
       console.log('Error fetching save', error);
@@ -83,11 +83,12 @@ const Post: React.FC<PostProps> = ({ post }) => {
   const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await axios.put(`${BASE_URL}/api/storage`, {
+      await axios.put(`/api/storage`, {
         userid: auth?.id,
         postid: post.id
       });
       setSave(prevSave => !prevSave);
+      await fetchSave();
     } catch (error) {
       console.error('Error saving post:', error);
       toast.error('Error saving post');

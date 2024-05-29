@@ -31,6 +31,10 @@ export default function TopUser() {
       router.push('/Login');}
     fetchUser()
   },[auth,router]);
+  const handleClick = (id:string) =>{
+    router.prefetch(`/UserProfile/${id}`);
+    router.push(`/UserProfile/${id}`);
+  }
   return (
     <div className="flex flex-col justify-center">
       <p className="pt-[5%] text-center text-xl font-bold">Leaderboard</p>
@@ -39,7 +43,7 @@ export default function TopUser() {
           <div key={user.id} className="w-[90%] h-[70px] mt-[2%] ml-[5%] border border-gray-300 rounded-xl border-1">
             <span className="inline-block w-[30px] h-[30px] font-bold mt-[15px] ml-[10px] text-2xl">{index + 1}</span>
             <Image src={user.data.avatar || "/default-avatar.png"} style={imageStyle} width={60} height={60} alt={`User ${index + 1}`} />
-            <span className="inline-block text-xl font-bold mt-[15px] ml-[15px]">{user.data.name || `User ${index + 1}`}</span>
+            <span className="inline-block text-xl font-bold mt-[15px] ml-[15px]" onClick={()=>handleClick(user.id)}>{user.data.name || `User ${index + 1}`} </span>
             {/* <div className="mt-[-60px] ml-[17em]">
               <Image src={user.data.avatar || "/default-avatar.png"} width={60} height={60} style={{ borderRadius: '30%' }} alt={`User ${index + 1}`} />
             </div> */}

@@ -50,7 +50,7 @@ const DateCalculate = (timestamp: Date): string => {
   // console.log(now)
   // console.log(postDate)
   const seconds = Math.floor((now.getTime() - postDate.getTime()) / 1000);
-  console.log(seconds)
+  // console.log(seconds)
   let interval = Math.floor(seconds / 31536000);
   if (interval >= 1) return interval === 1 ? "1 year ago" : `${interval} years ago`;
 
