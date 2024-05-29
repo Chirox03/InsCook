@@ -109,7 +109,7 @@ export default function Search() {
     e.preventDefault();
     e.currentTarget.disabled = true;
 
-    const apiURL = 'http://inscook.duckdns.org:5000/search';
+    const apiURL = '35.224.104.189:5000/search';
 
     // const appapi = 'http://127.0.0.1:5000/search'
     setSearchText(searchText === '' ? null : searchText);
