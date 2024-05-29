@@ -1,8 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['*', 'firebasestorage.googleapis.com'], // Allow loading images from all domains
-    domains: ['storage.googleapis.com'],
+    domains: ['*', 'firebasestorage.googleapis.com','storage.googleapis.com','lh3.googleusercontent.com'], // Allow loading images from all domains
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
   async headers() {
     return [
