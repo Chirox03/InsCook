@@ -152,5 +152,5 @@ const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post 
     </div>
   );
 });
-
+Post.displayName = 'Post';
 export default Post;
