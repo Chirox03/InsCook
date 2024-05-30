@@ -74,7 +74,7 @@ function UserProfile({ params }: { params: { uid: string }}) {
   } ,[params.uid]);
   const handleEdit = (e:React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
-    router.push(`/Edit/${params.uid}`)
+    router.push(`Edit/${params.uid}`)
   }
   
   // const user: AppUserPro = mapUser(apiUser)
