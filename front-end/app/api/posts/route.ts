@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) :Promise<NextResponse>{
       
       const searchParams = req.nextUrl.searchParams
       const postId = searchParams.get('id')
-      console.log(postId)
       // Check if userID is provided
       if (!postId) {
         return NextResponse.json({ message: 'Post ID is missing', data: null }, { status: 400 });
@@ -121,8 +120,6 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
         'step': steps,
         'image':await getDownloadUrlForFile(path_in_storage)
       }
-
-      console.log(newPostData)
       const collectionRef = collection(db, 'Post');
       const newPostRef = await addDoc(collectionRef, newPostData);
       return NextResponse.json( { message: 'Posts created successfully', data: {newPostData,id:newPostRef.id} },{status:200});
@@ -236,12 +233,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
         return NextResponse.json({ message: 'Missing post ID', data: null }, { status: 400 }); // Bad request
       }
       const postRef = doc(db, "Post", postid);
-      const postSnapshot = await getDoc(postRef);
-      let postData = postSnapshot.data();
-      /* @ts-ignore */
-      postData.is_deleted = true;
-      await updateDoc(postRef, postData); // Update the document with new data
-
+      await updateDoc(postRef,{isDeleted:  true}); // Update the document with new data
       return NextResponse.json({ message: 'Post deleted successfully', data: null }, { status: 200 });
     } catch (error) {
       console.error(error);

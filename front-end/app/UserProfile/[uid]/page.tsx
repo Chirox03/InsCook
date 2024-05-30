@@ -32,10 +32,6 @@ interface AppUserProfile{
 }
 const mapUser = async (apiUser: APiUser): Promise<AppUserProfile> => {
   const { id, data} = apiUser;
-  // const avatarRef = ref(storage, avatar);
-  // const avatarURL = await getDownloadURL(avatarRef);
-  // const response = await fetch(avatarURL);
-  // const avatarBlob = await response.blob();
   const appUser: AppUserProfile = {
     userID: id,
     data: {
@@ -54,8 +50,6 @@ function UserProfile({ params }: { params: { uid: string }}) {
   // console.log(params.uid)
   useEffect (()=>{
     const fetchProfile = async() =>{
-      console.log('meomoe');
-      console.log('bruh');
       try{
         // console.log(BASE_URL+`/api/userinfo?userid=${params.uid}`);
         const res = await fetch(`/api/userinfo?userid=${params.uid}`,
@@ -65,9 +59,6 @@ function UserProfile({ params }: { params: { uid: string }}) {
             }});
         let data = await res.json();
         data.userID = params.uid;
-        console.log(data);
-        // console.log(data)
-
         if(res.ok){
           console.log('???',data);
           setUserProfile(await mapUser(data.data));}
@@ -81,7 +72,10 @@ function UserProfile({ params }: { params: { uid: string }}) {
     };
     fetchProfile();
   } ,[params.uid]);
-
+  const handleEdit = (e:React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault();
+    router.push(`/Edit/${params.uid}`)
+  }
   
   // const user: AppUserPro = mapUser(apiUser)
   console.log('Hello',userProfile);
@@ -101,8 +95,8 @@ function UserProfile({ params }: { params: { uid: string }}) {
             <h2 className="text-sm font-medium">{userProfile?.data.name}</h2>
             <div className="flex justify-between py-2">
               {yourProfile && (
-                <button type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                  <Link href={`/Edit/${params.uid}`}>Edit</Link>
+                <button onClick={(e)=>handleEdit(e)} type="button" className="mb-0 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-5 py-2 me-2  dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                 Edit
                 </button>
               )}
               {!yourProfile && (

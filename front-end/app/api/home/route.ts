@@ -20,7 +20,7 @@ export async function GET(req: NextRequest):Promise<NextResponse> {
         return NextResponse.json({ message: 'User ID is missing', data: null }, { status: 400 });
       }
 
-      const collectionRef = query(collection(db, 'Post'), limit(10));
+      const collectionRef = query(collection(db, 'Post'), limit(30));
       const postSnapshot = await getDocs(collectionRef);
           
       if (postSnapshot.empty) {
@@ -30,7 +30,6 @@ export async function GET(req: NextRequest):Promise<NextResponse> {
         // console.log()
         for (const postdoc of postSnapshot.docs) {
           const postData = postdoc.data(); 
-          console.log(postData);
           if(postData.user_id !=null)
           {
 
@@ -57,7 +56,6 @@ export async function GET(req: NextRequest):Promise<NextResponse> {
             const saveQuerySnapshot = await getDocs(query(collection(db, 'Storage'),where('user_id', '==', userID),where('post_id', '==', post.id)));
             post.isSaved = !saveQuerySnapshot.empty;
             postsData.push(post);
-            console.log(post);
           }
         }
 

@@ -191,8 +191,12 @@ function PostDetail({ params }: { params: { pid: string }}) {
   };
 
   const handleDeletePost = async () => {
+    const userConfirmed = window.confirm('Are you sure you want to delete this post?');
+    if (!userConfirmed) {
+      return;
+    }
     try {
-      await axios.delete(`${BASE_URL}/api/posts/${params.pid}`);
+      await axios.delete('/api/posts/', {data:  {postid: params.pid }});
       toast.success('Post deleted successfully');
       router.push('/');
     } catch (error) {
