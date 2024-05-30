@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 import PostType from '@/types/PostType';
 import Post from '@/components/Post';
 export default function Storage({ params }: { params: { uid: string }}){
-  // console.log('asjdkasdj',params.uid)
   const {state: auth, dispatch } = useAuth();
   const [posts,setPosts] = useState<PostType[]>([]);
   const router = useRouter();
@@ -22,7 +21,7 @@ export default function Storage({ params }: { params: { uid: string }}){
       }
     };
     fetchSave();
-  },[]);
+  },[params.uid]);
   console.log('Post',posts);
   const handleBack = ()=>{
     router.back();

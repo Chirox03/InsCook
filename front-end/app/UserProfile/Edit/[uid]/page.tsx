@@ -59,7 +59,7 @@ const  EditProfileComponent = ({ params }: { params: { uid: string }}) =>{
       }
     };
     fetchProfile();
-  },[params.uid]);
+  },[params.uid,dispatch]);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if(file)
