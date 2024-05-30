@@ -20,17 +20,6 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       const name = formdata.get('name');
       const biography = formdata.get('biography');
       const file = formdata.get('avatar') as File;
-      console.log(file);
-      if (file instanceof File) {
-        // Image is a File object, proceed with upload
-        //const path_in_storage = await uploadFile({ file: file,folderPath:'images/'});
-        // ...
-      } else {
-        // Image is not a file, handle non-file data or error
-        console.error('Image is not a file object');
-      }
-      console.log(userid);
-
       if (!userid) {
         return NextResponse.json({ message: 'User ID not provided', data: null }, { status:400 });
       }
@@ -47,10 +36,12 @@ export async function PUT(req: NextRequest):Promise<NextResponse>{
       }
 
       // Update
-      const pathInStorage = await uploadFile({file:file,folderPath:'images'});
       let data = documentSnapshot.data();
-      /* @ts-ignore */
+      if (file instanceof File) {
+        const pathInStorage = await uploadFile({file:file,folderPath:'images'});
+        /* @ts-ignore */
       data.avatar = await getDownloadUrlForFile(pathInStorage);
+       }
       /* @ts-ignore */
       data.biography = biography;
       /* @ts-ignore */

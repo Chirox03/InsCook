@@ -9,7 +9,7 @@ const UserTrending: React.FC<UserProps> = ({ user }) => {
 
     // console.log('Posts',posts)
     return (
-      <div className="rounded-full border-2 overflow-hidden">
+      <div className="rounded-full border-2 mx-2 overflow-hidden">
             <Image src={user.data.avatar} width={100} height={100} alt="avatar" />
         </div>
     );

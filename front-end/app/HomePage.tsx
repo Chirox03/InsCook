@@ -69,21 +69,10 @@ function HomePage() {
         <div className="text-left font-sans">Trending InsCooks <button type='button' className="text-gray float-right underline text-xs" ><Link href={`/TopUser`}>See more</Link></button></div>
           
         <div className="flex justify-center mt-2">
-          {Array.isArray(UserList) && UserList.slice(0, 4).map((user) => (
+          {Array.isArray(UserList) && UserList.slice(0, 5).map((user) => (
             <UserTrending key={user.id} user={user} />
           ))}
-          {/* <div className="rounded-full border-2 overflow-hidden">
-            <Image src="/image.png" width={100} height={100} alt="avatar" />
-          </div>
-          <div className="rounded-full border-2 overflow-hidden ml-4">
-            <Image src="/image.png" width={100} height={100} alt="avatar" />
-          </div>
-          <div className="rounded-full border-2 overflow-hidden ml-4">
-            <Image src="/image.png" alt="avatar" width={100} height={100} />
-          </div>
-          <div className="rounded-full border-2 overflow-hidden ml-4">
-            <Image src="/image.png" alt="avatar" width={100} height={100} />
-          </div> */}
+         
         </div>
           
       </div>

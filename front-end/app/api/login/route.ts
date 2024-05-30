@@ -4,23 +4,16 @@ import { auth, db } from '@/firebase';
 import { doc , getDoc } from 'firebase/firestore';
 import UserType from '@/types/UserType';
 
-// type ResponseData = {
-//   message: string,
-//   data: UserType|null
-// }
+type ResponseData = {
+  message: string,
+  data: UserType|null
+}
 
 export async function POST(req: NextRequest):Promise<NextResponse>{
   const { method } = req;
   
   if (method === 'POST') {
     try {
-      // Firebase authentication
-      //check if user signed in
-      /*
-      if (auth.currentUser) {
-        return NextResponse.json( { message: 'User logged in' },{ status:200 });
-      }
-      */
       const { email, password } = await req.json();
       console.log(email, password);
       const user = await signInWithEmailAndPassword(auth, email, password);

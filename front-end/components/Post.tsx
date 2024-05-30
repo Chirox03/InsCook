@@ -9,12 +9,12 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import DateCalculate from './DateCalculate';
-
+import { forwardRef } from 'react';
 interface PostProps {
   post: PostType;
 }
 
-const Post: React.FC<PostProps> = ({ post }) => {
+const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post }, ref) => {
   const router = useRouter();
   const { state: auth } = useAuth();
   const [like, setLike] = useState<boolean>(post.isLiked);
@@ -94,7 +94,10 @@ const Post: React.FC<PostProps> = ({ post }) => {
       toast.error('Error saving post');
     }
   };
-
+  const handlePostClick = (e: React.MouseEvent<HTMLDivElement>)=>{
+    e.preventDefault();
+    router.push(`/Post/${post.id}`)
+  }
   return (
     <div className="w-full my-2">
       <div className="mt-6">
@@ -134,20 +137,20 @@ const Post: React.FC<PostProps> = ({ post }) => {
           </button>
         </div>
       </div>
-      <div className="mt-2 flex flex-row justify-start cursor-pointer">
+      <div className="mt-2 flex flex-row justify-start cursor-pointer" onClick={(e)=> handlePostClick(e)}>
         <button onClick={handleLikeView}>
-          <p className="text-xs not-italic -mt-2">{post.likes} lượt thích</p>
+          <p className="text-xs not-italic -mt-2">{post.likes} likes</p>
         </button>
       </div>
       <p className="text-left font-bold text-lg text-slate-600">{post.title}</p>
       <p className="text-left md-2 font-sans">
         {post.caption}
-        <button type="button" className="ml-2 text-xs underline hover:underline-offset-0">
-          <Link href={`/Post/${post.id}`}>- See post... -</Link>
+        <button type="button" className="ml-2 text-sm underline hover:underline-offset-0">
+          <Link href={`/Post/${post.id}`}>- See post -</Link>
         </button>
       </p>
     </div>
   );
-};
+});
 
 export default Post;
