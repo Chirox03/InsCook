@@ -25,9 +25,10 @@ Welcome to InsCook, a platform designed for food enthusiasts to share their cook
 5. Access the application in your web browser at `http://localhost:3000`.
 
 ### To run model for search API locally, follow these steps:
+0. Go to model directory `cd model` and download [this file](https://drive.google.com/file/d/1IMvXlxF0cn9GR0N1Zw78oLkG_lvAT57A/view?usp=sharing)
+
 1. Create and activate venv
 ```bash
-cd model
 python3 -m venv myenv
 source myenv/bin/activate
 ```
