@@ -105,7 +105,7 @@ export default function Search() {
     }
 
     setPostDataList([]);
-    
+
     const appApi = 'http://127.0.0.1:5000/search';
     setSearchText(searchText === '' ? null : searchText);
     try {
