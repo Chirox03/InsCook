@@ -34,10 +34,10 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
       /* @ts-ignore */
       const UserID = user.user.reloadUserInfo.localId;
       const newUserData = {
-        'avatar': null,
+        'avatar': '/image.png',
         'biography': null,
         'birth': null,
-        'name': null,
+        'name': UserID,
         'likenum': 0
       };
       console.log(UserID);
