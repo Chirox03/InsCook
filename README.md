@@ -14,6 +14,11 @@ Welcome to InsCook, a platform designed for food enthusiasts to share their cook
 - **Next.js**: A React framework for building server-side rendered and statically generated web applications.
 - **Tailwind CSS**: A utility-first CSS framework for rapidly building custom designs without writing traditional CSS.
 - **Node.js**: A JavaScript runtime environment used for building scalable network applications.
+## Requirements
+- Node.js 18.17 or later.
+- macOS, Windows (including WSL), and Linux
+- Python 3.9
+- Next.js 14
 
 ## Getting Started
 ### To run InsCook locally, follow these steps:
