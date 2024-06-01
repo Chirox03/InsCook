@@ -2,16 +2,24 @@
 import React from 'react';
 import CommentType from '@/types/CommentType';
 import DateCalculate from './DateCalculate';
+import Image from 'next/image';
 
 interface CommentProps {
     comment: CommentType; // Assuming CommentType is the type of your comment object
   }
+
+const imageStyle = {
+  borderRadius: '50%',
+  marginRight: '1rem',
+  // display: 'inline-block',
+};
 const Comment: React.FC<CommentProps> = ({ comment }) => {
   // console.log(comment.timestamp)
   return (
     <div className='pt-2 grid grid-cols-12 px-4 divide-y divide-solid'>
       <div className="col-start-1 col-span-full flex items-start mb-4">
-        <img className="w-16 h-16 rounded-full mr-4" src="\image.png" alt="User Avatar" />
+      <Image src={comment.user.avatar} style={imageStyle} width={64} height={64} alt={`User Avatar`} />
+        {/* <img className="w-16 h-16 rounded-full mr-4" src="\image.png" alt="User Avatar" /> */}
         <div className="flex-1 pr-4">
           <p className="font-semibold text-slate-800 text-md mb-1">{comment.user.username}
             <span className='ml-2 font-normal text-xs text-gray-400'>{DateCalculate(comment.timestamp)}</span></p>

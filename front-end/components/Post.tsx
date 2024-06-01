@@ -68,8 +68,8 @@ const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post 
   const handleComment = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      router.prefetch(`${BASE_URL}/Post/Comment/${post.id}`);
-      router.push(`${BASE_URL}/Post/Comment/${post.id}`);
+      router.prefetch(`/Post/Comment/${post.id}`);
+      router.push(`/Post/Comment/${post.id}`);
     } catch (error) {
       console.log(error);
     }

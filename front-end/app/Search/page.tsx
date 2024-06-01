@@ -109,12 +109,12 @@ export default function Search() {
     e.preventDefault();
     e.currentTarget.disabled = true;
 
-    const apiURL = 'http://inscook.duckdns.org:5000/search';
+    // const apiURL = 'http://inscook.duckdns.org:5000/search';
 
-    // const appapi = 'http://127.0.0.1:5000/search'
+    const appapi = 'http://127.0.0.1:5000/search'
     setSearchText(searchText === '' ? null : searchText);
     try {
-      const response = await axios.post(apiURL, {
+      const response = await axios.post(appapi, {
         method: method,
         duration: duration,
         portion: pax,
@@ -153,9 +153,11 @@ export default function Search() {
       for (let i = 0; i < response.data.doc_ids.length; i++) {
         const pId = response.data.doc_ids[i];
         const {postData,user} = await fetchPost(pId); // Fetch post data based on ID
-        console.log(postData)
-        console.log(user)
-        setPostDataList((prevList) => [...prevList, mapToPostType(postData.data, pId, user.data.name, user.data.avatar, false, false)]);
+        // console.log(postData)
+        // console.log(user)
+        const mappedPost = mapToPostType(postData.data, pId, user.data.name, user.data.avatar, false, false)
+        console.log(mappedPost)
+        setPostDataList((prevList) => [...prevList,mappedPost]);
         // console.log(postData)
       }
     }
