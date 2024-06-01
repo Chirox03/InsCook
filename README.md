@@ -16,13 +16,31 @@ Welcome to InsCook, a platform designed for food enthusiasts to share their cook
 - **Node.js**: A JavaScript runtime environment used for building scalable network applications.
 
 ## Getting Started
-To run InsCook locally, follow these steps:
+### To run InsCook locally, follow these steps:
 
 1. Clone the repository to your local machine.
 2. Navigate to the project directory.
 3. Install dependencies using `npm install`.
 4. Run the development server using `npm run dev`.
 5. Access the application in your web browser at `http://localhost:3000`.
+
+### To run model for search API locally, follow these steps:
+1. Create and activate venv
+```bash
+cd model
+python3 -m venv myenv
+source myenv/bin/activate
+```
+
+2. Install flask 
+```bash
+pip3 install --upgrade -r requirements.txt
+```
+
+3. Start sever
+```bash
+python app.py
+``` 
 
 ## Team Members
 - **Lê Hoài Thương**: Project Manager, Frontend Developer
