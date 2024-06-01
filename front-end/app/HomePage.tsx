@@ -58,7 +58,8 @@ function HomePage() {
     fetchUser()
   },[auth,router]);
  
-    console.log(auth?.id)
+    // console.log(auth?.id)
+    console.log(UserList)
   return (
     <main className="flex-grow overflow-y-auto pb-20 my-5 text-center max-w-max h-full">
       <h1 className="text-lg mb-4 font-sans w-full">InsCook</h1>

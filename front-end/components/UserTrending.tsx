@@ -6,7 +6,9 @@ interface UserProps {
   }
 
 const UserTrending: React.FC<UserProps> = ({ user }) => {
-
+  // console.log(user)
+    if (user.data.avatar==null)
+      user.data.avatar="/image.png"
     // console.log('Posts',posts)
     return (
       <div className="rounded-full border-2 mx-2 overflow-hidden">
