@@ -43,7 +43,7 @@ export async function POST(req: NextRequest):Promise<NextResponse>{
       console.log(UserID);
       const documentRef = doc(db, 'User', UserID);
       // const newUserRef = await setDoc(documentRef, newUserData);
-
+      await setDoc(documentRef, newUserData);
       // Respond with the fetched data 
       return NextResponse.json( { message: 'Register successfully' },{ status:200 });
     } catch (error) {
