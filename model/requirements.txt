@@ -1,6 +1,9 @@
 firebase-admin
-google-cloud-firestore
+gunicorn
+flask
 ftfy 
 regex 
 tqdm
+pillow
+Flask-Cors
 git+https://github.com/openai/CLIP.git
