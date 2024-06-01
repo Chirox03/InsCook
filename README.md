@@ -31,6 +31,7 @@ cd model
 python3 -m venv myenv
 source myenv/bin/activate
 ```
+Above line is for Linux. Using `myenv/Scripts/activate` to activate virtual environment in Window.
 
 2. Install flask 
 ```bash
