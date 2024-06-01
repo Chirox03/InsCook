@@ -24,7 +24,7 @@ Welcome to InsCook, a platform designed for food enthusiasts to share their cook
 ### To run InsCook locally, follow these steps:
 
 1. Clone the repository to your local machine.
-2. Navigate to the project directory.
+2. Navigate to the front-end directory using `cd front-end`.
 3. Install dependencies using `npm install`.
 4. Run the development server using `npm run dev`.
 5. Access the application in your web browser at `http://localhost:3000`.
@@ -39,7 +39,7 @@ source myenv/bin/activate
 ```
 Above line is for Linux. Using `myenv/Scripts/activate` to activate virtual environment in Window.
 
-2. Install flask 
+2. Install requirements
 ```bash
 pip3 install --upgrade -r requirements.txt
 ```
