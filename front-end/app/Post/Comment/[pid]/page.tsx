@@ -6,9 +6,34 @@ import CommentType from '@/types/CommentType';
 import BASE_URL from '@/config';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
+import UserType from '@/types/UserType';
+import axios from 'axios';
+
+
+
+const mapUser = (data:any) : UserType => {
+  const user: UserType = {
+    id: data.id,
+    data: {
+      name: data.data.name,
+      biography: data.data.biography,
+      avatar: data.data.avatar,
+    },
+  };
+  console.log(user)
+  return user;
+};
+
 export default function CommentPage({ params }: { params: { pid: string }}) {
 
+  
   const {state: auth, dispatch } = useAuth();
+  const [userProfile,setuserProfile] = useState<UserType | null>(null);
+  
+
+  
+
   const handleCommentSubmit = (commentContent:string)=>{
     const newComment: CommentType = {
       id : '123',
@@ -16,11 +41,13 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
       timestamp: new Date(),
       /* @ts-ignore */
       user:{
-        userID: '123',
-        username: 'Hai Nguyen',
+        userID: userProfile?.id ?? 'unknown',
+        username: userProfile?.data.name ?? 'Anonymous',
+        avatar: userProfile?.data.avatar ?? 'default-avatar-url',
       },
-      reply:[]
+      // reply:[] ,
     };
+    console.log(newComment)
     setComments([...comments,newComment]);
   };
   const handleKeyPress = (e:React.KeyboardEvent<HTMLInputElement>) =>{
@@ -37,7 +64,7 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
             postid: params.pid,
           };
           try {
-            const response = await fetch(BASE_URL+'/api/comment', {
+            const response = await fetch('/api/comment', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -64,9 +91,26 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
   const [comments,setComments] = useState<Array<CommentType>>([]);
 
   useEffect(() => {
+    // console.log('aaa',123)  
+    const fetchProfile = async() =>{
+      try{
+        // console.log(BASE_URL+`/api/userinfo?userid=${params.uid}`);
+        const response = await axios.get(`/api/userinfo?userid=${auth?.id}`)
+        const userData = response.data.data;
+        const mappedUser = mapUser(userData);
+        console.log(mappedUser)
+        setuserProfile(mappedUser)
+        console.log(userProfile)
+      }catch(error){
+        console.log('Error fetching user information',error);
+        //notFound();
+      }
+      
+    }
+
     const fetchComments = async () => {
       try{
-        const res = await fetch(BASE_URL+`/api/comment?postid=${params.pid}`,
+        const res = await fetch(`/api/comment?postid=${params.pid}`,
           {method: 'GET',
             headers: {
               'Content-Type': 'application/json', 
@@ -86,6 +130,7 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
         return null;
       }
     };
+    fetchProfile()
     fetchComments()
       .catch((error) => {
         console.error('Error:', error);
@@ -96,6 +141,7 @@ export default function CommentPage({ params }: { params: { pid: string }}) {
     router.back();
   };
 
+  console.log(userProfile)
   return (
     <div className='relative'>
       {/* Back bar */}

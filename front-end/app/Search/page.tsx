@@ -1,39 +1,35 @@
 'use client';
 import React, { useState } from 'react';
-import { Select, Option, Input } from '@/components/MaterialTailwind.ts';
-import Post from '@/components/Post';
 import axios from 'axios';
-import BASE_URL from '@/config';
+import Post from '@/components/Post';
 import PostType from '@/types/PostType';
-
-
+import BASE_URL from '@/config';
 
 const mapToPostType = (postinfo: any, postid: string, username: string, useravatar: string, saved: boolean, liked: boolean): PostType => {
   const post: PostType = {
-    id: postid, 
+    id: postid,
     user: {
       userID: postinfo.user_id,
-      username: username, 
+      username: username,
       avatar: useravatar,
     },
     image: postinfo.image,
-    timestamp: postinfo.timestamp, 
+    timestamp: postinfo.timestamp,
     title: postinfo.title,
     caption: postinfo.caption,
     likes: postinfo.like_number,
     comments: postinfo.comment_number,
-    isSaved: saved, 
-    isLiked: liked, 
+    isSaved: saved,
+    isLiked: liked,
   };
 
   return post;
 };
 
-
 export default function Search() {
-  const [duration, setDuration] = useState<number>(5);
-  const [pax, setPax] = useState<number>(1);
-  const [method, setMethod] = useState<string>('Fry');
+  const [duration, setDuration] = useState<number | null>(null);
+  const [pax, setPax] = useState<number | null>(null);
+  const [method, setMethod] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string | null>('');
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [newIngredient, setNewIngredient] = useState<string>('');
@@ -41,16 +37,19 @@ export default function Search() {
   const [postDataList, setPostDataList] = useState<PostType[]>([]);
 
   const handleChangeDuration = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setDuration(Number(event.target.value));
+    const value = event.target.value;
+    setDuration(value ? Number(value) : null);
   };
   const handleChangePax = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPax(Number(event.target.value));
+    const value = event.target.value;
+    setPax(value ? Number(value) : null);
   };
   const handleChangeMethod = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setMethod(event.target.value);
+    const value = event.target.value;
+    setMethod(value || null);
   };
   const handleSearchTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchText(event.target.value);
+    setSearchText(event.target.value || null);
   };
   const handleNewIngredientChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewIngredient(event.target.value);
@@ -76,105 +75,69 @@ export default function Search() {
     setIngredients(ingredients.filter((_, i) => i !== index));
   };
 
-  const fetchPost = async (id:string) => {
+  const fetchPost = async (id: string) => {
     console.log(id)
     try {
-      const response = await axios.get(`/api/posts?id=${id}`)
-      // console.log(response.data)
-      // console.log(response.data)
-      const user = await fetchuserbyid(response.data.data.user_id)
-      // console.log(response.data)
-      return { postData:response.data,user};
-      }catch (error) {
-        console.error('Error fetching post:', error);
-        throw error;
-
-    }
-    
-  };
-
-  const fetchuserbyid = async (id:string) => {
-    // console.log(id)
-    try {
-      
-      const response = await axios.get(`/api/userinfo?userid=${id}`)
-
-      return response.data.data;
-    }catch (error) {
+      const response = await axios.get(`/api/posts?id=${id}`);
+      const user = await fetchUserById(response.data.data.user_id);
+      return { postData: response.data, user };
+    } catch (error) {
       console.error('Error fetching post:', error);
       throw error;
+    }
   };
-}
+
+  const fetchUserById = async (id: string) => {
+    try {
+      const response = await axios.get(`/api/userinfo?userid=${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      throw error;
+    }
+  };
+
   const handleSearch = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.currentTarget.disabled = true;
+    const button = e.currentTarget;
+    if (button) {
+      button.disabled = true;
+    }
 
-    const apiURL = 'http://inscook.duckdns.org:5000/search';
+    setPostDataList([]);
 
-    // const appapi = 'http://127.0.0.1:5000/search'
+    const appApi = 'http://127.0.0.1:5000/search';
     setSearchText(searchText === '' ? null : searchText);
     try {
-      const response = await axios.post(apiURL, {
+      const response = await axios.post(appApi, {
         method: method,
         duration: duration,
         portion: pax,
         image: image,
         text: searchText,
         ingredients: ingredients,
-        // method: 'Fry',
-        // duration: null,
-        // portion: 2,
-        // image: null,
-        // text: null,
-        // ingredients: null,
       });
-      console.log(method)
-      console.log(duration)
-      console.log(pax)
-      console.log(image)
-      console.log(searchText)
-      console.log(ingredients)
-      
-      // console.log(response.data)
-      // const posts = [];
-      // const postDataArray = [];
 
-      // const postPromises = response.data.doc_ids.map(async (pId: string) => {
-      //   // console.log(pId);
-      //    // Assuming the first element contains the post ID
-      //   const postData = await fetchPost(pId); // Fetch post data based on ID
-      //   // posts.push(postData.data);
-      //   console.log('Post Data:', postData);
-      // });
-
-      if (response.data)
-        {
-          
-      for (let i = 0; i < response.data.doc_ids.length; i++) {
-        const pId = response.data.doc_ids[i];
-        const {postData,user} = await fetchPost(pId); // Fetch post data based on ID
-        console.log(postData)
-        console.log(user)
-        setPostDataList((prevList) => [...prevList, mapToPostType(postData.data, pId, user.data.name, user.data.avatar, false, false)]);
-        // console.log(postData)
+      if (response.data) {
+        for (let i = 0; i < response.data.doc_ids.length; i++) {
+          const pId = response.data.doc_ids[i];
+          const { postData, user } = await fetchPost(pId);
+          const mappedPost = mapToPostType(postData.data, pId, user.data.name, user.data.avatar, false, false);
+          setPostDataList((prevList) => [...prevList, mappedPost]);
+        }
+      } else {
+        console.log('No results found');
       }
-    }
-    else{
-      console.log('khong co')
-    }
-      // await Promise.all(postPromises);
-      // console.log(response.data);
-      e.currentTarget.disabled = false;
-      // console.log('sdasjdlkasjdlkasjd',posts)
-      // return postDataArray;
+      if (button) {
+        button.disabled = false;
+      }
     } catch (error) {
       console.log(error);
-      // e.currentTarget.disabled = false;
-      return null;
+      if (button) {
+        button.disabled = false;
+      }
     }
   };
-
-  
 
   return (
     <div className='mt-5'>
@@ -211,9 +174,10 @@ export default function Search() {
               <label className='' htmlFor="filter">Duration </label>
               <select
                 name="filter"
-                value={duration}
+                value={duration ?? ''}
                 onChange={handleChangeDuration}
                 className="text-xs h-6 rounded-md mr-2 p-1">
+                <option value="">Any</option>
                 <option value={5}>5m</option>
                 <option value={10}>10m</option>
                 <option value={15}>15m</option>
@@ -235,9 +199,10 @@ export default function Search() {
               <label className='' htmlFor="filter">Portion </label>
               <select
                 name="filter"
-                value={pax}
+                value={pax ?? ''}
                 onChange={handleChangePax}
                 className="text-xs h-6 rounded-md mr-2 p-1">
+                <option value="">Any</option>
                 <option value={1}>1 Pax</option>
                 <option value={2}>2 Pax</option>
                 <option value={3}>3 Pax</option>
@@ -251,9 +216,10 @@ export default function Search() {
               <label htmlFor="filter">Method: </label>
               <select
                 name="filter"
-                value={method}
+                value={method ?? ''}
                 onChange={handleChangeMethod}
                 className="text-xs h-6 rounded-md mr-2 p-1">
+                <option value="">Any</option>
                 <option value='Fry'>Fry</option>
                 <option value='Stir'>Stir</option>
                 <option value='Steam'>Steam</option>
@@ -288,17 +254,17 @@ export default function Search() {
           </div>
           <br />
           <button
-            onClick={handleSearch}
-            type="button"
-            className="text-white bg-[#050708] hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600 me-2 mb-2">
-            Search
-          </button>
+          onClick={handleSearch}
+          type="button"
+          className="text-white bg-[#050708] hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600 me-2 mb-2"
+          style={{ flexShrink: 0 }} >
+          Search
+        </button>
         </div>
       </div>
 
       <h2 className='text-md font-sans ml-2'>Search results</h2>
       {postDataList.map((postData, index) => (
-        // console.log(postData);
         <Post key={index} post={postData} />
       ))}
     </div>

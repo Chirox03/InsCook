@@ -19,6 +19,7 @@ const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post 
   const { state: auth } = useAuth();
   const [like, setLike] = useState<boolean>(post.isLiked);
   const [save, setSave] = useState<boolean>(post.isSaved);
+  const [likesCount, setLikesCount] = useState(post.likes);
 
   const handleUserClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -29,8 +30,9 @@ const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post 
   const fetchLike = async () => {
     try {
       const response = await axios.get(`/api/like?postid=${post.id}`);
-      console.log(response.data)
+      // console.log(response.data)
       setLike(response.data.data.some((user: { id: string | null | undefined; }) => user.id === auth?.id));
+      
     } catch (error) {
       console.log('Error fetching like', error);
     }
@@ -39,11 +41,13 @@ const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post 
   const handleLike = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/like`, {
+      const response = await axios.put(`/api/like`, {
         userid: auth?.id,
         postid: post.id
       });
+      console.log(response.data.data.likes)
       setLike(prevLike => !prevLike);
+      setLikesCount(response.data.data.likes)
       await fetchLike()
     } catch (error) {
       console.error('Error liking post:', error);
@@ -64,8 +68,8 @@ const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post 
   const handleComment = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      router.prefetch(`${BASE_URL}/Post/Comment/${post.id}`);
-      router.push(`${BASE_URL}/Post/Comment/${post.id}`);
+      router.prefetch(`/Post/Comment/${post.id}`);
+      router.push(`/Post/Comment/${post.id}`);
     } catch (error) {
       console.log(error);
     }
@@ -139,7 +143,7 @@ const Post: React.FC<PostProps> = forwardRef<HTMLDivElement, PostProps>(({ post 
       </div>
       <div className="mt-2 flex flex-row justify-start cursor-pointer" onClick={(e)=> handlePostClick(e)}>
         <button onClick={handleLikeView}>
-          <p className="text-xs not-italic -mt-2">{post.likes} likes</p>
+          <p className="text-xs not-italic -mt-2">{likesCount} likes</p>
         </button>
       </div>
       <p className="text-left font-bold text-lg text-slate-600">{post.title}</p>
