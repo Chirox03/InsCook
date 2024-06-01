@@ -60,7 +60,7 @@ export default function Search() {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setImage(reader.result as string);
+        setImage((reader.result as string).replace(/^.+?;base64,/, ''));
       };
     }
   };
@@ -230,7 +230,9 @@ export default function Search() {
             </div>
           </div>
           <div className='flex flex-col gap-2'>
-            <label>Ingredients:</label>
+            <label className='p-2 text-sm'>Ingredients:</label>
+            <div>
+
             {ingredients.map((ingredient, index) => (
               <div className='' key={index}>
                 <label className='m-2'>{ingredient}</label>
@@ -246,21 +248,22 @@ export default function Search() {
                 placeholder='Ingredient'
                 value={newIngredient}
                 onChange={handleNewIngredientChange}
-              />
+                />
               <button className='w-6 h-6 p-1' onClick={addIngredient}>
                 <i className="fi fi-br-plus"></i>
               </button>
             </div>
+              </div>
           </div>
-          <br />
-          <button
+          
+        </div>
+        <button
           onClick={handleSearch}
           type="button"
-          className="text-white bg-[#050708] hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600 me-2 mb-2"
+          className="text-white bg-coral hover:bg-coral/80 focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-5 py-2.5 text-center  py-2"
           style={{ flexShrink: 0 }} >
           Search
         </button>
-        </div>
       </div>
 
       <h2 className='text-md font-sans ml-2'>Search results</h2>
